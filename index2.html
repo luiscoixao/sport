@@ -498,7 +498,7 @@
       </section>
 
       <section class="card">
-        <h2>Jour sélectionné</h2>
+        <h2>Aujourd’hui</h2>
         <div class="stats">
           <div class="stat">
             <div class="stat-label">Distance totale</div>
@@ -593,7 +593,7 @@
       </section>
 
       <section class="card">
-        <h2>Historique</h2>
+        <h2>Historique du jour sélectionné</h2>
         <div class="selected-day-bar" id="selectedDayBar"></div>
         <div id="entries" class="list"></div>
         <div id="emptyState" class="empty">Aucune activité enregistrée pour ce jour.</div>
@@ -606,20 +606,44 @@
 
   <script>
     const STORAGE_KEY = "sport-quotidien-v2";
+    const APP_TIMEZONE = "Europe/Paris";
+
     let entries = [];
     let editingId = null;
 
-    function toDateStringLocal(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const d = String(date.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
+    function getParisDateParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: APP_TIMEZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(date);
+
+      return {
+        year: Number(parts.find(p => p.type === "year").value),
+        month: Number(parts.find(p => p.type === "month").value),
+        day: Number(parts.find(p => p.type === "day").value)
+      };
     }
 
-    const now = new Date();
-    let selectedDate = toDateStringLocal(now);
-    let calendarYear = now.getFullYear();
-    let calendarMonth = now.getMonth();
+    function toDateStringLocal(date = new Date()) {
+      const p = getParisDateParts(date);
+      return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+    }
+
+    function getRealTodayString() {
+      return toDateStringLocal(new Date());
+    }
+
+    function parseDateString(dateStr) {
+      const [year, month, day] = dateStr.split("-").map(Number);
+      return { year, month, day };
+    }
+
+    const initialToday = getParisDateParts(new Date());
+    let selectedDate = `${initialToday.year}-${String(initialToday.month).padStart(2, "0")}-${String(initialToday.day).padStart(2, "0")}`;
+    let calendarYear = initialToday.year;
+    let calendarMonth = initialToday.month - 1;
 
     const form = document.getElementById("sportForm");
     const dateInput = document.getElementById("date");
@@ -637,7 +661,7 @@
     const selectedDayBar = document.getElementById("selectedDayBar");
 
     function setTodayDate() {
-      dateInput.value = selectedDate;
+      dateInput.value = getRealTodayString();
     }
 
     function loadEntries() {
@@ -685,7 +709,7 @@
 
     function formatLongDateFR(dateStr) {
       const [y, m, d] = dateStr.split("-");
-      const dt = new Date(Number(y), Number(m) - 1, Number(d));
+      const dt = new Date(y, m - 1, d);
       return dt.toLocaleDateString("fr-FR", {
         weekday: "long",
         day: "numeric",
@@ -705,15 +729,12 @@
       });
     }
 
-    function resetForm(keepDate = true) {
+    function resetForm() {
       form.reset();
       typeInput.value = "Marche";
       editingId = null;
       document.querySelector(".btn-primary").textContent = "Enregistrer";
-
-      if (keepDate) {
-        dateInput.value = selectedDate;
-      }
+      dateInput.value = getRealTodayString();
     }
 
     function getEntriesForDate(dateStr) {
@@ -744,8 +765,9 @@
       return "orange";
     }
 
-    function renderSelectedDayStats() {
-      const { totalKm, totalMinutes, totalCalories, lastWeight } = getDailyTotals(selectedDate);
+    function renderTodayStats() {
+      const todayDate = getRealTodayString();
+      const { totalKm, totalMinutes, totalCalories, lastWeight } = getDailyTotals(todayDate);
 
       document.getElementById("todayKm").textContent = `${formatNumber(totalKm, 2)} km`;
       document.getElementById("todayMinutes").textContent = `${formatNumber(totalMinutes, 0)} min`;
@@ -859,8 +881,7 @@
       }
 
       for (let day = 1; day <= lastDay.getDate(); day++) {
-        const dateObj = new Date(calendarYear, calendarMonth, day);
-        const dateStr = toDateStringLocal(dateObj);
+        const dateStr = `${calendarYear}-${String(calendarMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         const totals = getDailyTotals(dateStr);
         const level = getDayLevel(dateStr);
 
@@ -868,9 +889,7 @@
         cell.className = `calendar-day day-${level}`;
 
         if (dateStr === selectedDate) cell.classList.add("selected");
-
-        const realToday = toDateStringLocal(new Date());
-        if (dateStr === realToday) cell.classList.add("today");
+        if (dateStr === getRealTodayString()) cell.classList.add("today");
 
         const smallText = totals.count ? `${formatNumber(totals.totalKm, 1)} km` : "Repos";
         const smallText2 = totals.count ? `${formatNumber(totals.totalMinutes, 0)} min` : "";
@@ -885,9 +904,7 @@
 
         cell.addEventListener("click", () => {
           selectedDate = dateStr;
-          dateInput.value = selectedDate;
           renderCalendar();
-          renderSelectedDayStats();
           renderEntries();
         });
 
@@ -927,11 +944,9 @@
       saveEntries();
 
       selectedDate = entryDate;
-      dateInput.value = entryDate;
-
-      const d = new Date(entryDate + "T12:00:00");
-      calendarYear = d.getFullYear();
-      calendarMonth = d.getMonth();
+      const parsed = parseDateString(entryDate);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
 
       editingId = null;
       document.querySelector(".btn-primary").textContent = "Enregistrer";
@@ -941,6 +956,7 @@
       caloriesInput.value = "";
       weightInput.value = "";
       typeInput.value = "Marche";
+      dateInput.value = getRealTodayString();
 
       updateUI();
     }
@@ -965,9 +981,9 @@
       caloriesInput.value = entry.calories;
       weightInput.value = entry.weight ?? "";
 
-      const d = new Date(entry.date + "T12:00:00");
-      calendarYear = d.getFullYear();
-      calendarMonth = d.getMonth();
+      const parsed = parseDateString(entry.date);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
 
       document.querySelector(".btn-primary").textContent = "Mettre à jour";
       updateUI();
@@ -979,13 +995,16 @@
       entries = [];
       saveEntries();
       resetForm();
+      selectedDate = getRealTodayString();
+      const p = parseDateString(selectedDate);
+      calendarYear = p.year;
+      calendarMonth = p.month - 1;
       updateUI();
     }
 
     function updateUI() {
-      dateInput.value = selectedDate;
       renderCalendar();
-      renderSelectedDayStats();
+      renderTodayStats();
       renderGlobalSummary();
       renderEntries();
     }
@@ -999,12 +1018,12 @@
     clearAllBtn.addEventListener("click", clearAll);
 
     dateInput.addEventListener("change", () => {
+      if (!dateInput.value) return;
       selectedDate = dateInput.value;
-      const d = new Date(selectedDate + "T12:00:00");
-      calendarYear = d.getFullYear();
-      calendarMonth = d.getMonth();
+      const parsed = parseDateString(selectedDate);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
       renderCalendar();
-      renderSelectedDayStats();
       renderEntries();
     });
 
@@ -1027,11 +1046,12 @@
     });
 
     document.getElementById("todayMonthBtn").addEventListener("click", () => {
-      const realToday = new Date();
-      selectedDate = toDateStringLocal(realToday);
-      calendarYear = realToday.getFullYear();
-      calendarMonth = realToday.getMonth();
-      dateInput.value = selectedDate;
+      const today = getRealTodayString();
+      selectedDate = today;
+      const parsed = parseDateString(today);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+      dateInput.value = today;
       updateUI();
     });
 
