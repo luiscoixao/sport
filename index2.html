@@ -87,31 +87,6 @@
       letter-spacing: -0.02em;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      background: var(--card-strong);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .stat-label {
-      font-size: 0.84rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
     .form-grid {
       display: grid;
       gap: 12px;
@@ -295,10 +270,6 @@
       border-color: rgba(255,255,255,0.7);
     }
 
-    .calendar-day.today {
-      box-shadow: inset 0 0 0 2px rgba(56,189,248,0.7);
-    }
-
     .day-number {
       font-weight: 800;
       font-size: 0.95rem;
@@ -438,7 +409,6 @@
 
     @media (max-width: 560px) {
       .row-2,
-      .stats,
       .entry-grid {
         grid-template-columns: 1fr;
       }
@@ -473,7 +443,6 @@
           <div class="calendar-title" id="calendarTitle"></div>
           <div class="calendar-nav">
             <button type="button" id="prevMonthBtn">‹</button>
-            <button type="button" id="todayMonthBtn">Aujourd’hui</button>
             <button type="button" id="nextMonthBtn">›</button>
           </div>
         </div>
@@ -494,28 +463,6 @@
           <div class="legend-item"><span class="dot green"></span> activité significative</div>
           <div class="legend-item"><span class="dot orange"></span> activité légère</div>
           <div class="legend-item"><span class="dot red"></span> aucune activité</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Aujourd’hui</h2>
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-label">Distance totale</div>
-            <div class="stat-value" id="todayKm">0 km</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Temps total</div>
-            <div class="stat-value" id="todayMinutes">0 min</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Calories</div>
-            <div class="stat-value" id="todayCalories">0 kcal</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Poids du jour</div>
-            <div class="stat-value" id="todayWeight">—</div>
-          </div>
         </div>
       </section>
 
@@ -631,10 +578,6 @@
       return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
     }
 
-    function getRealTodayString() {
-      return toDateStringLocal(new Date());
-    }
-
     function parseDateString(dateStr) {
       const [year, month, day] = dateStr.split("-").map(Number);
       return { year, month, day };
@@ -661,7 +604,7 @@
     const selectedDayBar = document.getElementById("selectedDayBar");
 
     function setTodayDate() {
-      dateInput.value = getRealTodayString();
+      dateInput.value = toDateStringLocal();
     }
 
     function loadEntries() {
@@ -734,7 +677,7 @@
       typeInput.value = "Marche";
       editingId = null;
       document.querySelector(".btn-primary").textContent = "Enregistrer";
-      dateInput.value = getRealTodayString();
+      dateInput.value = toDateStringLocal();
     }
 
     function getEntriesForDate(dateStr) {
@@ -763,16 +706,6 @@
       if (!count) return "red";
       if (totalMinutes >= 30 || totalKm >= 5) return "green";
       return "orange";
-    }
-
-    function renderTodayStats() {
-      const todayDate = getRealTodayString();
-      const { totalKm, totalMinutes, totalCalories, lastWeight } = getDailyTotals(todayDate);
-
-      document.getElementById("todayKm").textContent = `${formatNumber(totalKm, 2)} km`;
-      document.getElementById("todayMinutes").textContent = `${formatNumber(totalMinutes, 0)} min`;
-      document.getElementById("todayCalories").textContent = `${formatNumber(totalCalories, 0)} kcal`;
-      document.getElementById("todayWeight").textContent = lastWeight ? `${formatNumber(lastWeight, 1)} kg` : "—";
     }
 
     function renderGlobalSummary() {
@@ -889,7 +822,6 @@
         cell.className = `calendar-day day-${level}`;
 
         if (dateStr === selectedDate) cell.classList.add("selected");
-        if (dateStr === getRealTodayString()) cell.classList.add("today");
 
         const smallText = totals.count ? `${formatNumber(totals.totalKm, 1)} km` : "Repos";
         const smallText2 = totals.count ? `${formatNumber(totals.totalMinutes, 0)} min` : "";
@@ -956,7 +888,7 @@
       caloriesInput.value = "";
       weightInput.value = "";
       typeInput.value = "Marche";
-      dateInput.value = getRealTodayString();
+      dateInput.value = toDateStringLocal();
 
       updateUI();
     }
@@ -995,7 +927,7 @@
       entries = [];
       saveEntries();
       resetForm();
-      selectedDate = getRealTodayString();
+      selectedDate = toDateStringLocal();
       const p = parseDateString(selectedDate);
       calendarYear = p.year;
       calendarMonth = p.month - 1;
@@ -1004,7 +936,6 @@
 
     function updateUI() {
       renderCalendar();
-      renderTodayStats();
       renderGlobalSummary();
       renderEntries();
     }
@@ -1043,16 +974,6 @@
         calendarYear++;
       }
       renderCalendar();
-    });
-
-    document.getElementById("todayMonthBtn").addEventListener("click", () => {
-      const today = getRealTodayString();
-      selectedDate = today;
-      const parsed = parseDateString(today);
-      calendarYear = parsed.year;
-      calendarMonth = parsed.month - 1;
-      dateInput.value = today;
-      updateUI();
     });
 
     loadEntries();
