@@ -17,7 +17,6 @@
       --muted: #cbd5e1;
       --line: rgba(255,255,255,0.12);
       --accent: #22c55e;
-      --accent-2: #38bdf8;
       --danger: #ef4444;
       --orange: #f59e0b;
       --shadow: 0 20px 40px rgba(0,0,0,0.28);
@@ -218,6 +217,7 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .calendar-title {
@@ -229,6 +229,7 @@
     .calendar-nav {
       display: flex;
       gap: 8px;
+      align-items: center;
     }
 
     .calendar-nav button {
@@ -497,7 +498,7 @@
       </section>
 
       <section class="card">
-        <h2>Aujourd’hui / Jour sélectionné</h2>
+        <h2>Jour sélectionné</h2>
         <div class="stats">
           <div class="stat">
             <div class="stat-label">Distance totale</div>
@@ -608,12 +609,17 @@
     let entries = [];
     let editingId = null;
 
-    const todayReal = new Date();
-    const todayString = toDateStringLocal(todayReal);
+    function toDateStringLocal(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
 
-    let selectedDate = todayString;
-    let calendarYear = todayReal.getFullYear();
-    let calendarMonth = todayReal.getMonth();
+    const now = new Date();
+    let selectedDate = toDateStringLocal(now);
+    let calendarYear = now.getFullYear();
+    let calendarMonth = now.getMonth();
 
     const form = document.getElementById("sportForm");
     const dateInput = document.getElementById("date");
@@ -630,15 +636,8 @@
     const calendarTitleEl = document.getElementById("calendarTitle");
     const selectedDayBar = document.getElementById("selectedDayBar");
 
-    function toDateStringLocal(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    }
-
     function setTodayDate() {
-      dateInput.value = selectedDate || todayString;
+      dateInput.value = selectedDate;
     }
 
     function loadEntries() {
@@ -695,6 +694,10 @@
       });
     }
 
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     function sortEntries() {
       entries.sort((a, b) => {
         if (a.date !== b.date) return b.date.localeCompare(a.date);
@@ -704,14 +707,17 @@
 
     function resetForm(keepDate = true) {
       form.reset();
-      if (keepDate) dateInput.value = selectedDate;
       typeInput.value = "Marche";
       editingId = null;
       document.querySelector(".btn-primary").textContent = "Enregistrer";
+
+      if (keepDate) {
+        dateInput.value = selectedDate;
+      }
     }
 
     function getEntriesForDate(dateStr) {
-      return entries.filter(entry => entry.date === dateStr);
+      return entries.filter(entry => String(entry.date) === String(dateStr));
     }
 
     function getDailyTotals(dateStr) {
@@ -765,8 +771,8 @@
       sortEntries();
       entriesContainer.innerHTML = "";
 
-      const filtered = entries
-        .filter(entry => entry.date === selectedDate)
+      const filtered = getEntriesForDate(selectedDate)
+        .slice()
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       const totals = getDailyTotals(selectedDate);
@@ -862,15 +868,12 @@
         cell.className = `calendar-day day-${level}`;
 
         if (dateStr === selectedDate) cell.classList.add("selected");
-        if (dateStr === todayString) cell.classList.add("today");
 
-        const smallText = totals.count
-          ? `${formatNumber(totals.totalKm, 1)} km`
-          : "Repos";
+        const realToday = toDateStringLocal(new Date());
+        if (dateStr === realToday) cell.classList.add("today");
 
-        const smallText2 = totals.count
-          ? `${formatNumber(totals.totalMinutes, 0)} min`
-          : "";
+        const smallText = totals.count ? `${formatNumber(totals.totalKm, 1)} km` : "Repos";
+        const smallText2 = totals.count ? `${formatNumber(totals.totalMinutes, 0)} min` : "";
 
         cell.innerHTML = `
           <div class="day-number">${day}</div>
@@ -892,16 +895,14 @@
       }
     }
 
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
     function addOrUpdateEntry(event) {
       event.preventDefault();
 
+      const entryDate = dateInput.value;
+
       const entry = {
         id: editingId || crypto.randomUUID(),
-        date: dateInput.value,
+        date: entryDate,
         type: typeInput.value,
         km: Number(kmInput.value),
         minutes: Number(minutesInput.value),
@@ -923,13 +924,24 @@
         entries.push(entry);
       }
 
-      selectedDate = entry.date;
-      const [year, month] = selectedDate.split("-");
-      calendarYear = Number(year);
-      calendarMonth = Number(month) - 1;
-
       saveEntries();
-      resetForm();
+
+      selectedDate = entryDate;
+      dateInput.value = entryDate;
+
+      const d = new Date(entryDate + "T12:00:00");
+      calendarYear = d.getFullYear();
+      calendarMonth = d.getMonth();
+
+      editingId = null;
+      document.querySelector(".btn-primary").textContent = "Enregistrer";
+
+      kmInput.value = "";
+      minutesInput.value = "";
+      caloriesInput.value = "";
+      weightInput.value = "";
+      typeInput.value = "Marche";
+
       updateUI();
     }
 
@@ -953,9 +965,9 @@
       caloriesInput.value = entry.calories;
       weightInput.value = entry.weight ?? "";
 
-      const [year, month] = entry.date.split("-");
-      calendarYear = Number(year);
-      calendarMonth = Number(month) - 1;
+      const d = new Date(entry.date + "T12:00:00");
+      calendarYear = d.getFullYear();
+      calendarMonth = d.getMonth();
 
       document.querySelector(".btn-primary").textContent = "Mettre à jour";
       updateUI();
@@ -971,6 +983,7 @@
     }
 
     function updateUI() {
+      dateInput.value = selectedDate;
       renderCalendar();
       renderSelectedDayStats();
       renderGlobalSummary();
@@ -987,9 +1000,9 @@
 
     dateInput.addEventListener("change", () => {
       selectedDate = dateInput.value;
-      const [year, month] = selectedDate.split("-");
-      calendarYear = Number(year);
-      calendarMonth = Number(month) - 1;
+      const d = new Date(selectedDate + "T12:00:00");
+      calendarYear = d.getFullYear();
+      calendarMonth = d.getMonth();
       renderCalendar();
       renderSelectedDayStats();
       renderEntries();
@@ -1014,9 +1027,10 @@
     });
 
     document.getElementById("todayMonthBtn").addEventListener("click", () => {
-      selectedDate = todayString;
-      calendarYear = todayReal.getFullYear();
-      calendarMonth = todayReal.getMonth();
+      const realToday = new Date();
+      selectedDate = toDateStringLocal(realToday);
+      calendarYear = realToday.getFullYear();
+      calendarMonth = realToday.getMonth();
       dateInput.value = selectedDate;
       updateUI();
     });
