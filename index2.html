@@ -550,30 +550,6 @@
       </section>
 
       <section class="card">
-        <h2>Résumé global</h2>
-        <div class="summary-line">
-          <span>Nombre d’activités</span>
-          <strong id="totalEntries">0</strong>
-        </div>
-        <div class="summary-line">
-          <span>Distance cumulée</span>
-          <strong id="totalKm">0 km</strong>
-        </div>
-        <div class="summary-line">
-          <span>Temps cumulé</span>
-          <strong id="totalMinutes">0 min</strong>
-        </div>
-        <div class="summary-line">
-          <span>Calories cumulées</span>
-          <strong id="totalCalories">0 kcal</strong>
-        </div>
-        <div class="summary-line">
-          <span>Vitesse moyenne globale</span>
-          <strong id="avgSpeed">0 km/h</strong>
-        </div>
-      </section>
-
-      <section class="card">
         <h2>Historique du jour sélectionné</h2>
         <div class="selected-day-bar" id="selectedDayBar"></div>
         <div id="entries" class="list"></div>
@@ -746,20 +722,6 @@
     function renderTodayBanner() {
       const today = toDateStringLocal();
       todayBanner.textContent = capitalize(formatLongDateFR(today));
-    }
-
-    function renderGlobalSummary() {
-      const totalEntries = entries.length;
-      const totalKm = entries.reduce((sum, e) => sum + Number(e.km || 0), 0);
-      const totalMinutes = entries.reduce((sum, e) => sum + Number(e.minutes || 0), 0);
-      const totalCalories = entries.reduce((sum, e) => sum + Number(e.calories || 0), 0);
-      const avgSpeed = calcSpeed(totalKm, totalMinutes);
-
-      document.getElementById("totalEntries").textContent = totalEntries;
-      document.getElementById("totalKm").textContent = `${formatNumber(totalKm, 2)} km`;
-      document.getElementById("totalMinutes").textContent = `${formatNumber(totalMinutes, 0)} min`;
-      document.getElementById("totalCalories").textContent = `${formatNumber(totalCalories, 0)} kcal`;
-      document.getElementById("avgSpeed").textContent = `${formatNumber(avgSpeed, 2)} km/h`;
     }
 
     function renderEntries() {
@@ -971,7 +933,6 @@
     function updateUI() {
       renderTodayBanner();
       renderCalendar();
-      renderGlobalSummary();
       renderEntries();
     }
 
