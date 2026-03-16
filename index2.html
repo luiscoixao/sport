@@ -12,13 +12,13 @@
     :root {
       --bg: #07140d;
       --card: rgba(255,255,255,0.08);
-      --card-strong: rgba(255,255,255,0.12);
       --text: #f8fafc;
       --muted: #cbd5e1;
       --line: rgba(255,255,255,0.12);
       --accent: #22c55e;
       --danger: #ef4444;
       --orange: #f59e0b;
+      --today: #38bdf8;
       --shadow: 0 20px 40px rgba(0,0,0,0.28);
       --radius: 22px;
     }
@@ -63,6 +63,17 @@
       margin: 8px 0 0;
       color: var(--muted);
       font-size: 0.98rem;
+    }
+
+    .today-banner {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-weight: 700;
     }
 
     .grid {
@@ -238,9 +249,9 @@
       border: 1px solid rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       cursor: pointer;
-      transition: transform 0.12s ease, border-color 0.2s ease;
+      transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .calendar-day:active {
@@ -266,8 +277,18 @@
     }
 
     .calendar-day.selected {
-      outline: 2px solid rgba(255,255,255,0.85);
-      border-color: rgba(255,255,255,0.7);
+      outline: 2px solid rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.8);
+    }
+
+    .calendar-day.today {
+      box-shadow: inset 0 0 0 3px rgba(56,189,248,0.95);
+    }
+
+    .calendar-day.today .day-number::after {
+      content: " •";
+      color: var(--today);
+      font-weight: 900;
     }
 
     .day-number {
@@ -279,6 +300,7 @@
       font-size: 0.72rem;
       color: rgba(255,255,255,0.95);
       line-height: 1.2;
+      margin-top: auto;
     }
 
     .legend {
@@ -306,6 +328,7 @@
     .dot.green { background: #22c55e; }
     .dot.orange { background: #f59e0b; }
     .dot.red { background: #ef4444; }
+    .dot.today { background: #38bdf8; }
 
     .list {
       display: grid;
@@ -433,6 +456,7 @@
     <div class="hero">
       <h1 class="title">Sport Quotidien</h1>
       <p class="subtitle">Calendrier mensuel, activités, allure, calories et poids.</p>
+      <div id="todayBanner" class="today-banner"></div>
     </div>
 
     <div class="grid">
@@ -460,6 +484,7 @@
         <div id="calendar" class="calendar-grid"></div>
 
         <div class="legend">
+          <div class="legend-item"><span class="dot today"></span> jour actuel</div>
           <div class="legend-item"><span class="dot green"></span> activité significative</div>
           <div class="legend-item"><span class="dot orange"></span> activité légère</div>
           <div class="legend-item"><span class="dot red"></span> aucune activité</div>
@@ -602,6 +627,7 @@
     const calendarEl = document.getElementById("calendar");
     const calendarTitleEl = document.getElementById("calendarTitle");
     const selectedDayBar = document.getElementById("selectedDayBar");
+    const todayBanner = document.getElementById("todayBanner");
 
     function setTodayDate() {
       dateInput.value = toDateStringLocal();
@@ -704,8 +730,13 @@
     function getDayLevel(dateStr) {
       const { totalKm, totalMinutes, count } = getDailyTotals(dateStr);
       if (!count) return "red";
-      if (totalMinutes >= 30 || totalKm >= 5) return "green";
+      if (totalKm >= 5 || totalMinutes >= 40) return "green";
       return "orange";
+    }
+
+    function renderTodayBanner() {
+      const today = toDateStringLocal();
+      todayBanner.textContent = `Aujourd’hui : ${capitalize(formatLongDateFR(today))}`;
     }
 
     function renderGlobalSummary() {
@@ -806,6 +837,7 @@
       const firstDay = new Date(calendarYear, calendarMonth, 1);
       const lastDay = new Date(calendarYear, calendarMonth + 1, 0);
       const startOffset = (firstDay.getDay() + 6) % 7;
+      const todayStr = toDateStringLocal();
 
       for (let i = 0; i < startOffset; i++) {
         const empty = document.createElement("div");
@@ -822,6 +854,7 @@
         cell.className = `calendar-day day-${level}`;
 
         if (dateStr === selectedDate) cell.classList.add("selected");
+        if (dateStr === todayStr) cell.classList.add("today");
 
         const smallText = totals.count ? `${formatNumber(totals.totalKm, 1)} km` : "Repos";
         const smallText2 = totals.count ? `${formatNumber(totals.totalMinutes, 0)} min` : "";
@@ -935,6 +968,7 @@
     }
 
     function updateUI() {
+      renderTodayBanner();
       renderCalendar();
       renderGlobalSummary();
       renderEntries();
