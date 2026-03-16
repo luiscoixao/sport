@@ -202,7 +202,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
     }
 
@@ -231,7 +231,7 @@
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 8px;
+      gap: 6px;
     }
 
     .weekday {
@@ -243,15 +243,15 @@
     }
 
     .calendar-day {
-      height: 120px;
-      min-height: 120px;
-      max-height: 120px;
-      border-radius: 16px;
-      padding: 10px 8px;
+      height: 58px;
+      min-height: 58px;
+      max-height: 58px;
+      border-radius: 14px;
+      padding: 8px;
       border: 1px solid rgba(255,255,255,0.08);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      align-items: flex-start;
+      justify-content: flex-start;
       overflow: hidden;
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -265,9 +265,9 @@
       background: transparent;
       border: none;
       cursor: default;
-      height: 120px;
-      min-height: 120px;
-      max-height: 120px;
+      height: 58px;
+      min-height: 58px;
+      max-height: 58px;
     }
 
     .day-red {
@@ -299,23 +299,8 @@
 
     .day-number {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 1rem;
       line-height: 1;
-    }
-
-    .day-info {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.95);
-      line-height: 1.15;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: 56px;
-    }
-
-    .day-info div {
-      text-align: left;
-      word-break: break-word;
     }
 
     .legend {
@@ -455,16 +440,22 @@
         font-size: 1.7rem;
       }
 
-      .calendar-day,
-      .calendar-day.empty {
-        height: 112px;
-        min-height: 112px;
-        max-height: 112px;
+      .calendar-weekdays,
+      .calendar-grid {
+        gap: 5px;
       }
 
-      .day-info {
-        font-size: 0.66rem;
+      .calendar-day,
+      .calendar-day.empty {
+        height: 52px;
         min-height: 52px;
+        max-height: 52px;
+        border-radius: 12px;
+        padding: 7px;
+      }
+
+      .day-number {
+        font-size: 0.92rem;
       }
     }
   </style>
@@ -865,7 +856,6 @@
 
       for (let day = 1; day <= lastDay.getDate(); day++) {
         const dateStr = `${calendarYear}-${String(calendarMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-        const totals = getDailyTotals(dateStr);
         const level = getDayLevel(dateStr);
 
         const cell = document.createElement("div");
@@ -874,15 +864,8 @@
         if (dateStr === selectedDate) cell.classList.add("selected");
         if (dateStr === todayStr) cell.classList.add("today");
 
-        const line1 = totals.count ? `${formatNumber(totals.totalKm, 1)} km` : "";
-        const line2 = totals.count ? `${formatNumber(totals.totalMinutes, 0)} min` : "";
-
         cell.innerHTML = `
           <div class="day-number">${day}</div>
-          <div class="day-info">
-            <div>${line1}</div>
-            <div>${line2}</div>
-          </div>
         `;
 
         cell.addEventListener("click", () => {
