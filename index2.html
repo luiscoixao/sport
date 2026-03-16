@@ -7,7 +7,6 @@
   <meta name="theme-color" content="#0f172a" />
   <link rel="apple-touch-icon" href="Icon.PNG" />
   <link rel="icon" type="image/png" href="Icon.PNG" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
@@ -274,44 +273,11 @@
       box-shadow: inset 0 0 0 3px rgba(56,189,248,0.95);
     }
 
-    .calendar-day.today .day-number::after {
-      content: " •";
-      color: var(--today);
-      font-weight: 900;
-    }
-
     .day-number {
       font-weight: 800;
       font-size: 1rem;
       line-height: 1;
     }
-
-    .legend {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      display: inline-block;
-    }
-
-    .dot.green { background: #22c55e; }
-    .dot.orange { background: #f59e0b; }
-    .dot.red { background: #ef4444; }
-    .dot.today { background: #38bdf8; }
 
     .list {
       display: grid;
@@ -413,11 +379,6 @@
       color: var(--text);
     }
 
-    .chart-wrap {
-      position: relative;
-      height: 280px;
-    }
-
     @media (max-width: 560px) {
       .row-2,
       .entry-grid {
@@ -444,10 +405,6 @@
 
       .day-number {
         font-size: 0.92rem;
-      }
-
-      .chart-wrap {
-        height: 240px;
       }
     }
   </style>
@@ -483,13 +440,6 @@
         </div>
 
         <div id="calendar" class="calendar-grid"></div>
-
-        <div class="legend">
-          <div class="legend-item"><span class="dot today"></span> jour actuel</div>
-          <div class="legend-item"><span class="dot green"></span> activité significative</div>
-          <div class="legend-item"><span class="dot orange"></span> activité légère</div>
-          <div class="legend-item"><span class="dot red"></span> aucune activité</div>
-        </div>
       </section>
 
       <section class="card">
@@ -550,13 +500,6 @@
           <button type="button" class="btn-danger" id="clearAllBtn">Tout effacer</button>
         </div>
       </section>
-
-      <section class="card">
-        <h2>7 derniers jours</h2>
-        <div class="chart-wrap">
-          <canvas id="activityChart"></canvas>
-        </div>
-      </section>
     </div>
   </div>
 
@@ -566,7 +509,6 @@
 
     let entries = [];
     let editingId = null;
-    let activityChart = null;
 
     function getParisDateParts(date = new Date()) {
       const parts = new Intl.DateTimeFormat("en-CA", {
@@ -591,24 +533,6 @@
     function parseDateString(dateStr) {
       const [year, month, day] = dateStr.split("-").map(Number);
       return { year, month, day };
-    }
-
-    function dateStringToDate(dateStr) {
-      const { year, month, day } = parseDateString(dateStr);
-      return new Date(year, month - 1, day);
-    }
-
-    function shiftDateString(dateStr, dayOffset) {
-      const d = dateStringToDate(dateStr);
-      d.setDate(d.getDate() + dayOffset);
-      return toDateStringFromNative(d);
-    }
-
-    function toDateStringFromNative(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
     }
 
     const initialToday = getParisDateParts(new Date());
@@ -728,20 +652,6 @@
       }
 
       return { totalKm, totalMinutes, totalCalories, lastWeight, count: dayEntries.length };
-    }
-
-    function getWeightForDate(dateStr) {
-      const dayEntries = getEntriesForDate(dateStr)
-        .slice()
-        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-
-      let weight = null;
-      for (const entry of dayEntries) {
-        if (entry.weight !== null && entry.weight !== undefined && entry.weight !== "") {
-          weight = Number(entry.weight);
-        }
-      }
-      return weight;
     }
 
     function getDayLevel(dateStr) {
@@ -872,168 +782,6 @@
       }
     }
 
-    function renderActivityChart() {
-      const today = toDateStringLocal();
-      const labels = [];
-      const kmData = [];
-      const minutesData = [];
-      const weightData = [];
-
-      for (let i = 6; i >= 0; i--) {
-        const dateStr = shiftDateString(today, -i);
-        const d = dateStringToDate(dateStr);
-        const totals = getDailyTotals(dateStr);
-
-        labels.push(
-          d.toLocaleDateString("fr-FR", {
-            day: "2-digit",
-            month: "2-digit"
-          })
-        );
-
-        kmData.push(Number(totals.totalKm || 0));
-        minutesData.push(Number(totals.totalMinutes || 0));
-        weightData.push(getWeightForDate(dateStr));
-      }
-
-      const ctx = document.getElementById("activityChart").getContext("2d");
-
-      if (activityChart) {
-        activityChart.destroy();
-      }
-
-      activityChart = new Chart(ctx, {
-        data: {
-          labels,
-          datasets: [
-            {
-              type: "bar",
-              label: "Km",
-              data: kmData,
-              yAxisID: "yKm",
-              backgroundColor: "rgba(34,197,94,0.55)",
-              borderColor: "rgba(34,197,94,1)",
-              borderWidth: 1,
-              borderRadius: 8,
-              maxBarThickness: 20
-            },
-            {
-              type: "bar",
-              label: "Minutes",
-              data: minutesData,
-              yAxisID: "yMinutes",
-              backgroundColor: "rgba(245,158,11,0.45)",
-              borderColor: "rgba(245,158,11,1)",
-              borderWidth: 1,
-              borderRadius: 8,
-              maxBarThickness: 20
-            },
-            {
-              type: "line",
-              label: "Poids (kg)",
-              data: weightData,
-              yAxisID: "yWeight",
-              borderColor: "rgba(56,189,248,1)",
-              backgroundColor: "rgba(56,189,248,0.15)",
-              pointBackgroundColor: "rgba(56,189,248,1)",
-              pointBorderColor: "rgba(56,189,248,1)",
-              pointRadius: 4,
-              pointHoverRadius: 5,
-              spanGaps: true,
-              tension: 0.35
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: "index",
-            intersect: false
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: "#f8fafc"
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  if (context.dataset.label === "Km") {
-                    return `Km : ${context.raw}`;
-                  }
-                  if (context.dataset.label === "Minutes") {
-                    return `Minutes : ${context.raw}`;
-                  }
-                  return `Poids : ${context.raw} kg`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              stacked: false,
-              ticks: {
-                color: "#cbd5e1"
-              },
-              grid: {
-                color: "rgba(255,255,255,0.08)"
-              }
-            },
-            yKm: {
-              type: "linear",
-              position: "left",
-              beginAtZero: true,
-              ticks: {
-                color: "#22c55e"
-              },
-              title: {
-                display: true,
-                text: "Km",
-                color: "#22c55e"
-              },
-              grid: {
-                color: "rgba(255,255,255,0.08)"
-              }
-            },
-            yMinutes: {
-              type: "linear",
-              position: "right",
-              beginAtZero: true,
-              ticks: {
-                color: "#f59e0b"
-              },
-              title: {
-                display: true,
-                text: "Min",
-                color: "#f59e0b"
-              },
-              grid: {
-                drawOnChartArea: false
-              }
-            },
-            yWeight: {
-              type: "linear",
-              position: "right",
-              offset: true,
-              ticks: {
-                color: "#38bdf8"
-              },
-              title: {
-                display: true,
-                text: "Poids",
-                color: "#38bdf8"
-              },
-              grid: {
-                drawOnChartArea: false
-              }
-            }
-          }
-        }
-      });
-    }
-
     function addOrUpdateEntry(event) {
       event.preventDefault();
 
@@ -1128,7 +876,6 @@
       renderTodayBanner();
       renderCalendar();
       renderEntries();
-      renderActivityChart();
     }
 
     form.addEventListener("submit", addOrUpdateEntry);
