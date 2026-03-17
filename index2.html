@@ -383,17 +383,6 @@
       color: var(--text);
     }
 
-    .imc-value {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .imc-note {
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
     .day-summary {
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.1);
@@ -528,11 +517,6 @@
             </div>
           </div>
 
-          <div class="field">
-            <label for="height">Taille (cm)</label>
-            <input type="number" id="height" min="0" step="1" placeholder="Ex. 175" />
-          </div>
-
           <div class="buttons">
             <button type="submit" class="btn-primary">Enregistrer</button>
             <button type="button" class="btn-secondary" id="resetBtn">Réinitialiser</button>
@@ -551,11 +535,6 @@
       </section>
 
       <section class="card">
-        <h2>IMC</h2>
-        <div class="selected-day-bar" id="imcBox">Renseigne ton poids et ta taille.</div>
-      </section>
-
-      <section class="card">
         <h2>Suivi des 7 derniers jours</h2>
         <div id="last7Days" class="list"></div>
       </section>
@@ -564,7 +543,6 @@
 
   <script>
     const STORAGE_KEY = "sport-quotidien-v2";
-    const HEIGHT_STORAGE_KEY = "sport-quotidien-height";
     const APP_TIMEZONE = "Europe/Paris";
 
     let entries = [];
@@ -618,7 +596,6 @@
     const minutesInput = document.getElementById("minutes");
     const caloriesInput = document.getElementById("calories");
     const weightInput = document.getElementById("weight");
-    const heightInput = document.getElementById("height");
     const entriesContainer = document.getElementById("entries");
     const emptyState = document.getElementById("emptyState");
     const resetBtn = document.getElementById("resetBtn");
@@ -627,7 +604,6 @@
     const calendarTitleEl = document.getElementById("calendarTitle");
     const selectedDayBar = document.getElementById("selectedDayBar");
     const todayBanner = document.getElementById("todayBanner");
-    const imcBox = document.getElementById("imcBox");
     const last7DaysContainer = document.getElementById("last7Days");
 
     function setTodayDate() {
@@ -645,17 +621,6 @@
 
     function saveEntries() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
-
-    function loadHeight() {
-      const savedHeight = localStorage.getItem(HEIGHT_STORAGE_KEY);
-      if (savedHeight) {
-        heightInput.value = savedHeight;
-      }
-    }
-
-    function saveHeight() {
-      localStorage.setItem(HEIGHT_STORAGE_KEY, heightInput.value || "");
     }
 
     function formatNumber(value, decimals = 1) {
@@ -749,11 +714,7 @@
       editingId = null;
       document.querySelector(".btn-primary").textContent = "Enregistrer";
       dateInput.value = toDateStringLocal();
-      if (localStorage.getItem(HEIGHT_STORAGE_KEY)) {
-        heightInput.value = localStorage.getItem(HEIGHT_STORAGE_KEY);
-      }
       caloriesInput.value = "";
-      renderImc();
     }
 
     function getEntriesForDate(dateStr) {
@@ -784,65 +745,9 @@
       return "orange";
     }
 
-    function getImcCategory(imc) {
-      if (!imc || !isFinite(imc)) return "";
-      if (imc < 18.5) return "Maigreur";
-      if (imc < 25) return "Corpulence normale";
-      if (imc < 30) return "Surpoids";
-      return "Obésité";
-    }
-
     function renderTodayBanner() {
       const today = toDateStringLocal();
       todayBanner.textContent = capitalize(formatLongDateFR(today));
-    }
-
-    function renderImc() {
-      const weight = Number(weightInput.value);
-      const heightCm = Number(heightInput.value);
-
-      if (!weight || !heightCm) {
-        imcBox.innerHTML = "Renseigne ton poids et ta taille.";
-        return;
-      }
-
-      const heightM = heightCm / 100;
-      const imc = weight / (heightM * heightM);
-      const category = getImcCategory(imc);
-
-      imcBox.innerHTML = `
-        <div class="imc-value">IMC : ${formatNumber(imc, 1)}</div>
-        <div class="imc-note">${category}</div>
-      `;
-    }
-
-    function renderLast7Days() {
-      last7DaysContainer.innerHTML = "";
-
-      const today = toDateStringLocal();
-
-      for (let i = 6; i >= 0; i--) {
-        const dateStr = shiftDateString(today, -i);
-        const totals = getDailyTotals(dateStr);
-
-        const article = document.createElement("article");
-        article.className = "day-summary";
-
-        article.innerHTML = `
-          <div class="day-summary-top">
-            <div class="day-summary-title">${capitalize(formatLongDateFR(dateStr))}</div>
-            <div class="day-summary-meta">${totals.count} activité${totals.count > 1 ? "s" : ""}</div>
-          </div>
-          <div class="day-summary-meta">
-            ${formatNumber(totals.totalKm, 2)} km ·
-            ${formatNumber(totals.totalMinutes, 0)} min ·
-            ${formatNumber(totals.totalCalories, 0)} kcal ·
-            ${totals.lastWeight ? `${formatNumber(totals.lastWeight, 1)} kg` : "poids —"}
-          </div>
-        `;
-
-        last7DaysContainer.appendChild(article);
-      }
     }
 
     function renderEntries() {
@@ -914,6 +819,35 @@
         `;
         entriesContainer.appendChild(article);
       });
+    }
+
+    function renderLast7Days() {
+      last7DaysContainer.innerHTML = "";
+
+      const today = toDateStringLocal();
+
+      for (let i = 6; i >= 0; i--) {
+        const dateStr = shiftDateString(today, -i);
+        const totals = getDailyTotals(dateStr);
+
+        const article = document.createElement("article");
+        article.className = "day-summary";
+
+        article.innerHTML = `
+          <div class="day-summary-top">
+            <div class="day-summary-title">${capitalize(formatLongDateFR(dateStr))}</div>
+            <div class="day-summary-meta">${totals.count} activité${totals.count > 1 ? "s" : ""}</div>
+          </div>
+          <div class="day-summary-meta">
+            ${formatNumber(totals.totalKm, 2)} km ·
+            ${formatNumber(totals.totalMinutes, 0)} min ·
+            ${formatNumber(totals.totalCalories, 0)} kcal ·
+            ${totals.lastWeight ? `${formatNumber(totals.lastWeight, 1)} kg` : "poids —"}
+          </div>
+        `;
+
+        last7DaysContainer.appendChild(article);
+      }
     }
 
     function renderCalendar() {
@@ -993,7 +927,6 @@
       }
 
       saveEntries();
-      saveHeight();
 
       selectedDate = entryDate;
       const parsed = parseDateString(entryDate);
@@ -1009,7 +942,6 @@
       weightInput.value = "";
       typeInput.value = "Marche";
       dateInput.value = toDateStringLocal();
-      heightInput.value = localStorage.getItem(HEIGHT_STORAGE_KEY) || "";
 
       updateUI();
     }
@@ -1033,7 +965,6 @@
       minutesInput.value = entry.minutes;
       caloriesInput.value = entry.calories;
       weightInput.value = entry.weight ?? "";
-      heightInput.value = localStorage.getItem(HEIGHT_STORAGE_KEY) || "";
 
       const parsed = parseDateString(entry.date);
       calendarYear = parsed.year;
@@ -1041,7 +972,6 @@
 
       document.querySelector(".btn-primary").textContent = "Mettre à jour";
       updateCaloriesEstimate();
-      renderImc();
       updateUI();
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -1062,7 +992,6 @@
       renderTodayBanner();
       renderCalendar();
       renderEntries();
-      renderImc();
       renderLast7Days();
     }
 
@@ -1076,15 +1005,7 @@
 
     typeInput.addEventListener("change", updateCaloriesEstimate);
     minutesInput.addEventListener("input", updateCaloriesEstimate);
-    weightInput.addEventListener("input", () => {
-      updateCaloriesEstimate();
-      renderImc();
-    });
-
-    heightInput.addEventListener("input", () => {
-      saveHeight();
-      renderImc();
-    });
+    weightInput.addEventListener("input", updateCaloriesEstimate);
 
     dateInput.addEventListener("change", () => {
       if (!dateInput.value) return;
@@ -1115,7 +1036,6 @@
     });
 
     loadEntries();
-    loadHeight();
     setTodayDate();
     updateUI();
   </script>
