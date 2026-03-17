@@ -383,6 +383,30 @@
       color: var(--text);
     }
 
+    .day-summary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 12px 14px;
+    }
+
+    .day-summary-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .day-summary-title {
+      font-weight: 800;
+    }
+
+    .day-summary-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 560px) {
       .row-2,
       .entry-grid {
@@ -409,6 +433,11 @@
 
       .day-number {
         font-size: 0.92rem;
+      }
+
+      .day-summary-top {
+        align-items: flex-start;
+        flex-direction: column;
       }
     }
   </style>
@@ -504,6 +533,11 @@
           <button type="button" class="btn-danger" id="clearAllBtn">Tout effacer</button>
         </div>
       </section>
+
+      <section class="card">
+        <h2>Suivi des 7 derniers jours</h2>
+        <div id="last7Days" class="list"></div>
+      </section>
     </div>
   </div>
 
@@ -539,6 +573,17 @@
       return { year, month, day };
     }
 
+    function shiftDateString(dateStr, offsetDays) {
+      const { year, month, day } = parseDateString(dateStr);
+      const d = new Date(year, month - 1, day);
+      d.setDate(d.getDate() + offsetDays);
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
     const initialToday = getParisDateParts(new Date());
     let selectedDate = `${initialToday.year}-${String(initialToday.month).padStart(2, "0")}-${String(initialToday.day).padStart(2, "0")}`;
     let calendarYear = initialToday.year;
@@ -559,6 +604,7 @@
     const calendarTitleEl = document.getElementById("calendarTitle");
     const selectedDayBar = document.getElementById("selectedDayBar");
     const todayBanner = document.getElementById("todayBanner");
+    const last7DaysContainer = document.getElementById("last7Days");
 
     function setTodayDate() {
       dateInput.value = toDateStringLocal();
@@ -775,6 +821,35 @@
       });
     }
 
+    function renderLast7Days() {
+      last7DaysContainer.innerHTML = "";
+
+      const today = toDateStringLocal();
+
+      for (let i = 6; i >= 0; i--) {
+        const dateStr = shiftDateString(today, -i);
+        const totals = getDailyTotals(dateStr);
+
+        const article = document.createElement("article");
+        article.className = "day-summary";
+
+        article.innerHTML = `
+          <div class="day-summary-top">
+            <div class="day-summary-title">${capitalize(formatLongDateFR(dateStr))}</div>
+            <div class="day-summary-meta">${totals.count} activité${totals.count > 1 ? "s" : ""}</div>
+          </div>
+          <div class="day-summary-meta">
+            ${formatNumber(totals.totalKm, 2)} km ·
+            ${formatNumber(totals.totalMinutes, 0)} min ·
+            ${formatNumber(totals.totalCalories, 0)} kcal ·
+            ${totals.lastWeight ? `${formatNumber(totals.lastWeight, 1)} kg` : "poids —"}
+          </div>
+        `;
+
+        last7DaysContainer.appendChild(article);
+      }
+    }
+
     function renderCalendar() {
       calendarEl.innerHTML = "";
 
@@ -917,6 +992,7 @@
       renderTodayBanner();
       renderCalendar();
       renderEntries();
+      renderLast7Days();
     }
 
     form.addEventListener("submit", addOrUpdateEntry);
