@@ -538,6 +538,15 @@
         <h2>Suivi des 7 derniers jours</h2>
         <div id="last7Days" class="list"></div>
       </section>
+
+      <section class="card">
+        <h2>Sauvegarde</h2>
+        <div class="buttons">
+          <button type="button" class="btn-secondary" id="exportCsvBtn">Exporter CSV</button>
+          <button type="button" class="btn-secondary" id="importCsvBtn">Importer CSV</button>
+          <input type="file" id="importCsvInput" accept=".csv,text/csv" hidden />
+        </div>
+      </section>
     </div>
   </div>
 
@@ -605,6 +614,9 @@
     const selectedDayBar = document.getElementById("selectedDayBar");
     const todayBanner = document.getElementById("todayBanner");
     const last7DaysContainer = document.getElementById("last7Days");
+    const exportCsvBtn = document.getElementById("exportCsvBtn");
+    const importCsvBtn = document.getElementById("importCsvBtn");
+    const importCsvInput = document.getElementById("importCsvInput");
 
     function setTodayDate() {
       dateInput.value = toDateStringLocal();
@@ -895,6 +907,147 @@
       }
     }
 
+    function escapeCsvValue(value) {
+      if (value === null || value === undefined) return "";
+      const str = String(value);
+      if (str.includes('"') || str.includes(";") || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    }
+
+    function exportEntriesToCsv() {
+      if (!entries.length) {
+        alert("Aucune donnée à exporter.");
+        return;
+      }
+
+      const headers = ["date", "type", "km", "minutes", "calories", "weight", "createdAt"];
+
+      const rows = entries.map(entry => [
+        entry.date,
+        entry.type,
+        entry.km,
+        entry.minutes,
+        entry.calories,
+        entry.weight ?? "",
+        entry.createdAt ?? ""
+      ]);
+
+      const csvContent = [
+        headers.join(";"),
+        ...rows.map(row => row.map(escapeCsvValue).join(";"))
+      ].join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sport-quotidien-${toDateStringLocal()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function parseCsvLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const next = line[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ";" && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function toNumberOrNull(value) {
+      if (value === null || value === undefined || value === "") return null;
+      const normalized = String(value).replace(",", ".");
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function importEntriesFromCsvText(csvText) {
+      const lines = csvText
+        .replace(/^\uFEFF/, "")
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+
+      if (lines.length < 2) {
+        alert("Fichier CSV vide ou invalide.");
+        return;
+      }
+
+      const headers = parseCsvLine(lines[0]).map(h => h.trim());
+      const requiredHeaders = ["date", "type", "km", "minutes", "calories", "weight", "createdAt"];
+
+      const hasAllHeaders = requiredHeaders.every(header => headers.includes(header));
+      if (!hasAllHeaders) {
+        alert("Le fichier CSV ne contient pas les bonnes colonnes.");
+        return;
+      }
+
+      if (!confirm("Remplacer les données actuelles par celles du fichier CSV ?")) {
+        return;
+      }
+
+      const imported = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCsvLine(lines[i]);
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index] ?? "";
+        });
+
+        if (!row.date || !row.type) continue;
+
+        imported.push({
+          id: crypto.randomUUID(),
+          date: row.date,
+          type: row.type,
+          km: toNumberOrNull(row.km) ?? 0,
+          minutes: toNumberOrNull(row.minutes) ?? 0,
+          calories: toNumberOrNull(row.calories) ?? 0,
+          weight: toNumberOrNull(row.weight),
+          createdAt: toNumberOrNull(row.createdAt) ?? Date.now() + i
+        });
+      }
+
+      entries = imported;
+      saveEntries();
+
+      const today = toDateStringLocal();
+      selectedDate = today;
+      const parsed = parseDateString(today);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+
+      updateUI();
+      alert("Import terminé.");
+    }
+
     function addOrUpdateEntry(event) {
       event.preventDefault();
 
@@ -1033,6 +1186,26 @@
         calendarYear++;
       }
       renderCalendar();
+    });
+
+    exportCsvBtn.addEventListener("click", exportEntriesToCsv);
+
+    importCsvBtn.addEventListener("click", () => {
+      importCsvInput.click();
+    });
+
+    importCsvInput.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        importEntriesFromCsvText(text);
+      } catch {
+        alert("Impossible de lire le fichier CSV.");
+      }
+
+      importCsvInput.value = "";
     });
 
     loadEntries();
