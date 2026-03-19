@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Exporter les données</title>
+  <style>
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:#07140d;
+      color:white;
+      padding:24px;
+    }
+    .card{
+      max-width:700px;
+      margin:40px auto;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:20px;
+      padding:24px;
+    }
+    h1{margin-top:0}
+    button{
+      border:none;
+      border-radius:14px;
+      padding:14px 18px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:white;
+    }
+    .muted{
+      color:#cbd5e1;
+      margin-bottom:18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Exporter les données</h1>
+    <p class="muted">Cette page exporte les données locales de Sport Quotidien en CSV.</p>
+    <button id="exportCsvBtn">Exporter CSV</button>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "sport-quotidien-v2";
+
+    function toDateStringLocal(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function escapeCsvValue(value) {
+      if (value === null || value === undefined) return "";
+      const str = String(value);
+      if (str.includes('"') || str.includes(";") || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    }
+
+    function exportEntriesToCsv() {
+      let entries = [];
+      try {
+        entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        entries = [];
+      }
+
+      if (!entries.length) {
+        alert("Aucune donnée à exporter.");
+        return;
+      }
+
+      const headers = ["date","type","km","minutes","calories","weight","createdAt"];
+
+      const rows = entries.map(entry => [
+        entry.date,
+        entry.type,
+        entry.km,
+        entry.minutes,
+        entry.calories,
+        entry.weight ?? "",
+        entry.createdAt ?? ""
+      ]);
+
+      const csvContent = [
+        headers.join(";"),
+        ...rows.map(row => row.map(escapeCsvValue).join(";"))
+      ].join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sport-quotidien-${toDateStringLocal()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById("exportCsvBtn").addEventListener("click", exportEntriesToCsv);
+  </script>
+</body>
+</html>
