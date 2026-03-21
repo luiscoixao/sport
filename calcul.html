@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calcul Marche & Footing</title>
+<meta name="theme-color" content="#0a0f1f">
+
+<style>
+:root{
+  --bg:#0a0f1f;
+  --bg2:#10182d;
+  --card:rgba(255,255,255,0.07);
+  --line:rgba(255,255,255,0.08);
+  --text:#f8fafc;
+  --muted:#a9b7cc;
+  --blue:#0a84ff;
+  --green:#30d158;
+  --orange:#ff9f0a;
+  --purple:#bf5af2;
+  --shadow:0 16px 40px rgba(0,0,0,.28);
+  --radius:26px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(10,132,255,.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(191,90,242,.12), transparent 24%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+  padding:14px 14px calc(28px + env(safe-area-inset-bottom));
+}
+.app{
+  max-width:760px;
+  margin:0 auto;
+}
+.hero{
+  padding:8px 4px 14px;
+}
+h1{
+  margin:0;
+  text-align:center;
+  font-size:34px;
+  line-height:1.02;
+  font-weight:900;
+  letter-spacing:-0.045em;
+}
+.subtitle{
+  margin:8px 0 0;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.35;
+}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  margin-bottom:12px;
+}
+.section-title{
+  margin:0 0 12px;
+  font-size:18px;
+  font-weight:850;
+  letter-spacing:-0.02em;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.field{
+  background:rgba(8,17,34,.55);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:22px;
+  padding:12px 14px 10px;
+}
+.field.full{
+  grid-column:1 / -1;
+}
+label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:8px;
+  font-weight:800;
+  letter-spacing:-0.01em;
+}
+input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:#fff;
+  color:#000;
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-0.04em;
+  border-radius:20px;
+  min-height:78px;
+  padding:0 18px;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.unit{
+  margin-top:8px;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+.hint{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+.results{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.result{
+  min-height:112px;
+  border-radius:24px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  color:#fff;
+  box-shadow:var(--shadow);
+}
+.result:nth-child(1){background:linear-gradient(180deg,#0a84ff,#0066d6)}
+.result:nth-child(2){background:linear-gradient(180deg,#30d158,#1ea446)}
+.result:nth-child(3){background:linear-gradient(180deg,#ff9f0a,#de7f00)}
+.result:nth-child(4){background:linear-gradient(180deg,#bf5af2,#8e3ad9)}
+.result:nth-child(5){background:linear-gradient(180deg,#ff6487,#e11d48)}
+.result:nth-child(6){background:linear-gradient(180deg,#5ac8fa,#007aff)}
+.result-title{
+  font-size:14px;
+  font-weight:800;
+  opacity:.96;
+}
+.result-value{
+  font-size:34px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-0.045em;
+  word-break:break-word;
+}
+.footer{
+  text-align:center;
+  color:rgba(255,255,255,.56);
+  font-size:12px;
+  padding-top:2px;
+}
+@media (max-width:560px){
+  .grid,.results{grid-template-columns:1fr}
+  h1{font-size:31px}
+  input{font-size:28px;min-height:74px}
+  .result{min-height:104px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <h1>Calcul Marche & Footing</h1>
+    <div class="subtitle">Tu modifies librement chaque paramètre. Les résultats se mettent à jour automatiquement.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Saisie</h2>
+
+    <div class="grid">
+      <div class="field full">
+        <label for="distance">Distance</label>
+        <input id="distance" type="text" inputmode="decimal" placeholder="9,71" oninput="calc()" onchange="calc()">
+        <div class="unit">kilomètres</div>
+      </div>
+
+      <div class="field">
+        <label for="minutes">Temps total</label>
+        <input id="minutes" type="text" inputmode="decimal" placeholder="96" oninput="calc()" onchange="calc()">
+        <div class="unit">minutes</div>
+      </div>
+
+      <div class="field">
+        <label for="height">Taille</label>
+        <input id="height" type="text" inputmode="numeric" placeholder="168" oninput="calcHeight()" onchange="calcHeight()">
+        <div class="unit">cm</div>
+      </div>
+
+      <div class="field full">
+        <label for="stepLength">Longueur de pas</label>
+        <input id="stepLength" type="text" inputmode="decimal" placeholder="0,69" oninput="calc()" onchange="calc()">
+        <div class="unit">mètre · modifiable librement</div>
+      </div>
+    </div>
+
+    <div class="hint" id="hint">
+      La taille sert à proposer automatiquement une longueur de pas, mais tu peux la modifier comme tu veux.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Résultats</h2>
+
+    <div class="results">
+      <div class="result">
+        <div class="result-title">Vitesse</div>
+        <div class="result-value" id="speed">—</div>
+      </div>
+
+      <div class="result">
+        <div class="result-title">Allure</div>
+        <div class="result-value" id="pace">—</div>
+      </div>
+
+      <div class="result">
+        <div class="result-title">Nombre de pas</div>
+        <div class="result-value" id="steps">—</div>
+      </div>
+
+      <div class="result">
+        <div class="result-title">Cadence</div>
+        <div class="result-value" id="cadence">—</div>
+      </div>
+
+      <div class="result">
+        <div class="result-title">Distance par minute</div>
+        <div class="result-value" id="perMinute">—</div>
+      </div>
+
+      <div class="result">
+        <div class="result-title">Pas par km</div>
+        <div class="result-value" id="stepsKm">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Safari iPhone → Partager → Sur l’écran d’accueil</div>
+
+</div>
+
+<script>
+function parseFR(v){
+  if(v === undefined || v === null) return NaN;
+  v = String(v).trim().replace(/\s+/g, "").replace(",", ".");
+  if(v === "") return NaN;
+  return Number(v);
+}
+
+function fmt(v, n){
+  return new Intl.NumberFormat("fr-FR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: n
+  }).format(v);
+}
+
+function paceText(minutesPerKm){
+  var m = Math.floor(minutesPerKm);
+  var s = Math.round((minutesPerKm - m) * 60);
+  if(s === 60){ m += 1; s = 0; }
+  return m + "'" + String(s).padStart(2, "0") + "/km";
+}
+
+function clearResults(){
+  document.getElementById("speed").textContent = "—";
+  document.getElementById("pace").textContent = "—";
+  document.getElementById("steps").textContent = "—";
+  document.getElementById("cadence").textContent = "—";
+  document.getElementById("perMinute").textContent = "—";
+  document.getElementById("stepsKm").textContent = "—";
+}
+
+function calcHeight(){
+  var height = parseFR(document.getElementById("height").value);
+  var stepField = document.getElementById("stepLength");
+
+  if(height > 0){
+    var suggested = (height / 100) * 0.41;
+    if(stepField.value.trim() === "" || stepField.dataset.auto !== "manual"){
+      stepField.value = fmt(suggested, 2);
+      stepField.dataset.auto = "auto";
+    }
+  }
+  calc();
+}
+
+function calc(){
+  var distance = parseFR(document.getElementById("distance").value);
+  var height = parseFR(document.getElementById("height").value);
+  var totalMinutes = parseFR(document.getElementById("minutes").value);
+  var stepLength = parseFR(document.getElementById("stepLength").value);
+
+  if(!(distance > 0) || !(totalMinutes > 0) || !(stepLength > 0)){
+    clearResults();
+    document.getElementById("hint").textContent =
+      "Renseigne au minimum la distance, le temps total et la longueur de pas.";
+    return;
+  }
+
+  var speed = distance / (totalMinutes / 60);
+  var pace = totalMinutes / distance;
+  var steps = Math.round((distance * 1000) / stepLength);
+  var cadence = Math.round(steps / totalMinutes);
+  var perMinute = (distance * 1000) / totalMinutes;
+  var stepsKm = Math.round(1000 / stepLength);
+
+  document.getElementById("speed").textContent = fmt(speed, 2) + " km/h";
+  document.getElementById("pace").textContent = paceText(pace);
+  document.getElementById("steps").textContent = fmt(steps, 0);
+  document.getElementById("cadence").textContent = fmt(cadence, 0) + " pas/min";
+  document.getElementById("perMinute").textContent = fmt(perMinute, 1) + " m";
+  document.getElementById("stepsKm").textContent = fmt(stepsKm, 0);
+
+  if(height > 0){
+    document.getElementById("hint").textContent =
+      "Taille enregistrée : " + fmt(height, 0) + " cm · longueur de pas librement modifiable.";
+  } else {
+    document.getElementById("hint").textContent =
+      "Longueur de pas librement modifiable · calcul automatique actif.";
+  }
+}
+
+document.getElementById("stepLength").addEventListener("input", function(){
+  this.dataset.auto = "manual";
+});
+
+window.onload = function(){
+  clearResults();
+};
+</script>
+</body>
+</html>
