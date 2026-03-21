@@ -517,6 +517,11 @@
             </div>
           </div>
 
+          <div class="field">
+            <label for="location">Lieu</label>
+            <input type="text" id="location" placeholder="Ex. Parc, salle, forêt..." />
+          </div>
+
           <div class="buttons">
             <button type="submit" class="btn-primary">Enregistrer</button>
             <button type="button" class="btn-secondary" id="resetBtn">Réinitialiser</button>
@@ -605,6 +610,7 @@
     const minutesInput = document.getElementById("minutes");
     const caloriesInput = document.getElementById("calories");
     const weightInput = document.getElementById("weight");
+    const locationInput = document.getElementById("location");
     const entriesContainer = document.getElementById("entries");
     const emptyState = document.getElementById("emptyState");
     const resetBtn = document.getElementById("resetBtn");
@@ -727,6 +733,7 @@
       document.querySelector(".btn-primary").textContent = "Enregistrer";
       dateInput.value = toDateStringLocal();
       caloriesInput.value = "";
+      locationInput.value = "";
     }
 
     function getEntriesForDate(dateStr) {
@@ -796,7 +803,9 @@
           <div class="entry-top">
             <div>
               <div class="entry-title">${entry.type}</div>
-              <div class="entry-date">${formatDateFR(entry.date)}</div>
+              <div class="entry-date">
+                ${formatDateFR(entry.date)}${entry.location ? ` · ${entry.location}` : ""}
+              </div>
             </div>
             <div class="badge">${formatNumber(speed, 2)} km/h</div>
           </div>
@@ -922,11 +931,12 @@
         return;
       }
 
-      const headers = ["date", "type", "km", "minutes", "calories", "weight", "createdAt"];
+      const headers = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
 
       const rows = entries.map(entry => [
         entry.date,
         entry.type,
+        entry.location ?? "",
         entry.km,
         entry.minutes,
         entry.calories,
@@ -1000,7 +1010,7 @@
       }
 
       const headers = parseCsvLine(lines[0]).map(h => h.trim());
-      const requiredHeaders = ["date", "type", "km", "minutes", "calories", "weight", "createdAt"];
+      const requiredHeaders = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
 
       const hasAllHeaders = requiredHeaders.every(header => headers.includes(header));
       if (!hasAllHeaders) {
@@ -1027,6 +1037,7 @@
           id: crypto.randomUUID(),
           date: row.date,
           type: row.type,
+          location: row.location || "",
           km: toNumberOrNull(row.km) ?? 0,
           minutes: toNumberOrNull(row.minutes) ?? 0,
           calories: toNumberOrNull(row.calories) ?? 0,
@@ -1059,6 +1070,7 @@
         id: editingId || crypto.randomUUID(),
         date: entryDate,
         type: typeInput.value,
+        location: locationInput.value.trim(),
         km: Number(kmInput.value),
         minutes: Number(minutesInput.value),
         calories: Number(caloriesInput.value || 0),
@@ -1093,6 +1105,7 @@
       minutesInput.value = "";
       caloriesInput.value = "";
       weightInput.value = "";
+      locationInput.value = "";
       typeInput.value = "Marche";
       dateInput.value = toDateStringLocal();
 
@@ -1118,6 +1131,7 @@
       minutesInput.value = entry.minutes;
       caloriesInput.value = entry.calories;
       weightInput.value = entry.weight ?? "";
+      locationInput.value = entry.location ?? "";
 
       const parsed = parseDateString(entry.date);
       calendarYear = parsed.year;
