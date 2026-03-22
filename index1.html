@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sport Quotidien</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="apple-touch-icon" href="Icon.PNG" />
+  <link rel="icon" type="image/png" href="Icon.PNG" />
+
+  <style>
+    :root {
+      --bg: #07140d;
+      --card: rgba(255,255,255,0.08);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --line: rgba(255,255,255,0.12);
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --orange: #f59e0b;
+      --today: #38bdf8;
+      --shadow: 0 20px 40px rgba(0,0,0,0.28);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.20), transparent 30%),
+        linear-gradient(180deg, #07140d 0%, #0d1f17 55%, #11251d 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+    }
+
+    .app {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 14px 0 30px;
+    }
+
+    .hero {
+      padding: 10px 6px 18px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .today-banner {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.08rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-size: 1rem;
+      outline: none;
+      appearance: none;
+    }
+
+    input[readonly] {
+      opacity: 0.95;
+    }
+
+    input:focus, select:focus {
+      border-color: rgba(34,197,94,0.8);
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 0.98rem;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--line);
+      min-width: 120px;
+    }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.16);
+      color: #fecaca;
+      border: 1px solid rgba(239,68,68,0.24);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .calendar-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .calendar-nav button {
+      padding: 10px 12px;
+      min-width: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .weekday {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding-bottom: 4px;
+    }
+
+    .calendar-day {
+      height: 58px;
+      min-height: 58px;
+      max-height: 58px;
+      border-radius: 14px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .calendar-day:active {
+      transform: scale(0.98);
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+      border: none;
+      cursor: default;
+      height: 58px;
+      min-height: 58px;
+      max-height: 58px;
+    }
+
+    .day-red {
+      background: rgba(239,68,68,0.16);
+    }
+
+    .day-orange {
+      background: rgba(245,158,11,0.18);
+    }
+
+    .day-green {
+      background: rgba(34,197,94,0.22);
+    }
+
+    .calendar-day.selected {
+      outline: 2px solid rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.8);
+    }
+
+    .calendar-day.today {
+      box-shadow: inset 0 0 0 3px rgba(56,189,248,0.95);
+    }
+
+    .day-number {
+      font-weight: 800;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .entry {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 14px;
+    }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .entry-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .entry-date {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: rgba(34,197,94,0.14);
+      color: #bbf7d0;
+      white-space: nowrap;
+    }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .mini {
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .mini-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+
+    .mini-value {
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .entry-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .small-btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 16px 0 4px;
+    }
+
+    .selected-day-bar {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+
+    .selected-day-bar strong {
+      color: var(--text);
+    }
+
+    .day-summary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 12px 14px;
+    }
+
+    .day-summary-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .day-summary-title {
+      font-weight: 800;
+    }
+
+    .day-summary-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 560px) {
+      .row-2,
+      .entry-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .title {
+        font-size: 1.7rem;
+      }
+
+      .calendar-weekdays,
+      .calendar-grid {
+        gap: 5px;
+      }
+
+      .calendar-day,
+      .calendar-day.empty {
+        height: 52px;
+        min-height: 52px;
+        max-height: 52px;
+        border-radius: 12px;
+        padding: 7px;
+      }
+
+      .day-number {
+        font-size: 0.92rem;
+      }
+
+      .day-summary-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="hero">
+      <h1 class="title">Sport Quotidien</h1>
+      <p class="subtitle">Calendrier mensuel, activités, allure, calories et poids.</p>
+      <div id="todayBanner" class="today-banner"></div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Calendrier du mois</h2>
+
+        <div class="calendar-header">
+          <div class="calendar-title" id="calendarTitle"></div>
+          <div class="calendar-nav">
+            <button type="button" id="prevMonthBtn">‹</button>
+            <button type="button" id="nextMonthBtn">›</button>
+          </div>
+        </div>
+
+        <div class="calendar-weekdays">
+          <div class="weekday">Lun</div>
+          <div class="weekday">Mar</div>
+          <div class="weekday">Mer</div>
+          <div class="weekday">Jeu</div>
+          <div class="weekday">Ven</div>
+          <div class="weekday">Sam</div>
+          <div class="weekday">Dim</div>
+        </div>
+
+        <div id="calendar" class="calendar-grid"></div>
+      </section>
+
+      <section class="card">
+        <h2>Nouvelle activité</h2>
+        <form id="sportForm" class="form-grid">
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" id="date" required />
+          </div>
+
+          <div class="field">
+            <label for="type">Type d’activité</label>
+            <select id="type" required>
+              <option value="Marche">Marche</option>
+              <option value="Footing">Footing</option>
+              <option value="Futsal">Futsal</option>
+              <option value="VTT">VTT</option>
+              <option value="Vélo elliptique">Vélo elliptique</option>
+              <option value="Natation">Natation</option>
+            </select>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="km">Km parcourus</label>
+              <input type="number" id="km" min="0" step="0.01" placeholder="Ex. 5.4" required />
+            </div>
+            <div class="field">
+              <label for="minutes">Temps en minutes</label>
+              <input type="number" id="minutes" min="1" step="1" placeholder="Ex. 42" required />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="calories">Calories dépensées</label>
+              <input type="number" id="calories" min="0" step="1" placeholder="Calcul automatique" readonly />
+            </div>
+            <div class="field">
+              <label for="weight">Poids (kg)</label>
+              <input type="number" id="weight" min="0" step="0.1" placeholder="Ex. 72.4" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="location">Lieu</label>
+            <input type="text" id="location" placeholder="Ex. Parc, salle, forêt..." />
+          </div>
+
+          <div class="buttons">
+            <button type="submit" class="btn-primary">Enregistrer</button>
+            <button type="button" class="btn-secondary" id="resetBtn">Réinitialiser</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Historique du jour sélectionné</h2>
+        <div class="selected-day-bar" id="selectedDayBar"></div>
+        <div id="entries" class="list"></div>
+        <div id="emptyState" class="empty">Aucune activité enregistrée pour ce jour.</div>
+        <div class="buttons" style="margin-top:14px;">
+          <button type="button" class="btn-danger" id="clearAllBtn">Tout effacer</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Suivi des 7 derniers jours</h2>
+        <div id="last7Days" class="list"></div>
+      </section>
+
+      <section class="card">
+        <h2>Sauvegarde</h2>
+        <div class="buttons">
+          <button type="button" class="btn-secondary" id="exportCsvBtn">Exporter CSV</button>
+          <button type="button" class="btn-secondary" id="importCsvBtn">Importer CSV</button>
+          <input type="file" id="importCsvInput" accept=".csv,text/csv" hidden />
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "sport-quotidien-v2";
+    const APP_TIMEZONE = "Europe/Paris";
+
+    let entries = [];
+    let editingId = null;
+
+    function getParisDateParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: APP_TIMEZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(date);
+
+      return {
+        year: Number(parts.find(p => p.type === "year").value),
+        month: Number(parts.find(p => p.type === "month").value),
+        day: Number(parts.find(p => p.type === "day").value)
+      };
+    }
+
+    function toDateStringLocal(date = new Date()) {
+      const p = getParisDateParts(date);
+      return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+    }
+
+    function parseDateString(dateStr) {
+      const [year, month, day] = dateStr.split("-").map(Number);
+      return { year, month, day };
+    }
+
+    function shiftDateString(dateStr, offsetDays) {
+      const { year, month, day } = parseDateString(dateStr);
+      const d = new Date(year, month - 1, day);
+      d.setDate(d.getDate() + offsetDays);
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    const initialToday = getParisDateParts(new Date());
+    let selectedDate = `${initialToday.year}-${String(initialToday.month).padStart(2, "0")}-${String(initialToday.day).padStart(2, "0")}`;
+    let calendarYear = initialToday.year;
+    let calendarMonth = initialToday.month - 1;
+
+    const form = document.getElementById("sportForm");
+    const dateInput = document.getElementById("date");
+    const typeInput = document.getElementById("type");
+    const kmInput = document.getElementById("km");
+    const minutesInput = document.getElementById("minutes");
+    const caloriesInput = document.getElementById("calories");
+    const weightInput = document.getElementById("weight");
+    const locationInput = document.getElementById("location");
+    const entriesContainer = document.getElementById("entries");
+    const emptyState = document.getElementById("emptyState");
+    const resetBtn = document.getElementById("resetBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const calendarEl = document.getElementById("calendar");
+    const calendarTitleEl = document.getElementById("calendarTitle");
+    const selectedDayBar = document.getElementById("selectedDayBar");
+    const todayBanner = document.getElementById("todayBanner");
+    const last7DaysContainer = document.getElementById("last7Days");
+    const exportCsvBtn = document.getElementById("exportCsvBtn");
+    const importCsvBtn = document.getElementById("importCsvBtn");
+    const importCsvInput = document.getElementById("importCsvInput");
+
+    function setTodayDate() {
+      dateInput.value = toDateStringLocal();
+    }
+
+    function loadEntries() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        entries = raw ? JSON.parse(raw) : [];
+      } catch {
+        entries = [];
+      }
+    }
+
+    function saveEntries() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    function formatNumber(value, decimals = 1) {
+      return Number(value).toLocaleString("fr-FR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function getMetValue(activityType) {
+      const metMap = {
+        "Marche": 4.8,
+        "Footing": 8.5,
+        "Futsal": 10.0,
+        "VTT": 8.5,
+        "Vélo elliptique": 5.0,
+        "Natation": 6.0
+      };
+
+      return metMap[activityType] || 5.0;
+    }
+
+    function calculateCalories(type, weight, minutes) {
+      const met = getMetValue(type);
+      const weightKg = Number(weight);
+      const durationHours = Number(minutes) / 60;
+
+      if (!weightKg || !durationHours) return 0;
+
+      return Math.round(met * weightKg * durationHours);
+    }
+
+    function updateCaloriesEstimate() {
+      const estimated = calculateCalories(
+        typeInput.value,
+        weightInput.value,
+        minutesInput.value
+      );
+
+      caloriesInput.value = estimated > 0 ? estimated : "";
+    }
+
+    function calcSpeed(km, minutes) {
+      if (!km || !minutes) return 0;
+      return km / (minutes / 60);
+    }
+
+    function calcPace(minutes, km) {
+      if (!km || !minutes) return 0;
+      return minutes / km;
+    }
+
+    function formatPace(pace) {
+      if (!pace || !isFinite(pace)) return "—";
+      const totalSeconds = Math.round(pace * 60);
+      const min = Math.floor(totalSeconds / 60);
+      const sec = totalSeconds % 60;
+      return `${min}:${String(sec).padStart(2, "0")} min/km`;
+    }
+
+    function formatDateFR(dateStr) {
+      const [y, m, d] = dateStr.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function formatLongDateFR(dateStr) {
+      const [y, m, d] = dateStr.split("-");
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function sortEntries() {
+      entries.sort((a, b) => {
+        if (a.date !== b.date) return b.date.localeCompare(a.date);
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+    }
+
+    function resetForm() {
+      form.reset();
+      typeInput.value = "Marche";
+      editingId = null;
+      document.querySelector(".btn-primary").textContent = "Enregistrer";
+      dateInput.value = toDateStringLocal();
+      caloriesInput.value = "";
+      locationInput.value = "";
+    }
+
+    function getEntriesForDate(dateStr) {
+      return entries.filter(entry => String(entry.date) === String(dateStr));
+    }
+
+    function getDailyTotals(dateStr) {
+      const dayEntries = getEntriesForDate(dateStr);
+      const totalKm = dayEntries.reduce((sum, e) => sum + Number(e.km || 0), 0);
+      const totalMinutes = dayEntries.reduce((sum, e) => sum + Number(e.minutes || 0), 0);
+      const totalCalories = dayEntries.reduce((sum, e) => sum + Number(e.calories || 0), 0);
+
+      let lastWeight = null;
+      for (let i = dayEntries.length - 1; i >= 0; i--) {
+        if (dayEntries[i].weight !== null && dayEntries[i].weight !== undefined && dayEntries[i].weight !== "") {
+          lastWeight = Number(dayEntries[i].weight);
+          break;
+        }
+      }
+
+      return { totalKm, totalMinutes, totalCalories, lastWeight, count: dayEntries.length };
+    }
+
+    function getDayLevel(dateStr) {
+      const { totalKm, totalMinutes, count } = getDailyTotals(dateStr);
+      if (!count) return "red";
+      if (totalKm >= 5 || totalMinutes >= 40) return "green";
+      return "orange";
+    }
+
+    function renderTodayBanner() {
+      const today = toDateStringLocal();
+      todayBanner.textContent = capitalize(formatLongDateFR(today));
+    }
+
+    function renderEntries() {
+      sortEntries();
+      entriesContainer.innerHTML = "";
+
+      const filtered = getEntriesForDate(selectedDate)
+        .slice()
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      const totals = getDailyTotals(selectedDate);
+      selectedDayBar.innerHTML = `
+        <strong>${capitalize(formatLongDateFR(selectedDate))}</strong><br>
+        ${totals.count} activité${totals.count > 1 ? "s" : ""} ·
+        ${formatNumber(totals.totalKm, 2)} km ·
+        ${formatNumber(totals.totalMinutes, 0)} min ·
+        ${formatNumber(totals.totalCalories, 0)} kcal
+      `;
+
+      if (filtered.length === 0) {
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+
+      filtered.forEach(entry => {
+        const speed = calcSpeed(entry.km, entry.minutes);
+        const pace = calcPace(entry.minutes, entry.km);
+
+        const article = document.createElement("article");
+        article.className = "entry";
+        article.innerHTML = `
+          <div class="entry-top">
+            <div>
+              <div class="entry-title">${entry.type}</div>
+              <div class="entry-date">
+                ${formatDateFR(entry.date)}${entry.location ? ` · ${entry.location}` : ""}
+              </div>
+            </div>
+            <div class="badge">${formatNumber(speed, 2)} km/h</div>
+          </div>
+
+          <div class="entry-grid">
+            <div class="mini">
+              <div class="mini-label">Distance</div>
+              <div class="mini-value">${formatNumber(entry.km, 2)} km</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Temps</div>
+              <div class="mini-value">${formatNumber(entry.minutes, 0)} min</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Allure</div>
+              <div class="mini-value">${formatPace(pace)}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Calories</div>
+              <div class="mini-value">${formatNumber(entry.calories, 0)} kcal</div>
+            </div>
+            <div class="mini" style="grid-column: 1 / -1;">
+              <div class="mini-label">Poids</div>
+              <div class="mini-value">${entry.weight ? `${formatNumber(entry.weight, 1)} kg` : "—"}</div>
+            </div>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" onclick="editEntry('${entry.id}')">Modifier</button>
+            <button class="btn-danger small-btn" onclick="deleteEntry('${entry.id}')">Supprimer</button>
+          </div>
+        `;
+        entriesContainer.appendChild(article);
+      });
+    }
+
+    function renderLast7Days() {
+      last7DaysContainer.innerHTML = "";
+
+      const today = toDateStringLocal();
+
+      for (let i = 6; i >= 0; i--) {
+        const dateStr = shiftDateString(today, -i);
+        const totals = getDailyTotals(dateStr);
+
+        const article = document.createElement("article");
+        article.className = "day-summary";
+
+        article.innerHTML = `
+          <div class="day-summary-top">
+            <div class="day-summary-title">${capitalize(formatLongDateFR(dateStr))}</div>
+            <div class="day-summary-meta">${totals.count} activité${totals.count > 1 ? "s" : ""}</div>
+          </div>
+          <div class="day-summary-meta">
+            ${formatNumber(totals.totalKm, 2)} km ·
+            ${formatNumber(totals.totalMinutes, 0)} min ·
+            ${formatNumber(totals.totalCalories, 0)} kcal ·
+            ${totals.lastWeight ? `${formatNumber(totals.lastWeight, 1)} kg` : "poids —"}
+          </div>
+        `;
+
+        last7DaysContainer.appendChild(article);
+      }
+    }
+
+    function renderCalendar() {
+      calendarEl.innerHTML = "";
+
+      const monthNames = [
+        "janvier", "février", "mars", "avril", "mai", "juin",
+        "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+      ];
+
+      calendarTitleEl.textContent = `${capitalize(monthNames[calendarMonth])} ${calendarYear}`;
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1);
+      const lastDay = new Date(calendarYear, calendarMonth + 1, 0);
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const todayStr = toDateStringLocal();
+
+      for (let i = 0; i < startOffset; i++) {
+        const empty = document.createElement("div");
+        empty.className = "calendar-day empty";
+        calendarEl.appendChild(empty);
+      }
+
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dateStr = `${calendarYear}-${String(calendarMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const level = getDayLevel(dateStr);
+
+        const cell = document.createElement("div");
+        cell.className = `calendar-day day-${level}`;
+
+        if (dateStr === selectedDate) cell.classList.add("selected");
+        if (dateStr === todayStr) cell.classList.add("today");
+
+        cell.innerHTML = `
+          <div class="day-number">${day}</div>
+        `;
+
+        cell.addEventListener("click", () => {
+          selectedDate = dateStr;
+          renderCalendar();
+          renderEntries();
+        });
+
+        calendarEl.appendChild(cell);
+      }
+    }
+
+    function escapeCsvValue(value) {
+      if (value === null || value === undefined) return "";
+      const str = String(value);
+      if (str.includes('"') || str.includes(";") || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    }
+
+    function exportEntriesToCsv() {
+      if (!entries.length) {
+        alert("Aucune donnée à exporter.");
+        return;
+      }
+
+      const headers = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
+
+      const rows = entries.map(entry => [
+        entry.date,
+        entry.type,
+        entry.location ?? "",
+        entry.km,
+        entry.minutes,
+        entry.calories,
+        entry.weight ?? "",
+        entry.createdAt ?? ""
+      ]);
+
+      const csvContent = [
+        headers.join(";"),
+        ...rows.map(row => row.map(escapeCsvValue).join(";"))
+      ].join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sport-quotidien-${toDateStringLocal()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function parseCsvLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const next = line[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ";" && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function toNumberOrNull(value) {
+      if (value === null || value === undefined || value === "") return null;
+      const normalized = String(value).replace(",", ".");
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function importEntriesFromCsvText(csvText) {
+      const lines = csvText
+        .replace(/^\uFEFF/, "")
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+
+      if (lines.length < 2) {
+        alert("Fichier CSV vide ou invalide.");
+        return;
+      }
+
+      const headers = parseCsvLine(lines[0]).map(h => h.trim());
+      const requiredHeaders = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
+
+      const hasAllHeaders = requiredHeaders.every(header => headers.includes(header));
+      if (!hasAllHeaders) {
+        alert("Le fichier CSV ne contient pas les bonnes colonnes.");
+        return;
+      }
+
+      if (!confirm("Remplacer les données actuelles par celles du fichier CSV ?")) {
+        return;
+      }
+
+      const imported = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCsvLine(lines[i]);
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index] ?? "";
+        });
+
+        if (!row.date || !row.type) continue;
+
+        imported.push({
+          id: crypto.randomUUID(),
+          date: row.date,
+          type: row.type,
+          location: row.location || "",
+          km: toNumberOrNull(row.km) ?? 0,
+          minutes: toNumberOrNull(row.minutes) ?? 0,
+          calories: toNumberOrNull(row.calories) ?? 0,
+          weight: toNumberOrNull(row.weight),
+          createdAt: toNumberOrNull(row.createdAt) ?? Date.now() + i
+        });
+      }
+
+      entries = imported;
+      saveEntries();
+
+      const today = toDateStringLocal();
+      selectedDate = today;
+      const parsed = parseDateString(today);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+
+      updateUI();
+      alert("Import terminé.");
+    }
+
+    function addOrUpdateEntry(event) {
+      event.preventDefault();
+
+      updateCaloriesEstimate();
+
+      const entryDate = dateInput.value;
+
+      const entry = {
+        id: editingId || crypto.randomUUID(),
+        date: entryDate,
+        type: typeInput.value,
+        location: locationInput.value.trim(),
+        km: Number(kmInput.value),
+        minutes: Number(minutesInput.value),
+        calories: Number(caloriesInput.value || 0),
+        weight: weightInput.value ? Number(weightInput.value) : null,
+        createdAt: editingId
+          ? (entries.find(e => e.id === editingId)?.createdAt || Date.now())
+          : Date.now()
+      };
+
+      if (!entry.date || entry.km <= 0 || entry.minutes <= 0) {
+        alert("Merci de remplir correctement les champs.");
+        return;
+      }
+
+      if (editingId) {
+        entries = entries.map(e => e.id === editingId ? entry : e);
+      } else {
+        entries.push(entry);
+      }
+
+      saveEntries();
+
+      selectedDate = entryDate;
+      const parsed = parseDateString(entryDate);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+
+      editingId = null;
+      document.querySelector(".btn-primary").textContent = "Enregistrer";
+
+      kmInput.value = "";
+      minutesInput.value = "";
+      caloriesInput.value = "";
+      weightInput.value = "";
+      locationInput.value = "";
+      typeInput.value = "Marche";
+      dateInput.value = toDateStringLocal();
+
+      updateUI();
+    }
+
+    window.deleteEntry = function(id) {
+      if (!confirm("Supprimer cette activité ?")) return;
+      entries = entries.filter(entry => entry.id !== id);
+      saveEntries();
+      updateUI();
+    };
+
+    window.editEntry = function(id) {
+      const entry = entries.find(e => e.id === id);
+      if (!entry) return;
+
+      editingId = id;
+      selectedDate = entry.date;
+      dateInput.value = entry.date;
+      typeInput.value = entry.type;
+      kmInput.value = entry.km;
+      minutesInput.value = entry.minutes;
+      caloriesInput.value = entry.calories;
+      weightInput.value = entry.weight ?? "";
+      locationInput.value = entry.location ?? "";
+
+      const parsed = parseDateString(entry.date);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+
+      document.querySelector(".btn-primary").textContent = "Mettre à jour";
+      updateCaloriesEstimate();
+      updateUI();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    function clearAll() {
+      if (!confirm("Tout effacer ? Cette action est irréversible.")) return;
+      entries = [];
+      saveEntries();
+      resetForm();
+      selectedDate = toDateStringLocal();
+      const p = parseDateString(selectedDate);
+      calendarYear = p.year;
+      calendarMonth = p.month - 1;
+      updateUI();
+    }
+
+    function updateUI() {
+      renderTodayBanner();
+      renderCalendar();
+      renderEntries();
+      renderLast7Days();
+    }
+
+    form.addEventListener("submit", addOrUpdateEntry);
+
+    resetBtn.addEventListener("click", () => {
+      resetForm();
+    });
+
+    clearAllBtn.addEventListener("click", clearAll);
+
+    typeInput.addEventListener("change", updateCaloriesEstimate);
+    minutesInput.addEventListener("input", updateCaloriesEstimate);
+    weightInput.addEventListener("input", updateCaloriesEstimate);
+
+    dateInput.addEventListener("change", () => {
+      if (!dateInput.value) return;
+      selectedDate = dateInput.value;
+      const parsed = parseDateString(selectedDate);
+      calendarYear = parsed.year;
+      calendarMonth = parsed.month - 1;
+      renderCalendar();
+      renderEntries();
+    });
+
+    document.getElementById("prevMonthBtn").addEventListener("click", () => {
+      calendarMonth--;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById("nextMonthBtn").addEventListener("click", () => {
+      calendarMonth++;
+      if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+      renderCalendar();
+    });
+
+    exportCsvBtn.addEventListener("click", exportEntriesToCsv);
+
+    importCsvBtn.addEventListener("click", () => {
+      importCsvInput.click();
+    });
+
+    importCsvInput.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        importEntriesFromCsvText(text);
+      } catch {
+        alert("Impossible de lire le fichier CSV.");
+      }
+
+      importCsvInput.value = "";
+    });
+
+    loadEntries();
+    setTodayDate();
+    updateUI();
+  </script>
+</body>
+</html>
