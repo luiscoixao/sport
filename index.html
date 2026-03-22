@@ -522,6 +522,11 @@
             <input type="text" id="location" placeholder="Ex. Parc, salle, forêt..." />
           </div>
 
+          <div class="field">
+            <label for="height">Taille (cm)</label>
+            <input type="number" id="height" min="0" step="1" placeholder="Ex. 168" />
+          </div>
+
           <div class="buttons">
             <button type="submit" class="btn-primary">Enregistrer</button>
             <button type="button" class="btn-secondary" id="resetBtn">Réinitialiser</button>
@@ -611,6 +616,7 @@
     const caloriesInput = document.getElementById("calories");
     const weightInput = document.getElementById("weight");
     const locationInput = document.getElementById("location");
+    const heightInput = document.getElementById("height");
     const entriesContainer = document.getElementById("entries");
     const emptyState = document.getElementById("emptyState");
     const resetBtn = document.getElementById("resetBtn");
@@ -669,6 +675,25 @@
       if (!weightKg || !durationHours) return 0;
 
       return Math.round(met * weightKg * durationHours);
+    }
+
+    function calculateSteps(type, km, heightCm) {
+      const distanceKm = Number(km);
+      const heightM = Number(heightCm) / 100;
+
+      if (!distanceKm || !heightM) return 0;
+
+      let stepLength;
+
+      if (type === "Marche") {
+        stepLength = heightM * 0.415;
+      } else if (type === "Footing") {
+        stepLength = heightM * 0.65;
+      } else {
+        return 0;
+      }
+
+      return Math.round((distanceKm * 1000) / stepLength);
     }
 
     function updateCaloriesEstimate() {
@@ -734,6 +759,7 @@
       dateInput.value = toDateStringLocal();
       caloriesInput.value = "";
       locationInput.value = "";
+      heightInput.value = "";
     }
 
     function getEntriesForDate(dateStr) {
@@ -826,6 +852,10 @@
             <div class="mini">
               <div class="mini-label">Calories</div>
               <div class="mini-value">${formatNumber(entry.calories, 0)} kcal</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Pas</div>
+              <div class="mini-value">${entry.steps ? formatNumber(entry.steps, 0) : "—"}</div>
             </div>
             <div class="mini" style="grid-column: 1 / -1;">
               <div class="mini-label">Poids</div>
@@ -931,7 +961,7 @@
         return;
       }
 
-      const headers = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
+      const headers = ["date", "type", "location", "km", "minutes", "calories", "steps", "weight", "height", "createdAt"];
 
       const rows = entries.map(entry => [
         entry.date,
@@ -940,7 +970,9 @@
         entry.km,
         entry.minutes,
         entry.calories,
+        entry.steps ?? "",
         entry.weight ?? "",
+        entry.height ?? "",
         entry.createdAt ?? ""
       ]);
 
@@ -1010,7 +1042,7 @@
       }
 
       const headers = parseCsvLine(lines[0]).map(h => h.trim());
-      const requiredHeaders = ["date", "type", "location", "km", "minutes", "calories", "weight", "createdAt"];
+      const requiredHeaders = ["date", "type", "location", "km", "minutes", "calories", "steps", "weight", "height", "createdAt"];
 
       const hasAllHeaders = requiredHeaders.every(header => headers.includes(header));
       if (!hasAllHeaders) {
@@ -1041,7 +1073,9 @@
           km: toNumberOrNull(row.km) ?? 0,
           minutes: toNumberOrNull(row.minutes) ?? 0,
           calories: toNumberOrNull(row.calories) ?? 0,
+          steps: toNumberOrNull(row.steps) ?? 0,
           weight: toNumberOrNull(row.weight),
+          height: toNumberOrNull(row.height),
           createdAt: toNumberOrNull(row.createdAt) ?? Date.now() + i
         });
       }
@@ -1074,7 +1108,9 @@
         km: Number(kmInput.value),
         minutes: Number(minutesInput.value),
         calories: Number(caloriesInput.value || 0),
+        steps: calculateSteps(typeInput.value, kmInput.value, heightInput.value),
         weight: weightInput.value ? Number(weightInput.value) : null,
+        height: heightInput.value ? Number(heightInput.value) : null,
         createdAt: editingId
           ? (entries.find(e => e.id === editingId)?.createdAt || Date.now())
           : Date.now()
@@ -1106,6 +1142,7 @@
       caloriesInput.value = "";
       weightInput.value = "";
       locationInput.value = "";
+      heightInput.value = "";
       typeInput.value = "Marche";
       dateInput.value = toDateStringLocal();
 
@@ -1132,6 +1169,7 @@
       caloriesInput.value = entry.calories;
       weightInput.value = entry.weight ?? "";
       locationInput.value = entry.location ?? "";
+      heightInput.value = entry.height ?? "";
 
       const parsed = parseDateString(entry.date);
       calendarYear = parsed.year;
