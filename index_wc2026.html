@@ -8,24 +8,22 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="CM 2026" />
-
 <style>
 :root{
   --bg:#07101e;
   --bg2:#0d1730;
   --card:rgba(255,255,255,.08);
-  --card2:rgba(255,255,255,.06);
+  --card2:rgba(255,255,255,.05);
   --line:rgba(255,255,255,.10);
   --text:#eef4ff;
   --muted:#a8b8d8;
   --accent:#61dafb;
   --accent2:#7c4dff;
-  --shadow:0 18px 40px rgba(0,0,0,.30);
+  --gold:#ffd166;
+  --shadow:0 18px 40px rgba(0,0,0,.28);
   --radius:22px;
 }
-
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
 html,body{
   margin:0;
   padding:0;
@@ -33,17 +31,8 @@ html,body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
 }
-
-body{
-  min-height:100vh;
-  padding:14px 12px 28px;
-}
-
-.app{
-  max-width:1200px;
-  margin:0 auto;
-}
-
+body{min-height:100vh;padding:14px 12px 28px}
+.app{max-width:1200px;margin:0 auto}
 .hero{
   position:sticky;
   top:0;
@@ -53,7 +42,6 @@ body{
   background:linear-gradient(180deg,rgba(7,16,30,.95),rgba(7,16,30,.80));
   padding:2px 0 12px;
 }
-
 .heroCard{
   background:linear-gradient(135deg,rgba(124,77,255,.28),rgba(97,218,251,.18));
   border:1px solid rgba(255,255,255,.12);
@@ -63,7 +51,6 @@ body{
   overflow:hidden;
   position:relative;
 }
-
 .heroCard:before,.heroCard:after{
   content:"";
   position:absolute;
@@ -79,30 +66,27 @@ body{
   width:180px;height:180px;left:-50px;bottom:-70px;
   background:rgba(124,77,255,.18);
 }
-
 .heroTop{
+  position:relative;
+  z-index:1;
   display:flex;
   justify-content:space-between;
   gap:16px;
   flex-wrap:wrap;
   align-items:flex-start;
-  position:relative;
-  z-index:1;
 }
-
 h1{
-  margin:0 0 8px;
+  margin:0 0 6px;
   font-size:clamp(30px,6vw,54px);
   line-height:.95;
   letter-spacing:-.03em;
 }
-
-.chips{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+.heroSub{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
 }
-
+.chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{
   padding:8px 11px;
   border-radius:999px;
@@ -111,7 +95,6 @@ h1{
   font-size:12px;
   border:1px solid rgba(255,255,255,.08);
 }
-
 .tabs{
   display:flex;
   gap:8px;
@@ -120,7 +103,6 @@ h1{
   scrollbar-width:none;
 }
 .tabs::-webkit-scrollbar{display:none}
-
 .tab{
   white-space:nowrap;
   background:rgba(255,255,255,.07);
@@ -138,10 +120,8 @@ h1{
   color:var(--text);
   border-color:rgba(97,218,251,.35);
 }
-
 .section{display:none}
 .section.active{display:block}
-
 .panel{
   background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.055));
   border:1px solid rgba(255,255,255,.10);
@@ -150,7 +130,6 @@ h1{
   box-shadow:var(--shadow);
   margin-top:16px;
 }
-
 .panelHeader{
   display:flex;
   justify-content:space-between;
@@ -159,12 +138,10 @@ h1{
   flex-wrap:wrap;
   margin-bottom:14px;
 }
-
 .panel h2,.panel h3{
   margin:0;
   letter-spacing:-.03em;
 }
-
 .badge{
   display:inline-flex;
   align-items:center;
@@ -175,38 +152,31 @@ h1{
   font-size:12px;
   color:var(--muted);
 }
-
 .groupsGrid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:14px;
 }
-
 .groupCard{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
   border-radius:20px;
   padding:14px;
 }
-
 .groupHeader{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:10px;
 }
-
 .groupLetter{
   font-size:22px;
   font-weight:800;
 }
-
-.teamList{
+.groupTeams{
   display:grid;
   gap:8px;
-  margin-top:10px;
 }
-
 .teamRow{
   display:flex;
   align-items:center;
@@ -216,7 +186,6 @@ h1{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.07);
 }
-
 .teamIndex{
   width:24px;height:24px;
   border-radius:999px;
@@ -228,31 +197,22 @@ h1{
   font-weight:800;
   flex:0 0 auto;
 }
-
 .teamName{font-weight:700}
-
 .calendarStage{margin-top:18px}
 .calendarStage:first-child{margin-top:0}
-
 .stageTitle{
   font-size:18px;
   font-weight:800;
   margin:0 0 10px;
   letter-spacing:-.03em;
 }
-
-.matchesCompact{
-  display:grid;
-  gap:8px;
-}
-
+.matchesCompact{display:grid;gap:8px}
 .matchCard{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
   border-radius:16px;
   padding:12px;
 }
-
 .matchMeta{
   display:flex;
   justify-content:space-between;
@@ -263,23 +223,19 @@ h1{
   font-size:12px;
   margin-bottom:8px;
 }
-
 .matchMain{
   display:grid;
   grid-template-columns:1fr auto 1fr;
   gap:10px;
   align-items:center;
 }
-
 .team{
   font-weight:800;
   font-size:16px;
   line-height:1.15;
 }
-
 .team.home{text-align:right}
 .team.away{text-align:left}
-
 .vs{
   display:flex;
   align-items:center;
@@ -292,25 +248,63 @@ h1{
   font-weight:800;
   font-size:13px;
 }
-
 .venue{
   margin-top:8px;
   color:var(--muted);
   font-size:12px;
 }
-
-.small{font-size:12px;color:var(--muted)}
-
-@media (max-width:1080px){
-  .groupsGrid{
-    grid-template-columns:1fr;
-  }
+.note{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
 }
-
+.probaGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.probaCard{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:14px;
+}
+.probaTop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:8px;
+}
+.rank{
+  width:28px;height:28px;border-radius:999px;
+  display:grid;place-items:center;
+  background:rgba(255,209,102,.18);
+  color:#ffe7a6;font-size:12px;font-weight:800;
+}
+.probaTeam{font-weight:800;font-size:18px}
+.probaPct{font-weight:800}
+.bar{
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  margin-top:10px;
+}
+.bar span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--gold),var(--accent));
+}
+.small{font-size:12px;color:var(--muted)}
+@media (max-width:1080px){
+  .groupsGrid,.probaGrid{grid-template-columns:1fr}
+}
 @media (max-width:720px){
   body{padding:12px 10px 24px}
   .heroCard{padding:16px 14px}
-  .groupsGrid{grid-template-columns:1fr}
+  .groupsGrid,.probaGrid{grid-template-columns:1fr}
   .matchMain{grid-template-columns:1fr}
   .team.home,.team.away{text-align:center}
   .vs{margin:0 auto}
@@ -319,12 +313,12 @@ h1{
 </head>
 <body>
 <div class="app">
-
   <div class="hero">
     <div class="heroCard">
       <div class="heroTop">
         <div>
           <h1>Coupe du Monde 2026</h1>
+          <p class="heroSub">Groupes, calendrier complet et probabilités de victoire.</p>
         </div>
         <div class="chips">
           <span class="chip">48 équipes</span>
@@ -340,13 +334,14 @@ h1{
 
   <section class="section active" id="groups"></section>
   <section class="section" id="calendar"></section>
-
+  <section class="section" id="proba"></section>
 </div>
 
 <script>
 const TABS = [
   {id:'groups', label:'Groupes'},
-  {id:'calendar', label:'Calendrier'}
+  {id:'calendar', label:'Calendrier'},
+  {id:'proba', label:'Probabilités'}
 ];
 
 const DATA = {
@@ -364,12 +359,20 @@ const DATA = {
     K:['Portugal','RD Congo','Ouzbékistan','Colombie'],
     L:['Angleterre','Croatie','Ghana','Panama']
   },
+  proba: [
+    {team:'Espagne', pct:20},
+    {team:'France', pct:18},
+    {team:'Angleterre', pct:14},
+    {team:'Argentine', pct:13},
+    {team:'Brésil', pct:12},
+    {team:'Portugal', pct:9},
+    {team:'Allemagne', pct:8},
+    {team:'Pays-Bas', pct:6}
+  ],
   matches:[]
 };
 
-function pad(n){
-  return String(n).padStart(2,'0');
-}
+function pad(n){ return String(n).padStart(2,'0'); }
 
 function localDateTimeString(date){
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -396,7 +399,7 @@ function suggestVenue(groupLetter, pIndex, groupIndex){
 }
 
 function buildGroupMatches(){
-  const start = new Date(2026, 5, 11, 13, 0, 0); // local time, pas UTC
+  const start = new Date(2026, 5, 11, 13, 0, 0);
   const letters = Object.keys(DATA.groups);
   const matches = [];
   let offsetHours = 0;
@@ -410,7 +413,7 @@ function buildGroupMatches(){
     ];
 
     pairings.forEach((pair, pIndex)=>{
-      const d = new Date(start.getTime() + offsetHours*3600*1000);
+      const d = new Date(start.getTime() + offsetHours * 3600 * 1000);
       matches.push({
         id:`GS-${groupLetter}-${pIndex+1}`,
         stage:'Phase de groupes',
@@ -465,7 +468,7 @@ function buildKnockoutMatches(){
     {id:'SF-1',stage:'Demi-finales',home:'Espagne',away:'Argentine',date:'2026-07-15T21:00',venue:'Dallas'},
     {id:'SF-2',stage:'Demi-finales',home:'France',away:'Brésil',date:'2026-07-16T21:00',venue:'Atlanta'},
 
-    {id:'TP-1',stage:'Match pour la 3e place',home:'Portugal',away:'Angleterre',date:'2026-07-18T19:00',venue:'Miami'},
+    {id:'TP-1',stage:'Match pour la 3e place',home:'Argentine',away:'Brésil',date:'2026-07-18T19:00',venue:'Miami'},
     {id:'F-1',stage:'Finale',home:'Espagne',away:'France',date:'2026-07-19T19:00',venue:'New York / New Jersey'}
   ];
 }
@@ -496,15 +499,13 @@ function renderGroups(){
         <h2>Groupes</h2>
         <span class="badge">A à L</span>
       </div>
-
       <div class="groupsGrid">
         ${Object.entries(DATA.groups).map(([letter,teams])=>`
           <div class="groupCard">
             <div class="groupHeader">
               <div class="groupLetter">Groupe ${letter}</div>
             </div>
-
-            <div class="teamList">
+            <div class="groupTeams">
               ${teams.map((team,index)=>`
                 <div class="teamRow">
                   <div class="teamIndex">${index+1}</div>
@@ -526,13 +527,11 @@ function matchHTML(match){
         <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
         <span>${formatDate(match.date)}</span>
       </div>
-
       <div class="matchMain">
         <div class="team home">${match.home}</div>
         <div class="vs">VS</div>
         <div class="team away">${match.away}</div>
       </div>
-
       <div class="venue">${match.venue}</div>
     </div>
   `;
@@ -553,7 +552,7 @@ function renderCalendar(){
     <div class="panel">
       <div class="panelHeader">
         <h2>Calendrier</h2>
-        <span class="badge">Complet</span>
+        <span class="badge">${DATA.matches.length} matchs</span>
       </div>
 
       ${stages.map(stage=>{
@@ -571,9 +570,38 @@ function renderCalendar(){
   `;
 }
 
+function renderProba(){
+  const list = [...DATA.proba].sort((a,b)=>b.pct-a.pct);
+  document.getElementById('proba').innerHTML = `
+    <div class="panel">
+      <div class="panelHeader">
+        <h2>Probabilités de victoire finale</h2>
+        <span class="badge">Projection</span>
+      </div>
+      <div class="probaGrid">
+        ${list.map((item,index)=>`
+          <div class="probaCard">
+            <div class="probaTop">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="rank">${index+1}</div>
+                <div class="probaTeam">${item.team}</div>
+              </div>
+              <div class="probaPct">${item.pct}%</div>
+            </div>
+            <div class="small">Projection de chances de remporter le tournoi</div>
+            <div class="bar"><span style="width:${item.pct * 4}%"></span></div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="note">Lecture simple : Espagne et France en tête, puis Angleterre, Argentine, Brésil, Portugal, Allemagne et Pays-Bas.</div>
+    </div>
+  `;
+}
+
 renderTabs();
 renderGroups();
 renderCalendar();
+renderProba();
 </script>
 </body>
 </html>
