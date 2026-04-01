@@ -11,9 +11,7 @@
 <style>
 :root{
   --bg:#07101e;
-  --bg2:#0d1730;
   --card:rgba(255,255,255,.08);
-  --card2:rgba(255,255,255,.05);
   --line:rgba(255,255,255,.10);
   --text:#eef4ff;
   --muted:#a8b8d8;
@@ -48,27 +46,8 @@ body{min-height:100vh;padding:14px 12px 24px}
   border-radius:28px;
   padding:18px 16px;
   box-shadow:var(--shadow);
-  overflow:hidden;
-  position:relative;
-}
-.heroCard:before,.heroCard:after{
-  content:"";
-  position:absolute;
-  border-radius:999px;
-  filter:blur(8px);
-  opacity:.7;
-}
-.heroCard:before{
-  width:220px;height:220px;right:-80px;top:-80px;
-  background:rgba(97,218,251,.14);
-}
-.heroCard:after{
-  width:180px;height:180px;left:-50px;bottom:-70px;
-  background:rgba(124,77,255,.18);
 }
 .heroTop{
-  position:relative;
-  z-index:1;
   display:flex;
   justify-content:space-between;
   gap:16px;
@@ -113,7 +92,6 @@ h1{
   font:inherit;
   font-weight:700;
   cursor:pointer;
-  transition:.18s;
 }
 .tab.active{
   background:linear-gradient(135deg,rgba(97,218,251,.20),rgba(124,77,255,.20));
@@ -198,7 +176,6 @@ h1{
   flex:0 0 auto;
 }
 .teamName{font-weight:700}
-
 .calendarStage{margin-top:16px}
 .calendarStage:first-child{margin-top:0}
 .stageTitle{
@@ -207,10 +184,7 @@ h1{
   margin:0 0 10px;
   letter-spacing:-.03em;
 }
-.matchesCompact{
-  display:grid;
-  gap:8px;
-}
+.matchesCompact{display:grid;gap:8px}
 .matchCard{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
@@ -257,7 +231,6 @@ h1{
   color:var(--muted);
   font-size:12px;
 }
-
 .probaGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -298,7 +271,6 @@ h1{
   background:linear-gradient(90deg,var(--gold),var(--accent));
 }
 .note,.small{font-size:12px;color:var(--muted)}
-
 @media (max-width:1080px){
   .groupsGrid,.probaGrid{grid-template-columns:1fr}
 }
@@ -320,7 +292,7 @@ h1{
       <div class="heroTop">
         <div>
           <h1>Coupe du Monde 2026</h1>
-          <p class="heroSub">Calendrier corrigé et lecture plus compacte.</p>
+          <p class="heroSub">Phase de groupes corrigée et projections probables dès les 16es.</p>
         </div>
         <div class="chips">
           <span class="chip">48 équipes</span>
@@ -401,10 +373,29 @@ function suggestVenue(groupLetter, pIndex, groupIndex){
 }
 
 function buildGroupMatches(){
-  const start = new Date(2026, 5, 11, 13, 0, 0);
+  const matchDates = [
+    '2026-06-11T13:00','2026-06-11T19:00',
+    '2026-06-12T13:00','2026-06-12T19:00',
+    '2026-06-13T13:00','2026-06-13T19:00',
+    '2026-06-14T13:00','2026-06-14T19:00',
+    '2026-06-15T13:00','2026-06-15T19:00',
+    '2026-06-16T13:00','2026-06-16T19:00',
+    '2026-06-17T13:00','2026-06-17T19:00',
+    '2026-06-18T13:00','2026-06-18T19:00',
+    '2026-06-19T13:00','2026-06-19T19:00',
+    '2026-06-20T13:00','2026-06-20T19:00',
+    '2026-06-21T13:00','2026-06-21T19:00',
+    '2026-06-22T13:00','2026-06-22T19:00',
+    '2026-06-23T13:00','2026-06-23T19:00',
+    '2026-06-24T13:00','2026-06-24T19:00',
+    '2026-06-25T13:00','2026-06-25T19:00',
+    '2026-06-26T13:00','2026-06-26T19:00',
+    '2026-06-27T13:00','2026-06-27T19:00'
+  ];
+
   const letters = Object.keys(DATA.groups);
   const matches = [];
-  let currentDay = 0;
+  let dateIndex = 0;
 
   letters.forEach((groupLetter, index)=>{
     const teams = DATA.groups[groupLetter];
@@ -418,17 +409,16 @@ function buildGroupMatches(){
     ];
 
     pairings.forEach((pair, pIndex)=>{
-      const d = new Date(2026, 5, 11 + currentDay, pIndex % 2 === 0 ? 13 : 19, 0, 0);
       matches.push({
         id:`GS-${groupLetter}-${pIndex+1}`,
         stage:'Phase de groupes',
         group:groupLetter,
         home:pair[0],
         away:pair[1],
-        date:localDateTimeString(d),
+        date:matchDates[dateIndex % matchDates.length],
         venue:suggestVenue(groupLetter, pIndex, index)
       });
-      currentDay += 1;
+      dateIndex++;
     });
   });
 
@@ -437,31 +427,32 @@ function buildGroupMatches(){
 
 function buildKnockoutMatches(){
   return [
-    {id:'R32-1',stage:'Seizièmes de finale',home:'1A',away:'3H',date:'2026-06-28T15:00',venue:'Dallas'},
-    {id:'R32-2',stage:'Seizièmes de finale',home:'1B',away:'3G',date:'2026-06-28T21:00',venue:'Houston'},
-    {id:'R32-3',stage:'Seizièmes de finale',home:'1C',away:'3F',date:'2026-06-29T15:00',venue:'Atlanta'},
-    {id:'R32-4',stage:'Seizièmes de finale',home:'1D',away:'3E',date:'2026-06-29T21:00',venue:'Seattle'},
-    {id:'R32-5',stage:'Seizièmes de finale',home:'1E',away:'3D',date:'2026-06-30T15:00',venue:'Miami'},
-    {id:'R32-6',stage:'Seizièmes de finale',home:'1F',away:'3C',date:'2026-06-30T21:00',venue:'Vancouver'},
-    {id:'R32-7',stage:'Seizièmes de finale',home:'1G',away:'3B',date:'2026-07-01T15:00',venue:'Boston'},
-    {id:'R32-8',stage:'Seizièmes de finale',home:'1H',away:'3A',date:'2026-07-01T21:00',venue:'Philadelphia'},
-    {id:'R32-9',stage:'Seizièmes de finale',home:'1I',away:'2L',date:'2026-07-02T15:00',venue:'Kansas City'},
-    {id:'R32-10',stage:'Seizièmes de finale',home:'1J',away:'2K',date:'2026-07-02T21:00',venue:'Monterrey'},
-    {id:'R32-11',stage:'Seizièmes de finale',home:'1K',away:'2J',date:'2026-07-03T15:00',venue:'Guadalajara'},
-    {id:'R32-12',stage:'Seizièmes de finale',home:'1L',away:'2I',date:'2026-07-03T21:00',venue:'San Francisco Bay Area'},
-    {id:'R32-13',stage:'Seizièmes de finale',home:'2A',away:'2H',date:'2026-07-04T15:00',venue:'Los Angeles'},
-    {id:'R32-14',stage:'Seizièmes de finale',home:'2B',away:'2G',date:'2026-07-04T21:00',venue:'Toronto'},
-    {id:'R32-15',stage:'Seizièmes de finale',home:'2C',away:'2F',date:'2026-07-05T15:00',venue:'New York / New Jersey'},
-    {id:'R32-16',stage:'Seizièmes de finale',home:'2D',away:'2E',date:'2026-07-05T21:00',venue:'Mexico City'},
+    {id:'R32-1',stage:'Seizièmes de finale',home:'Espagne',away:'Suisse',date:'2026-06-28T15:00',venue:'Dallas'},
+    {id:'R32-2',stage:'Seizièmes de finale',home:'Belgique',away:'Uruguay',date:'2026-06-28T21:00',venue:'Houston'},
+    {id:'R32-3',stage:'Seizièmes de finale',home:'Brésil',away:'Tunisie',date:'2026-06-29T15:00',venue:'Atlanta'},
+    {id:'R32-4',stage:'Seizièmes de finale',home:'Allemagne',away:'Turquie',date:'2026-06-29T21:00',venue:'Seattle'},
+    {id:'R32-5',stage:'Seizièmes de finale',home:'Pays-Bas',away:'Paraguay',date:'2026-06-30T15:00',venue:'Miami'},
+    {id:'R32-6',stage:'Seizièmes de finale',home:'Argentine',away:'Norvège',date:'2026-06-30T21:00',venue:'Vancouver'},
+    {id:'R32-7',stage:'Seizièmes de finale',home:'France',away:'Croatie',date:'2026-07-01T15:00',venue:'Boston'},
+    {id:'R32-8',stage:'Seizièmes de finale',home:'Portugal',away:'Sénégal',date:'2026-07-01T21:00',venue:'Philadelphia'},
 
-    {id:'R16-1',stage:'Huitièmes de finale',home:'Vainqueur R32-1',away:'Vainqueur R32-2',date:'2026-07-07T18:00',venue:'Dallas'},
-    {id:'R16-2',stage:'Huitièmes de finale',home:'Vainqueur R32-3',away:'Vainqueur R32-4',date:'2026-07-07T22:00',venue:'Houston'},
-    {id:'R16-3',stage:'Huitièmes de finale',home:'Vainqueur R32-5',away:'Vainqueur R32-6',date:'2026-07-08T18:00',venue:'Atlanta'},
-    {id:'R16-4',stage:'Huitièmes de finale',home:'Vainqueur R32-7',away:'Vainqueur R32-8',date:'2026-07-08T22:00',venue:'Seattle'},
-    {id:'R16-5',stage:'Huitièmes de finale',home:'Vainqueur R32-9',away:'Vainqueur R32-10',date:'2026-07-09T18:00',venue:'Miami'},
-    {id:'R16-6',stage:'Huitièmes de finale',home:'Vainqueur R32-11',away:'Vainqueur R32-12',date:'2026-07-09T22:00',venue:'Vancouver'},
-    {id:'R16-7',stage:'Huitièmes de finale',home:'Vainqueur R32-13',away:'Vainqueur R32-14',date:'2026-07-10T18:00',venue:'Boston'},
-    {id:'R16-8',stage:'Huitièmes de finale',home:'Vainqueur R32-15',away:'Vainqueur R32-16',date:'2026-07-10T22:00',venue:'Philadelphia'},
+    {id:'R32-9',stage:'Seizièmes de finale',home:'Angleterre',away:'Colombie',date:'2026-07-02T15:00',venue:'Kansas City'},
+    {id:'R32-10',stage:'Seizièmes de finale',home:'Mexique',away:'Maroc',date:'2026-07-02T21:00',venue:'Monterrey'},
+    {id:'R32-11',stage:'Seizièmes de finale',home:'États-Unis',away:'Japon',date:'2026-07-03T15:00',venue:'Guadalajara'},
+    {id:'R32-12',stage:'Seizièmes de finale',home:'Uruguay',away:'Canada',date:'2026-07-03T21:00',venue:'San Francisco Bay Area'},
+    {id:'R32-13',stage:'Seizièmes de finale',home:'Espagne',away:'Mexique',date:'2026-07-04T15:00',venue:'Los Angeles'},
+    {id:'R32-14',stage:'Seizièmes de finale',home:'Allemagne',away:'Belgique',date:'2026-07-04T21:00',venue:'Toronto'},
+    {id:'R32-15',stage:'Seizièmes de finale',home:'France',away:'Pays-Bas',date:'2026-07-05T15:00',venue:'New York / New Jersey'},
+    {id:'R32-16',stage:'Seizièmes de finale',home:'Brésil',away:'Argentine',date:'2026-07-05T21:00',venue:'Mexico City'},
+
+    {id:'R16-1',stage:'Huitièmes de finale',home:'Espagne',away:'Belgique',date:'2026-07-07T18:00',venue:'Dallas'},
+    {id:'R16-2',stage:'Huitièmes de finale',home:'Brésil',away:'Allemagne',date:'2026-07-07T22:00',venue:'Houston'},
+    {id:'R16-3',stage:'Huitièmes de finale',home:'Pays-Bas',away:'Argentine',date:'2026-07-08T18:00',venue:'Atlanta'},
+    {id:'R16-4',stage:'Huitièmes de finale',home:'France',away:'Portugal',date:'2026-07-08T22:00',venue:'Seattle'},
+    {id:'R16-5',stage:'Huitièmes de finale',home:'Angleterre',away:'Mexique',date:'2026-07-09T18:00',venue:'Miami'},
+    {id:'R16-6',stage:'Huitièmes de finale',home:'États-Unis',away:'Uruguay',date:'2026-07-09T22:00',venue:'Vancouver'},
+    {id:'R16-7',stage:'Huitièmes de finale',home:'Espagne',away:'Allemagne',date:'2026-07-10T18:00',venue:'Boston'},
+    {id:'R16-8',stage:'Huitièmes de finale',home:'France',away:'Brésil',date:'2026-07-10T22:00',venue:'Philadelphia'},
 
     {id:'QF-1',stage:'Quarts de finale',home:'Espagne',away:'Allemagne',date:'2026-07-12T18:00',venue:'New York / New Jersey'},
     {id:'QF-2',stage:'Quarts de finale',home:'Argentine',away:'Pays-Bas',date:'2026-07-12T22:00',venue:'Dallas'},
@@ -596,7 +587,7 @@ function renderProba(){
           </div>
         `).join('')}
       </div>
-      <div class="note">Projection simple et lisible : Espagne et France devant, puis Angleterre, Argentine, Brésil, Portugal, Allemagne et Pays-Bas.</div>
+      <div class="note">Projection simple : Espagne et France devant, puis Angleterre, Argentine, Brésil, Portugal, Allemagne et Pays-Bas.</div>
     </div>
   `;
 }
