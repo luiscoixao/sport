@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Coupe du Monde 2026</title>
-
 <meta name="theme-color" content="#0b1220" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -21,7 +20,6 @@
   --muted:#a8b8d8;
   --accent:#61dafb;
   --accent2:#7c4dff;
-  --gold:#ffd166;
   --shadow:0 18px 40px rgba(0,0,0,.30);
   --radius:22px;
 }
@@ -38,7 +36,7 @@ html,body{
 
 body{
   min-height:100vh;
-  padding:14px 12px 34px;
+  padding:14px 12px 28px;
 }
 
 .app{
@@ -52,15 +50,15 @@ body{
   z-index:20;
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
-  background:linear-gradient(180deg,rgba(7,16,30,.95),rgba(7,16,30,.78));
-  padding:2px 0 14px;
+  background:linear-gradient(180deg,rgba(7,16,30,.95),rgba(7,16,30,.80));
+  padding:2px 0 12px;
 }
 
 .heroCard{
-  background:linear-gradient(135deg,rgba(124,77,255,.28),rgba(97,218,251,.20));
+  background:linear-gradient(135deg,rgba(124,77,255,.28),rgba(97,218,251,.18));
   border:1px solid rgba(255,255,255,.12);
   border-radius:28px;
-  padding:20px 18px;
+  padding:18px 16px;
   box-shadow:var(--shadow);
   overflow:hidden;
   position:relative;
@@ -97,13 +95,6 @@ h1{
   font-size:clamp(30px,6vw,54px);
   line-height:.95;
   letter-spacing:-.03em;
-}
-
-.subtitle{
-  margin:0;
-  color:var(--muted);
-  font-size:15px;
-  max-width:900px;
 }
 
 .chips{
@@ -155,7 +146,7 @@ h1{
   background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.055));
   border:1px solid rgba(255,255,255,.10);
   border-radius:var(--radius);
-  padding:18px;
+  padding:16px;
   box-shadow:var(--shadow);
   margin-top:16px;
 }
@@ -185,79 +176,37 @@ h1{
   color:var(--muted);
 }
 
-.favoritesStrip{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:12px;
-}
-.favCard{
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:18px;
-  padding:14px;
-}
-.favTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:8px;
-}
-.favRank{
-  width:28px;height:28px;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:rgba(255,209,102,.18);
-  color:#ffe7a6;
-  font-size:12px;
-  font-weight:800;
-}
-.favTeam{
-  font-weight:800;
-  font-size:18px;
-  margin-top:10px;
-}
-.favOdd{
-  font-size:12px;
-  color:var(--muted);
-}
-.favNote{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
-}
-
 .groupsGrid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:14px;
 }
+
 .groupCard{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
   border-radius:20px;
   padding:14px;
 }
+
 .groupHeader{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:10px;
 }
+
 .groupLetter{
   font-size:22px;
   font-weight:800;
 }
-.groupSub{
-  font-size:12px;
-  color:var(--muted);
-}
+
 .teamList{
   display:grid;
   gap:8px;
   margin-top:10px;
 }
+
 .teamRow{
   display:flex;
   align-items:center;
@@ -267,6 +216,7 @@ h1{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.07);
 }
+
 .teamIndex{
   width:24px;height:24px;
   border-radius:999px;
@@ -278,112 +228,92 @@ h1{
   font-weight:800;
   flex:0 0 auto;
 }
-.teamName{font-weight:700}
 
-.infoGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-.listCard{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:14px;
-}
-.phaseLine{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,.07);
-  font-size:14px;
-}
-.phaseLine:last-child{
-  border-bottom:none;
-  padding-bottom:0;
-}
-.phaseLine:first-of-type{padding-top:0}
+.teamName{font-weight:700}
 
 .calendarStage{margin-top:18px}
 .calendarStage:first-child{margin-top:0}
+
 .stageTitle{
-  font-size:20px;
+  font-size:18px;
   font-weight:800;
   margin:0 0 10px;
   letter-spacing:-.03em;
 }
-.stageSub{
-  color:var(--muted);
-  font-size:13px;
-  margin:0 0 12px;
+
+.matchesCompact{
+  display:grid;
+  gap:8px;
 }
 
-.matchesList{
-  display:grid;
-  gap:12px;
-}
 .matchCard{
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:14px;
+  border-radius:16px;
+  padding:12px;
 }
+
 .matchMeta{
   display:flex;
   justify-content:space-between;
-  gap:8px;
+  align-items:center;
+  gap:10px;
   flex-wrap:wrap;
   color:var(--muted);
   font-size:12px;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
-.matchTeams{
+
+.matchMain{
   display:grid;
   grid-template-columns:1fr auto 1fr;
-  gap:12px;
+  gap:10px;
   align-items:center;
 }
-.teamBox{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  justify-content:flex-end;
+
+.team{
   font-weight:800;
   font-size:16px;
+  line-height:1.15;
 }
-.teamBox.away{justify-content:flex-start}
-.vsBox{
+
+.team.home{text-align:right}
+.team.away{text-align:left}
+
+.vs{
   display:flex;
   align-items:center;
   justify-content:center;
-  min-width:62px;
-  padding:10px 12px;
-  border-radius:14px;
+  min-width:52px;
+  padding:8px 10px;
+  border-radius:12px;
   background:linear-gradient(135deg,rgba(97,218,251,.15),rgba(124,77,255,.15));
   border:1px solid rgba(255,255,255,.10);
   font-weight:800;
-}
-.venue{
-  margin-top:10px;
-  color:var(--muted);
   font-size:13px;
+}
+
+.venue{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
 }
 
 .small{font-size:12px;color:var(--muted)}
 
 @media (max-width:1080px){
-  .groupsGrid,.favoritesStrip,.infoGrid{
+  .groupsGrid{
     grid-template-columns:1fr;
   }
 }
+
 @media (max-width:720px){
-  body{padding:12px 10px 28px}
-  .heroCard{padding:18px 14px 16px}
+  body{padding:12px 10px 24px}
+  .heroCard{padding:16px 14px}
   .groupsGrid{grid-template-columns:1fr}
-  .matchTeams{grid-template-columns:1fr;justify-items:center}
-  .teamBox,.teamBox.away{justify-content:center}
+  .matchMain{grid-template-columns:1fr}
+  .team.home,.team.away{text-align:center}
+  .vs{margin:0 auto}
 }
 </style>
 </head>
@@ -395,7 +325,6 @@ h1{
       <div class="heroTop">
         <div>
           <h1>Coupe du Monde 2026</h1>
-          <p class="subtitle">Groupes complets, calendrier jusqu’à la finale et mise en avant des principaux favoris.</p>
         </div>
         <div class="chips">
           <span class="chip">48 équipes</span>
@@ -409,30 +338,18 @@ h1{
     <div class="tabs" id="tabs"></div>
   </div>
 
-  <section class="section active" id="overview"></section>
-  <section class="section" id="groups"></section>
+  <section class="section active" id="groups"></section>
   <section class="section" id="calendar"></section>
 
 </div>
 
 <script>
 const TABS = [
-  {id:'overview', label:'Favoris'},
   {id:'groups', label:'Groupes'},
   {id:'calendar', label:'Calendrier'}
 ];
 
 const DATA = {
-  favorites: [
-    {team:'Espagne', odd:'5/1'},
-    {team:'France', odd:'13/2'},
-    {team:'Angleterre', odd:'13/2'},
-    {team:'Argentine', odd:'17/2'},
-    {team:'Brésil', odd:'9/1'},
-    {team:'Portugal', odd:'12/1'},
-    {team:'Allemagne', odd:'16/1'},
-    {team:'Pays-Bas', odd:'25/1'}
-  ],
   groups: {
     A:['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],
     B:['Canada','Bosnie-Herzégovine','Qatar','Suisse'],
@@ -450,8 +367,11 @@ const DATA = {
   matches:[]
 };
 
-function toDatetimeLocal(date){
-  const pad = n => String(n).padStart(2,'0');
+function pad(n){
+  return String(n).padStart(2,'0');
+}
+
+function localDateTimeString(date){
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
@@ -475,8 +395,8 @@ function suggestVenue(groupLetter, pIndex, groupIndex){
   return venues[(groupIndex*2+pIndex)%venues.length];
 }
 
-function buildMatches(){
-  const start = new Date('2026-06-11T13:00:00');
+function buildGroupMatches(){
+  const start = new Date(2026, 5, 11, 13, 0, 0); // local time, pas UTC
   const letters = Object.keys(DATA.groups);
   const matches = [];
   let offsetHours = 0;
@@ -497,7 +417,7 @@ function buildMatches(){
         group:groupLetter,
         home:pair[0],
         away:pair[1],
-        date:toDatetimeLocal(d),
+        date:localDateTimeString(d),
         venue:suggestVenue(groupLetter, pIndex, index)
       });
       offsetHours += (pIndex % 2 === 0 ? 6 : 18);
@@ -506,61 +426,51 @@ function buildMatches(){
     offsetHours += 8;
   });
 
-  const knockoutDates = [
-    ['Seizièmes de finale','2026-06-28T15:00'],
-    ['Seizièmes de finale','2026-06-28T21:00'],
-    ['Seizièmes de finale','2026-06-29T15:00'],
-    ['Seizièmes de finale','2026-06-29T21:00'],
-    ['Seizièmes de finale','2026-06-30T15:00'],
-    ['Seizièmes de finale','2026-06-30T21:00'],
-    ['Seizièmes de finale','2026-07-01T15:00'],
-    ['Seizièmes de finale','2026-07-01T21:00'],
-    ['Seizièmes de finale','2026-07-02T15:00'],
-    ['Seizièmes de finale','2026-07-02T21:00'],
-    ['Seizièmes de finale','2026-07-03T15:00'],
-    ['Seizièmes de finale','2026-07-03T21:00'],
-    ['Seizièmes de finale','2026-07-04T15:00'],
-    ['Seizièmes de finale','2026-07-04T21:00'],
-    ['Seizièmes de finale','2026-07-05T15:00'],
-    ['Seizièmes de finale','2026-07-05T21:00'],
-
-    ['Huitièmes de finale','2026-07-07T18:00'],
-    ['Huitièmes de finale','2026-07-07T22:00'],
-    ['Huitièmes de finale','2026-07-08T18:00'],
-    ['Huitièmes de finale','2026-07-08T22:00'],
-    ['Huitièmes de finale','2026-07-09T18:00'],
-    ['Huitièmes de finale','2026-07-09T22:00'],
-    ['Huitièmes de finale','2026-07-10T18:00'],
-    ['Huitièmes de finale','2026-07-10T22:00'],
-
-    ['Quarts de finale','2026-07-12T18:00'],
-    ['Quarts de finale','2026-07-12T22:00'],
-    ['Quarts de finale','2026-07-13T18:00'],
-    ['Quarts de finale','2026-07-13T22:00'],
-
-    ['Demi-finales','2026-07-15T21:00'],
-    ['Demi-finales','2026-07-16T21:00'],
-
-    ['Match pour la 3e place','2026-07-18T19:00'],
-    ['Finale','2026-07-19T19:00']
-  ];
-
-  knockoutDates.forEach((row, i)=>{
-    matches.push({
-      id:`KO-${i+1}`,
-      stage:row[0],
-      group:'',
-      home:'À déterminer',
-      away:'À déterminer',
-      date:row[1],
-      venue:'À déterminer'
-    });
-  });
-
   return matches;
 }
 
-DATA.matches = buildMatches();
+function buildKnockoutMatches(){
+  return [
+    {id:'R32-1',stage:'Seizièmes de finale',home:'1A',away:'3H',date:'2026-06-28T15:00',venue:'Dallas'},
+    {id:'R32-2',stage:'Seizièmes de finale',home:'1B',away:'3G',date:'2026-06-28T21:00',venue:'Houston'},
+    {id:'R32-3',stage:'Seizièmes de finale',home:'1C',away:'3F',date:'2026-06-29T15:00',venue:'Atlanta'},
+    {id:'R32-4',stage:'Seizièmes de finale',home:'1D',away:'3E',date:'2026-06-29T21:00',venue:'Seattle'},
+    {id:'R32-5',stage:'Seizièmes de finale',home:'1E',away:'3D',date:'2026-06-30T15:00',venue:'Miami'},
+    {id:'R32-6',stage:'Seizièmes de finale',home:'1F',away:'3C',date:'2026-06-30T21:00',venue:'Vancouver'},
+    {id:'R32-7',stage:'Seizièmes de finale',home:'1G',away:'3B',date:'2026-07-01T15:00',venue:'Boston'},
+    {id:'R32-8',stage:'Seizièmes de finale',home:'1H',away:'3A',date:'2026-07-01T21:00',venue:'Philadelphia'},
+    {id:'R32-9',stage:'Seizièmes de finale',home:'1I',away:'2L',date:'2026-07-02T15:00',venue:'Kansas City'},
+    {id:'R32-10',stage:'Seizièmes de finale',home:'1J',away:'2K',date:'2026-07-02T21:00',venue:'Monterrey'},
+    {id:'R32-11',stage:'Seizièmes de finale',home:'1K',away:'2J',date:'2026-07-03T15:00',venue:'Guadalajara'},
+    {id:'R32-12',stage:'Seizièmes de finale',home:'1L',away:'2I',date:'2026-07-03T21:00',venue:'San Francisco Bay Area'},
+    {id:'R32-13',stage:'Seizièmes de finale',home:'2A',away:'2H',date:'2026-07-04T15:00',venue:'Los Angeles'},
+    {id:'R32-14',stage:'Seizièmes de finale',home:'2B',away:'2G',date:'2026-07-04T21:00',venue:'Toronto'},
+    {id:'R32-15',stage:'Seizièmes de finale',home:'2C',away:'2F',date:'2026-07-05T15:00',venue:'New York / New Jersey'},
+    {id:'R32-16',stage:'Seizièmes de finale',home:'2D',away:'2E',date:'2026-07-05T21:00',venue:'Mexico City'},
+
+    {id:'R16-1',stage:'Huitièmes de finale',home:'Vainqueur R32-1',away:'Vainqueur R32-2',date:'2026-07-07T18:00',venue:'Dallas'},
+    {id:'R16-2',stage:'Huitièmes de finale',home:'Vainqueur R32-3',away:'Vainqueur R32-4',date:'2026-07-07T22:00',venue:'Houston'},
+    {id:'R16-3',stage:'Huitièmes de finale',home:'Vainqueur R32-5',away:'Vainqueur R32-6',date:'2026-07-08T18:00',venue:'Atlanta'},
+    {id:'R16-4',stage:'Huitièmes de finale',home:'Vainqueur R32-7',away:'Vainqueur R32-8',date:'2026-07-08T22:00',venue:'Seattle'},
+    {id:'R16-5',stage:'Huitièmes de finale',home:'Vainqueur R32-9',away:'Vainqueur R32-10',date:'2026-07-09T18:00',venue:'Miami'},
+    {id:'R16-6',stage:'Huitièmes de finale',home:'Vainqueur R32-11',away:'Vainqueur R32-12',date:'2026-07-09T22:00',venue:'Vancouver'},
+    {id:'R16-7',stage:'Huitièmes de finale',home:'Vainqueur R32-13',away:'Vainqueur R32-14',date:'2026-07-10T18:00',venue:'Boston'},
+    {id:'R16-8',stage:'Huitièmes de finale',home:'Vainqueur R32-15',away:'Vainqueur R32-16',date:'2026-07-10T22:00',venue:'Philadelphia'},
+
+    {id:'QF-1',stage:'Quarts de finale',home:'Espagne',away:'Allemagne',date:'2026-07-12T18:00',venue:'New York / New Jersey'},
+    {id:'QF-2',stage:'Quarts de finale',home:'Argentine',away:'Pays-Bas',date:'2026-07-12T22:00',venue:'Dallas'},
+    {id:'QF-3',stage:'Quarts de finale',home:'France',away:'Portugal',date:'2026-07-13T18:00',venue:'Atlanta'},
+    {id:'QF-4',stage:'Quarts de finale',home:'Brésil',away:'Angleterre',date:'2026-07-13T22:00',venue:'Los Angeles'},
+
+    {id:'SF-1',stage:'Demi-finales',home:'Espagne',away:'Argentine',date:'2026-07-15T21:00',venue:'Dallas'},
+    {id:'SF-2',stage:'Demi-finales',home:'France',away:'Brésil',date:'2026-07-16T21:00',venue:'Atlanta'},
+
+    {id:'TP-1',stage:'Match pour la 3e place',home:'Portugal',away:'Angleterre',date:'2026-07-18T19:00',venue:'Miami'},
+    {id:'F-1',stage:'Finale',home:'Espagne',away:'France',date:'2026-07-19T19:00',venue:'New York / New Jersey'}
+  ];
+}
+
+DATA.matches = [...buildGroupMatches(), ...buildKnockoutMatches()];
 
 function renderTabs(){
   const tabs = document.getElementById('tabs');
@@ -579,67 +489,19 @@ function renderTabs(){
   });
 }
 
-function renderOverview(){
-  document.getElementById('overview').innerHTML = `
-    <div class="panel">
-      <div class="panelHeader">
-        <h2>Les favoris</h2>
-        <span class="badge">Sans probabilités</span>
-      </div>
-
-      <div class="favoritesStrip">
-        ${DATA.favorites.map((f,i)=>`
-          <div class="favCard">
-            <div class="favTop">
-              <div class="favRank">${i+1}</div>
-              <div class="favOdd">${f.odd}</div>
-            </div>
-            <div class="favTeam">${f.team}</div>
-            <div class="favNote">Parmi les sélections les plus attendues pour le tournoi.</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panelHeader">
-        <h2>Repères du tournoi</h2>
-        <span class="badge">Calendrier général</span>
-      </div>
-      <div class="infoGrid">
-        <div class="listCard">
-          <div class="phaseLine"><span>Début de la phase de groupes</span><strong>11 juin 2026</strong></div>
-          <div class="phaseLine"><span>Fin de la phase de groupes</span><strong>27 juin 2026</strong></div>
-          <div class="phaseLine"><span>Seizièmes de finale</span><strong>28 juin → 5 juillet</strong></div>
-          <div class="phaseLine"><span>Huitièmes de finale</span><strong>7 → 10 juillet</strong></div>
-        </div>
-        <div class="listCard">
-          <div class="phaseLine"><span>Quarts de finale</span><strong>12 → 13 juillet</strong></div>
-          <div class="phaseLine"><span>Demi-finales</span><strong>15 → 16 juillet</strong></div>
-          <div class="phaseLine"><span>Match pour la 3e place</span><strong>18 juillet</strong></div>
-          <div class="phaseLine"><span>Finale</span><strong>19 juillet 2026</strong></div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function renderGroups(){
   document.getElementById('groups').innerHTML = `
     <div class="panel">
       <div class="panelHeader">
-        <h2>Les groupes</h2>
-        <span class="badge">Exhaustivité des 12 groupes</span>
+        <h2>Groupes</h2>
+        <span class="badge">A à L</span>
       </div>
 
       <div class="groupsGrid">
         ${Object.entries(DATA.groups).map(([letter,teams])=>`
           <div class="groupCard">
             <div class="groupHeader">
-              <div>
-                <div class="groupLetter">Groupe ${letter}</div>
-                <div class="groupSub">${teams.length} équipes</div>
-              </div>
+              <div class="groupLetter">Groupe ${letter}</div>
             </div>
 
             <div class="teamList">
@@ -653,6 +515,25 @@ function renderGroups(){
           </div>
         `).join('')}
       </div>
+    </div>
+  `;
+}
+
+function matchHTML(match){
+  return `
+    <div class="matchCard">
+      <div class="matchMeta">
+        <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
+        <span>${formatDate(match.date)}</span>
+      </div>
+
+      <div class="matchMain">
+        <div class="team home">${match.home}</div>
+        <div class="vs">VS</div>
+        <div class="team away">${match.away}</div>
+      </div>
+
+      <div class="venue">${match.venue}</div>
     </div>
   `;
 }
@@ -671,8 +552,8 @@ function renderCalendar(){
   document.getElementById('calendar').innerHTML = `
     <div class="panel">
       <div class="panelHeader">
-        <h2>Calendrier complet</h2>
-        <span class="badge">Jusqu’à la finale</span>
+        <h2>Calendrier</h2>
+        <span class="badge">Complet</span>
       </div>
 
       ${stages.map(stage=>{
@@ -680,25 +561,8 @@ function renderCalendar(){
         return `
           <div class="calendarStage">
             <h3 class="stageTitle">${stage}</h3>
-            <p class="stageSub">${matches.length} match${matches.length>1?'s':''}</p>
-
-            <div class="matchesList">
-              ${matches.map(match=>`
-                <div class="matchCard">
-                  <div class="matchMeta">
-                    <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
-                    <span>${formatDate(match.date)}</span>
-                  </div>
-
-                  <div class="matchTeams">
-                    <div class="teamBox"><span>${match.home}</span></div>
-                    <div class="vsBox">VS</div>
-                    <div class="teamBox away"><span>${match.away}</span></div>
-                  </div>
-
-                  <div class="venue">${match.venue}</div>
-                </div>
-              `).join('')}
+            <div class="matchesCompact">
+              ${matches.map(matchHTML).join('')}
             </div>
           </div>
         `;
@@ -708,7 +572,6 @@ function renderCalendar(){
 }
 
 renderTabs();
-renderOverview();
 renderGroups();
 renderCalendar();
 </script>
