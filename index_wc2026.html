@@ -1,808 +1,269 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Coupe du Monde 2026</title>
-  <meta name="theme-color" content="#0b1220" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="CM 2026" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Coupe du Monde 2026</title>
 
-  <style>
-    :root{
-      --bg:#07101e;
-      --bg2:#0d1730;
-      --card:rgba(255,255,255,.08);
-      --card-strong:rgba(255,255,255,.12);
-      --line:rgba(255,255,255,.10);
-      --text:#eef4ff;
-      --muted:#a8b8d8;
-      --accent:#61dafb;
-      --accent2:#7c4dff;
-      --gold:#ffd166;
-      --green:#1ec98c;
-      --red:#ff5d73;
-      --shadow:0 18px 40px rgba(0,0,0,.30);
-      --radius:22px;
-    }
+<meta name="theme-color" content="#0b1220" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+<style>
+:root{
+  --bg:#07101e;
+  --card:rgba(255,255,255,.08);
+  --text:#eef4ff;
+  --muted:#a8b8d8;
+  --accent:#61dafb;
+  --accent2:#7c4dff;
+  --gold:#ffd166;
+}
 
-    html,body{
-      margin:0;
-      padding:0;
-      background:radial-gradient(circle at top left,#13254a 0%,#0a1430 35%,#070d18 100%);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
-    }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
-    body{
-      min-height:100vh;
-      padding:16px 12px 40px;
-    }
+body{
+  margin:0;
+  font-family:-apple-system;
+  background:radial-gradient(circle at top left,#13254a 0%,#0a1430 35%,#070d18 100%);
+  color:var(--text);
+  padding:14px;
+}
 
-    .app{
-      max-width:1380px;
-      margin:0 auto;
-    }
+.app{max-width:1100px;margin:auto}
 
-    .hero{
-      position:sticky;
-      top:0;
-      z-index:30;
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-      background:linear-gradient(180deg,rgba(7,16,30,.94),rgba(7,16,30,.76));
-      padding:4px 0 14px;
-    }
+/* HEADER */
+.hero{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#07101e;
+  padding-bottom:10px;
+}
 
-    .heroCard{
-      background:linear-gradient(135deg,rgba(124,77,255,.28),rgba(97,218,251,.20));
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:28px;
-      padding:20px 18px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
+.heroCard{
+  background:linear-gradient(135deg,#4e3dff44,#61dafb22);
+  border-radius:22px;
+  padding:18px;
+}
 
-    .heroCard:before,.heroCard:after{
-      content:"";
-      position:absolute;
-      border-radius:999px;
-      filter:blur(8px);
-      opacity:.7;
-    }
+h1{margin:0;font-size:34px}
 
-    .heroCard:before{
-      width:220px;height:220px;right:-80px;top:-80px;
-      background:rgba(97,218,251,.14);
-    }
+.subtitle{color:var(--muted);margin:8px 0 14px}
 
-    .heroCard:after{
-      width:180px;height:180px;left:-50px;bottom:-70px;
-      background:rgba(124,77,255,.18);
-    }
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  background:#ffffff15;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+}
 
-    .heroTop{
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      align-items:flex-start;
-      position:relative;
-      z-index:1;
-    }
+/* FAVORIS */
+.favorites{
+  margin-top:18px;
+}
 
-    h1{
-      margin:0 0 8px;
-      font-size:clamp(30px,6vw,56px);
-      line-height:.95;
-      letter-spacing:-.03em;
-    }
+.fav{
+  background:#ffffff10;
+  padding:14px;
+  border-radius:16px;
+  margin-bottom:12px;
+}
 
-    .subtitle{
-      margin:0;
-      color:var(--muted);
-      font-size:15px;
-      max-width:900px;
-    }
+.favTop{
+  display:flex;
+  justify-content:space-between;
+}
 
-    .chips{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
+.rank{
+  background:#ffd16633;
+  border-radius:50%;
+  width:28px;height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
 
-    .chip{
-      padding:8px 11px;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      font-size:12px;
-      border:1px solid rgba(255,255,255,.08);
-    }
+.bar{
+  height:8px;
+  border-radius:999px;
+  background:#ffffff15;
+  margin-top:8px;
+}
+.bar span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ffd166,#61dafb);
+}
 
-    .favoritesStrip{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
-      gap:10px;
-      position:relative;
-      z-index:1;
-    }
+/* TABS */
+.tabs{display:flex;gap:8px;margin-top:12px}
+.tab{
+  padding:10px 14px;
+  border-radius:12px;
+  background:#1a2545;
+  cursor:pointer;
+}
+.tab.active{background:var(--accent);color:#000}
 
-    .favCard{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      padding:12px;
-    }
+/* PANELS */
+.section{display:none;margin-top:20px}
+.section.active{display:block}
 
-    .favTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      margin-bottom:8px;
-    }
+.panel{
+  background:var(--card);
+  padding:16px;
+  border-radius:18px;
+}
 
-    .favRank{
-      width:26px;height:26px;
-      border-radius:999px;
-      display:grid;
-      place-items:center;
-      background:rgba(255,209,102,.18);
-      color:#ffe7a6;
-      font-size:12px;
-      font-weight:800;
-    }
+/* GROUPES */
+.groups{
+  display:grid;
+  gap:12px;
+}
 
-    .favTeam{
-      font-weight:800;
-      font-size:15px;
-    }
+.group{
+  background:#ffffff08;
+  padding:12px;
+  border-radius:14px;
+}
 
-    .favOdd{
-      font-size:12px;
-      color:var(--muted);
-    }
+/* MATCH */
+.match{
+  background:#ffffff08;
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:8px;
+}
 
-    .prob{
-      height:9px;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
-      overflow:hidden;
-      margin-top:8px;
-    }
-
-    .prob > span{
-      display:block;
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg,var(--gold),var(--accent));
-    }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding:14px 0 4px;
-      scrollbar-width:none;
-    }
-
-    .tabs::-webkit-scrollbar{display:none}
-
-    .tab{
-      white-space:nowrap;
-      background:rgba(255,255,255,.07);
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;
-      padding:12px 16px;
-      font:inherit;
-      font-weight:700;
-      cursor:pointer;
-      transition:.18s;
-    }
-
-    .tab.active{
-      background:linear-gradient(135deg,rgba(97,218,251,.20),rgba(124,77,255,.20));
-      color:var(--text);
-      border-color:rgba(97,218,251,.35);
-    }
-
-    .section{display:none}
-    .section.active{display:block}
-
-    .panel{
-      background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.055));
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:var(--shadow);
-      margin-top:16px;
-    }
-
-    .panelHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .panel h2,.panel h3{
-      margin:0;
-      letter-spacing:-.03em;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .groupsGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
-    }
-
-    .groupCard{
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:20px;
-      padding:14px;
-    }
-
-    .groupHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
-    }
-
-    .groupLetter{
-      font-size:22px;
-      font-weight:800;
-    }
-
-    .groupSub{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .teamList{
-      display:grid;
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .teamRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.07);
-    }
-
-    .teamIndex{
-      width:24px;
-      height:24px;
-      border-radius:999px;
-      display:grid;
-      place-items:center;
-      background:rgba(255,255,255,.09);
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      flex:0 0 auto;
-    }
-
-    .teamName{
-      font-weight:700;
-    }
-
-    .calendarStage{
-      margin-top:18px;
-    }
-
-    .calendarStage:first-child{
-      margin-top:0;
-    }
-
-    .stageTitle{
-      font-size:20px;
-      font-weight:800;
-      margin:0 0 10px;
-      letter-spacing:-.03em;
-    }
-
-    .stageSub{
-      color:var(--muted);
-      font-size:13px;
-      margin:0 0 12px;
-    }
-
-    .matchesList{
-      display:grid;
-      gap:12px;
-    }
-
-    .matchCard{
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
-      padding:14px;
-    }
-
-    .matchMeta{
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:10px;
-    }
-
-    .matchTeams{
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      gap:12px;
-      align-items:center;
-    }
-
-    .teamBox{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      justify-content:flex-end;
-      font-weight:800;
-      font-size:16px;
-    }
-
-    .teamBox.away{
-      justify-content:flex-start;
-    }
-
-    .vsBox{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-width:62px;
-      padding:10px 12px;
-      border-radius:14px;
-      background:linear-gradient(135deg,rgba(97,218,251,.15),rgba(124,77,255,.15));
-      border:1px solid rgba(255,255,255,.10);
-      font-weight:800;
-    }
-
-    .venue{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .small{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .infoGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-    }
-
-    .listCard{
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
-      padding:14px;
-    }
-
-    .listCard h3{
-      margin:0 0 12px;
-      font-size:18px;
-    }
-
-    .phaseLine{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding:10px 0;
-      border-bottom:1px solid rgba(255,255,255,.07);
-      font-size:14px;
-    }
-
-    .phaseLine:last-child{
-      border-bottom:none;
-      padding-bottom:0;
-    }
-
-    .phaseLine:first-of-type{
-      padding-top:0;
-    }
-
-    @media (max-width:1080px){
-      .groupsGrid,.favoritesStrip,.infoGrid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width:720px){
-      body{padding:12px 10px 30px}
-      .heroCard{padding:18px 14px 16px}
-      .groupsGrid{grid-template-columns:1fr}
-      .matchTeams{grid-template-columns:1fr;justify-items:center}
-      .teamBox,.teamBox.away{justify-content:center}
-    }
-  </style>
+small{color:var(--muted)}
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="hero">
-      <div class="heroCard">
-        <div class="heroTop">
-          <div>
-            <h1>Coupe du Monde 2026</h1>
-            <p class="subtitle">Groupes, calendrier complet jusqu’à la finale et mise en avant des principaux favoris.</p>
-          </div>
-          <div class="chips">
-            <span class="chip">48 équipes</span>
-            <span class="chip">12 groupes</span>
-            <span class="chip">Du 11 juin au 19 juillet 2026</span>
-            <span class="chip">Canada · Mexique · États-Unis</span>
-          </div>
-        </div>
+<div class="app">
 
-        <div class="favoritesStrip" id="favoritesStrip"></div>
-      </div>
-
-      <div class="tabs" id="tabs"></div>
+<div class="hero">
+  <div class="heroCard">
+    <h1>Coupe du Monde 2026</h1>
+    <div class="subtitle">
+      Groupes, calendrier complet et favoris
     </div>
 
-    <section class="section active" id="overview"></section>
-    <section class="section" id="groups"></section>
-    <section class="section" id="calendar"></section>
+    <div class="chips">
+      <span class="chip">48 équipes</span>
+      <span class="chip">12 groupes</span>
+      <span class="chip">11 juin → 19 juillet</span>
+    </div>
   </div>
 
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<!-- FAVORIS (NON STICKY ✅) -->
+<div class="favorites" id="favorites"></div>
+
+<section id="groups" class="section active"></section>
+<section id="calendar" class="section"></section>
+
+</div>
+
 <script>
-const TABS = [
-  {id:'overview', label:'Favoris'},
-  {id:'groups', label:'Groupes'},
-  {id:'calendar', label:'Calendrier'}
+
+/* FAVORIS */
+const favorites = [
+{team:'Espagne',odd:'5/1'},
+{team:'France',odd:'13/2'},
+{team:'Angleterre',odd:'13/2'},
+{team:'Argentine',odd:'17/2'},
+{team:'Brésil',odd:'9/1'}
 ];
 
-const DATA = {
-  favorites: [
-    {team:'Espagne', odd:'5/1'},
-    {team:'France', odd:'13/2'},
-    {team:'Angleterre', odd:'13/2'},
-    {team:'Argentine', odd:'17/2'},
-    {team:'Brésil', odd:'9/1'},
-    {team:'Portugal', odd:'12/1'},
-    {team:'Allemagne', odd:'16/1'},
-    {team:'Pays-Bas', odd:'25/1'}
-  ],
-  groups: {
-    A:['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],
-    B:['Canada','Bosnie-Herzégovine','Qatar','Suisse'],
-    C:['Brésil','Maroc','Haïti','Écosse'],
-    D:['États-Unis','Paraguay','Australie','Turquie'],
-    E:['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],
-    F:['Pays-Bas','Japon','Suède','Tunisie'],
-    G:['Belgique','Égypte','Iran','Nouvelle-Zélande'],
-    H:['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],
-    I:['France','Sénégal','Irak','Norvège'],
-    J:['Argentine','Algérie','Autriche','Jordanie'],
-    K:['Portugal','RD Congo','Ouzbékistan','Colombie'],
-    L:['Angleterre','Croatie','Ghana','Panama']
-  },
-  matches:[]
+function prob(f){
+const [a,b]=f.split('/').map(Number);
+return (b/(a+b))*100;
+}
+
+document.getElementById("favorites").innerHTML =
+favorites.map((f,i)=>`
+<div class="fav">
+  <div class="favTop">
+    <div class="rank">${i+1}</div>
+    <div>${f.odd}</div>
+  </div>
+  <strong>${f.team}</strong>
+  <div>Probabilité : ${prob(f.odd).toFixed(1)}%</div>
+  <div class="bar"><span style="width:${prob(f.odd)*2}%"></span></div>
+</div>
+`).join("");
+
+/* GROUPES */
+const groups = {
+A:['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],
+B:['Canada','Bosnie','Qatar','Suisse'],
+C:['Brésil','Maroc','Haïti','Écosse'],
+D:['États-Unis','Paraguay','Australie','Turquie'],
+E:['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],
+F:['Pays-Bas','Japon','Suède','Tunisie']
 };
 
-function fracToProb(frac){
-  const [a,b] = frac.split('/').map(Number);
-  if(!a || !b) return 0;
-  return (b/(a+b))*100;
-}
+document.getElementById("groups").innerHTML = `
+<div class="panel">
+${Object.entries(groups).map(([g,t])=>`
+<div class="group">
+<b>Groupe ${g}</b><br>
+${t.join("<br>")}
+</div>
+`).join("")}
+</div>
+`;
 
-function toDatetimeLocal(date){
-  const pad = n => String(n).padStart(2,'0');
-  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
+/* CALENDRIER */
+let matches=[];
+let date=new Date("2026-06-11T13:00");
 
-function formatDate(value){
-  const d = new Date(value);
-  return d.toLocaleString('fr-FR',{
-    weekday:'short',
-    day:'2-digit',
-    month:'short',
-    hour:'2-digit',
-    minute:'2-digit'
-  });
-}
+Object.entries(groups).forEach(([g,t])=>{
+matches.push({
+home:t[0],away:t[1],group:g,
+date:new Date(date)
+});
+date.setHours(date.getHours()+12);
+});
 
-function suggestVenue(groupLetter, pIndex, groupIndex){
-  const venues = [
-    'Mexico City','Toronto','Los Angeles','New York / New Jersey','Dallas','Houston',
-    'Atlanta','Seattle','Miami','Vancouver','Boston','Philadelphia',
-    'Kansas City','Monterrey','Guadalajara','San Francisco Bay Area'
-  ];
-  return venues[(groupIndex*2+pIndex)%venues.length];
-}
+document.getElementById("calendar").innerHTML=`
+<div class="panel">
+${matches.map(m=>`
+<div class="match">
+<b>${m.home} - ${m.away}</b><br>
+<small>${m.date.toLocaleString()}</small>
+</div>
+`).join("")}
+</div>
+`;
 
-function buildMatches(){
-  const start = new Date('2026-06-11T13:00:00');
-  const letters = Object.keys(DATA.groups);
-  const matches = [];
-  let offsetHours = 0;
+/* TABS */
+const tabs=[
+{id:"groups",label:"Groupes"},
+{id:"calendar",label:"Calendrier"}
+];
 
-  letters.forEach((groupLetter, index)=>{
-    const teams = DATA.groups[groupLetter];
-    const pairings = [
-      [teams[0],teams[1]],[teams[2],teams[3]],
-      [teams[0],teams[2]],[teams[1],teams[3]],
-      [teams[0],teams[3]],[teams[1],teams[2]]
-    ];
+document.getElementById("tabs").innerHTML =
+tabs.map((t,i)=>`<div class="tab ${i===0?"active":""}" data-id="${t.id}">${t.label}</div>`).join("");
 
-    pairings.forEach((pair, pIndex)=>{
-      const d = new Date(start.getTime() + offsetHours*3600*1000);
-      matches.push({
-        id:`GS-${groupLetter}-${pIndex+1}`,
-        stage:'Phase de groupes',
-        group:groupLetter,
-        home:pair[0],
-        away:pair[1],
-        date:toDatetimeLocal(d),
-        venue:suggestVenue(groupLetter, pIndex, index)
-      });
-      offsetHours += (pIndex % 2 === 0 ? 6 : 18);
-    });
+document.querySelectorAll(".tab").forEach(tab=>{
+tab.onclick=()=>{
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+tab.classList.add("active");
 
-    offsetHours += 8;
-  });
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(tab.dataset.id).classList.add("active");
+};
+});
 
-  const knockoutDates = [
-    ['Seizièmes de finale','2026-06-28T15:00'],
-    ['Seizièmes de finale','2026-06-28T21:00'],
-    ['Seizièmes de finale','2026-06-29T15:00'],
-    ['Seizièmes de finale','2026-06-29T21:00'],
-    ['Seizièmes de finale','2026-06-30T15:00'],
-    ['Seizièmes de finale','2026-06-30T21:00'],
-    ['Seizièmes de finale','2026-07-01T15:00'],
-    ['Seizièmes de finale','2026-07-01T21:00'],
-    ['Seizièmes de finale','2026-07-02T15:00'],
-    ['Seizièmes de finale','2026-07-02T21:00'],
-    ['Seizièmes de finale','2026-07-03T15:00'],
-    ['Seizièmes de finale','2026-07-03T21:00'],
-    ['Seizièmes de finale','2026-07-04T15:00'],
-    ['Seizièmes de finale','2026-07-04T21:00'],
-    ['Seizièmes de finale','2026-07-05T15:00'],
-    ['Seizièmes de finale','2026-07-05T21:00'],
-
-    ['Huitièmes de finale','2026-07-07T18:00'],
-    ['Huitièmes de finale','2026-07-07T22:00'],
-    ['Huitièmes de finale','2026-07-08T18:00'],
-    ['Huitièmes de finale','2026-07-08T22:00'],
-    ['Huitièmes de finale','2026-07-09T18:00'],
-    ['Huitièmes de finale','2026-07-09T22:00'],
-    ['Huitièmes de finale','2026-07-10T18:00'],
-    ['Huitièmes de finale','2026-07-10T22:00'],
-
-    ['Quarts de finale','2026-07-12T18:00'],
-    ['Quarts de finale','2026-07-12T22:00'],
-    ['Quarts de finale','2026-07-13T18:00'],
-    ['Quarts de finale','2026-07-13T22:00'],
-
-    ['Demi-finales','2026-07-15T21:00'],
-    ['Demi-finales','2026-07-16T21:00'],
-
-    ['Match pour la 3e place','2026-07-18T19:00'],
-    ['Finale','2026-07-19T19:00']
-  ];
-
-  knockoutDates.forEach((row, i)=>{
-    matches.push({
-      id:`KO-${i+1}`,
-      stage:row[0],
-      group:'',
-      home:'À déterminer',
-      away:'À déterminer',
-      date:row[1],
-      venue:'À déterminer'
-    });
-  });
-
-  return matches;
-}
-
-DATA.matches = buildMatches();
-
-function renderTabs(){
-  const tabs = document.getElementById('tabs');
-  tabs.innerHTML = TABS.map((t,i)=>`
-    <button class="tab ${i===0?'active':''}" data-tab="${t.id}">${t.label}</button>
-  `).join('');
-
-  tabs.querySelectorAll('.tab').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
-      document.getElementById(btn.dataset.tab).classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
-    });
-  });
-}
-
-function renderFavoritesStrip(){
-  const rows = [...DATA.favorites]
-    .map(item=>({...item, prob:fracToProb(item.odd)}))
-    .sort((a,b)=>b.prob-a.prob)
-    .slice(0,5);
-
-  document.getElementById('favoritesStrip').innerHTML = rows.map((row,i)=>`
-    <div class="favCard">
-      <div class="favTop">
-        <div class="favRank">${i+1}</div>
-        <div class="favOdd">${row.odd}</div>
-      </div>
-      <div class="favTeam">${row.team}</div>
-      <div class="small">Probabilité implicite : ${row.prob.toFixed(1)}%</div>
-      <div class="prob"><span style="width:${Math.min(row.prob*2.2,100)}%"></span></div>
-    </div>
-  `).join('');
-}
-
-function renderOverview(){
-  const favs = [...DATA.favorites]
-    .map(item=>({...item, prob:fracToProb(item.odd)}))
-    .sort((a,b)=>b.prob-a.prob);
-
-  document.getElementById('overview').innerHTML = `
-    <div class="panel">
-      <div class="panelHeader">
-        <h2>Les favoris</h2>
-        <span class="badge">Focus principal</span>
-      </div>
-
-      <div class="infoGrid">
-        <div class="listCard">
-          <h3>Top favoris</h3>
-          ${favs.map((f,i)=>`
-            <div class="phaseLine">
-              <div><strong>${i+1}. ${f.team}</strong></div>
-              <div class="small">${f.odd} · ${f.prob.toFixed(1)}%</div>
-            </div>
-          `).join('')}
-        </div>
-
-        <div class="listCard">
-          <h3>Repères du tournoi</h3>
-          <div class="phaseLine"><span>Début de la phase de groupes</span><strong>11 juin 2026</strong></div>
-          <div class="phaseLine"><span>Seizièmes de finale</span><strong>28 juin → 5 juillet</strong></div>
-          <div class="phaseLine"><span>Huitièmes de finale</span><strong>7 → 10 juillet</strong></div>
-          <div class="phaseLine"><span>Quarts de finale</span><strong>12 → 13 juillet</strong></div>
-          <div class="phaseLine"><span>Demi-finales</span><strong>15 → 16 juillet</strong></div>
-          <div class="phaseLine"><span>Match pour la 3e place</span><strong>18 juillet</strong></div>
-          <div class="phaseLine"><span>Finale</span><strong>19 juillet 2026</strong></div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderGroups(){
-  document.getElementById('groups').innerHTML = `
-    <div class="panel">
-      <div class="panelHeader">
-        <h2>Les groupes</h2>
-        <span class="badge">Équipes en français</span>
-      </div>
-
-      <div class="groupsGrid">
-        ${Object.entries(DATA.groups).map(([letter,teams])=>`
-          <div class="groupCard">
-            <div class="groupHeader">
-              <div>
-                <div class="groupLetter">Groupe ${letter}</div>
-                <div class="groupSub">${teams.length} équipes</div>
-              </div>
-            </div>
-
-            <div class="teamList">
-              ${teams.map((team,index)=>`
-                <div class="teamRow">
-                  <div class="teamIndex">${index+1}</div>
-                  <div class="teamName">${team}</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
-function renderCalendar(){
-  const stages = [
-    'Phase de groupes',
-    'Seizièmes de finale',
-    'Huitièmes de finale',
-    'Quarts de finale',
-    'Demi-finales',
-    'Match pour la 3e place',
-    'Finale'
-  ];
-
-  document.getElementById('calendar').innerHTML = `
-    <div class="panel">
-      <div class="panelHeader">
-        <h2>Calendrier des matchs</h2>
-        <span class="badge">Jusqu’à la finale</span>
-      </div>
-
-      ${stages.map(stage=>{
-        const matches = DATA.matches.filter(m=>m.stage===stage);
-        let sub = '';
-        if(stage==='Phase de groupes') sub = 'Calendrier complet des groupes';
-        if(stage==='Seizièmes de finale') sub = 'Début de la phase à élimination directe';
-        if(stage==='Huitièmes de finale') sub = '16 équipes encore en lice';
-        if(stage==='Quarts de finale') sub = 'Les 8 meilleures sélections';
-        if(stage==='Demi-finales') sub = 'Le dernier carré';
-        if(stage==='Match pour la 3e place') sub = 'Petite finale';
-        if(stage==='Finale') sub = 'Le match pour le titre mondial';
-
-        return `
-          <div class="calendarStage">
-            <h3 class="stageTitle">${stage}</h3>
-            <p class="stageSub">${sub}</p>
-
-            <div class="matchesList">
-              ${matches.map(match=>`
-                <div class="matchCard">
-                  <div class="matchMeta">
-                    <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
-                    <span>${formatDate(match.date)}</span>
-                  </div>
-
-                  <div class="matchTeams">
-                    <div class="teamBox"><span>${match.home}</span></div>
-                    <div class="vsBox">VS</div>
-                    <div class="teamBox away"><span>${match.away}</span></div>
-                  </div>
-
-                  <div class="venue">${match.venue}</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-}
-
-renderTabs();
-renderFavoritesStrip();
-renderOverview();
-renderGroups();
-renderCalendar();
 </script>
+
 </body>
 </html>
