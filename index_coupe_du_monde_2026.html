@@ -39,13 +39,19 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)}
 .groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .groupCard,.probaCard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px}
-.groupHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.groupHeader{display:block;margin-bottom:10px}
 .groupLetter{font-size:22px;font-weight:800}
 .tableWrap{overflow:auto}
-.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px}
-.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.07);text-align:right}
+.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle}
 .standings th:first-child,.standings td:first-child,.thirdsTable th:first-child,.thirdsTable td:first-child,.thirdsTable th:nth-child(2),.thirdsTable td:nth-child(2){text-align:left}
+.standings th:not(:first-child),.standings td:not(:first-child),.thirdsTable th:not(:first-child),.thirdsTable td:not(:first-child){text-align:center}
 .standings tr:last-child td,.thirdsTable tr:last-child td{border-bottom:none}
+.standings th:nth-child(1),.standings td:nth-child(1){width:58%}
+.standings th:nth-child(2),.standings td:nth-child(2){width:10%}
+.standings th:nth-child(3),.standings td:nth-child(3){width:8%}
+.standings th:nth-child(4),.standings td:nth-child(4){width:12%}
+.standings th:nth-child(5),.standings td:nth-child(5){width:12%}
 .calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
 .matchesCompact{display:grid;gap:8px}
@@ -314,11 +320,11 @@ function renderGroups(){
   const tables=computeTables(), thirds=bestThirds(tables).slice(0,8);
   document.getElementById('groups').innerHTML=`
     <div class="panel">
-      <div class="panelHeader"><h2>Groupes</h2><button class="btn secondary" id="refreshBtn">Actualiser</button></div>
+      <div class="panelHeader"><h2>Groupes</h2></div>
       <div class="groupsGrid">
         ${Object.entries(GROUPS).map(([letter])=>`
           <div class="groupCard">
-            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div><div class="badge">${GROUPS[letter].length} équipes</div></div>
+            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div></div>
             <div class="tableWrap">
               <table class="standings">
                 <thead><tr><th>Équipe</th><th>Pts</th><th>J</th><th>Diff</th><th>BP</th></tr></thead>
@@ -337,7 +343,7 @@ function renderGroups(){
         </table>
       </div>
     </div>`;
-  document.getElementById('refreshBtn').onclick=()=>render();
+
 }
 
 function matchHTML(match){
@@ -389,74 +395,186 @@ function renderCalendar(){
 
 function buildPortugalWinnerScenario(){
   return {
-    title: 'Scénario : Portugal vainqueur',
-    path: [
-      { round:'Seizièmes', match:'Portugal – Côte d’Ivoire' },
-      { round:'Huitièmes', match:'Portugal – Suisse' },
-      { round:'Quarts', match:'Portugal – Argentine' },
-      { round:'Demi-finales', match:'Portugal – Angleterre' },
-      { round:'Finale', match:'Portugal – Espagne' }
-    ],
-    winner:'Portugal',
-    thirdPlace:'France'
+    title: "Scénario : Portugal vainqueur",
+    content: `
+      <div class="note" style="line-height:1.7">
+        <strong>Avec les 2 équipes les plus fortes de chaque groupe, mais en forçant cette fois le Portugal vainqueur final, ça donne un tableau comme celui-ci.</strong>
+        <br><br>
+
+        <strong>Qualifiés par groupe</strong>
+        <br>
+        A : Mexique, Corée du Sud
+        <br>
+        B : Suisse, Canada
+        <br>
+        C : Brésil, Maroc
+        <br>
+        D : États-Unis, Turquie
+        <br>
+        E : Allemagne, Équateur
+        <br>
+        F : Pays-Bas, Japon
+        <br>
+        G : Belgique, Iran
+        <br>
+        H : Espagne, Uruguay
+        <br>
+        I : France, Sénégal
+        <br>
+        J : Argentine, Autriche
+        <br>
+        K : Portugal, Colombie
+        <br>
+        L : Angleterre, Croatie
+
+        <br><br>
+        <strong>Meilleurs 3es :</strong>
+        <br>
+        Norvège, Paraguay, Côte d’Ivoire, Suède, Algérie, Tchéquie, Écosse, Bosnie-Herzégovine
+
+        <br><br>
+        <strong>Seizièmes de finale</strong>
+        <br>
+        • Mexique – Canada
+        <br>
+        • Allemagne – Bosnie-Herzégovine
+        <br>
+        • Pays-Bas – Maroc
+        <br>
+        • Brésil – Japon
+        <br>
+        • France – Paraguay
+        <br>
+        • Équateur – Sénégal
+        <br>
+        • Mexique – Écosse
+        <br>
+        • Angleterre – Algérie
+        <br>
+        • États-Unis – Suède
+        <br>
+        • Belgique – Tchéquie
+        <br>
+        • Colombie – Croatie
+        <br>
+        • Espagne – Autriche
+        <br>
+        • Suisse – Norvège
+        <br>
+        • Argentine – Uruguay
+        <br>
+        • Portugal – Côte d’Ivoire
+        <br>
+        • Turquie – Iran
+
+        <br><br>
+        <strong>Vainqueurs :</strong>
+        <br>
+        Mexique, Allemagne, Pays-Bas, Brésil, France, Sénégal, Mexique, Angleterre, États-Unis, Belgique, Croatie, Espagne, Suisse, Argentine, Portugal, Turquie
+
+        <br><br>
+        <strong>Huitièmes de finale</strong>
+        <br>
+        • Allemagne – France
+        <br>
+        • Mexique – Pays-Bas
+        <br>
+        • Brésil – Sénégal
+        <br>
+        • Mexique – Angleterre
+        <br>
+        • Croatie – Espagne
+        <br>
+        • États-Unis – Belgique
+        <br>
+        • Argentine – Turquie
+        <br>
+        • Suisse – Portugal
+
+        <br><br>
+        <strong>Vainqueurs :</strong>
+        <br>
+        France, Pays-Bas, Brésil, Angleterre, Espagne, Belgique, Argentine, Portugal
+
+        <br><br>
+        <strong>Quarts de finale</strong>
+        <br>
+        • France – Pays-Bas
+        <br>
+        • Espagne – Belgique
+        <br>
+        • Brésil – Angleterre
+        <br>
+        • Argentine – Portugal
+
+        <br><br>
+        <strong>Vainqueurs :</strong>
+        <br>
+        France, Espagne, Angleterre, Portugal
+
+        <br><br>
+        <strong>Demi-finales</strong>
+        <br>
+        • France – Espagne
+        <br>
+        • Angleterre – Portugal
+
+        <br><br>
+        <strong>Vainqueurs :</strong>
+        <br>
+        Espagne, Portugal
+
+        <br><br>
+        <strong>Finale</strong>
+        <br>
+        • Espagne – Portugal
+
+        <br><br>
+        <strong>Vainqueur :</strong>
+        <br>
+        • Portugal
+
+        <br><br>
+        <strong>Match pour la 3e place</strong>
+        <br>
+        • France – Angleterre
+
+        <br><br>
+        <strong>3e place probable :</strong>
+        <br>
+        • France
+
+        <br><br>
+        <strong>Parcours du Portugal</strong>
+        <br>
+        • 16es : Portugal – Côte d’Ivoire
+        <br>
+        • 8es : Portugal – Suisse
+        <br>
+        • Quarts : Portugal – Argentine
+        <br>
+        • Demie : Portugal – Angleterre
+        <br>
+        • Finale : Portugal – Espagne
+      </div>
+    `
   };
 }
 
-function scenarioCardHTML(scenario){
-  return `
-    <div class="probaCard">
-      <div class="probaTop">
-        <div class="probaTeam">${scenario.title}</div>
-      </div>
-      <div style="display:grid;gap:8px;margin-top:10px">
-        ${scenario.path.map(step => `
-          <div class="qualLine">
-            <span>${step.round}</span>
-            <span>${step.match}</span>
-          </div>
-        `).join('')}
-      </div>
-      <div class="note" style="margin-top:12px">
-        Vainqueur : <strong>${scenario.winner}</strong><br>
-        3e place : <strong>${scenario.thirdPlace}</strong>
-      </div>
-    </div>
-  `;
-}
-
 function renderProba(){
-  const list=allTeams()
-    .map(team=>({team,pct:Math.max(1,Math.round((100/(state.odds[team]||200))*10)/10)}))
-    .sort((a,b)=>b.pct-a.pct);
-
+  const list=allTeams().map(team=>({team,pct:Math.max(1,Math.round((100/(state.odds[team]||200))*10)/10)})).sort((a,b)=>b.pct-a.pct);
   const portugalScenario = buildPortugalWinnerScenario();
-
   document.getElementById('proba').innerHTML=`
     <div class="panel">
       <div class="panelHeader"><h2>Probabilités</h2><span class="badge">Basées sur les cotes</span></div>
       <div class="probaGrid">
-        ${list.map((item,index)=>`
-          <div class="probaCard">
-            <div class="probaTop">
-              <div style="display:flex;align-items:center;gap:10px">
-                <div class="rank">${index+1}</div>
-                <div class="probaTeam">${item.team}</div>
-              </div>
-              <div class="probaPct">${item.pct}%</div>
-            </div>
-            <div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div>
-          </div>
-        `).join('')}
+        ${list.map((item,index)=>`<div class="probaCard"><div class="probaTop"><div style="display:flex;align-items:center;gap:10px"><div class="rank">${index+1}</div><div class="probaTeam">${item.team}</div></div><div class="probaPct">${item.pct}%</div></div><div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div></div>`).join('')}
       </div>
     </div>
-
     <div class="panel">
-      <div class="panelHeader"><h2>Scénarios</h2><span class="badge">Simulation éditoriale</span></div>
-      <div class="probaGrid">
-        ${scenarioCardHTML(portugalScenario)}
-      </div>
-    </div>
-  `;
+      <div class="panelHeader"><h2>Scénario : Portugal vainqueur</h2><span class="badge">Texte complet</span></div>
+      ${portugalScenario.content}
+    </div>`;
 }
 
 function render(){
