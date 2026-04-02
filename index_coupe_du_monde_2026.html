@@ -39,19 +39,13 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)}
 .groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .groupCard,.probaCard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px}
-.groupHeader{display:block;margin-bottom:10px}
+.groupHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .groupLetter{font-size:22px;font-weight:800}
 .tableWrap{overflow:auto}
-.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
-.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle}
+.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px}
+.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.07);text-align:right}
 .standings th:first-child,.standings td:first-child,.thirdsTable th:first-child,.thirdsTable td:first-child,.thirdsTable th:nth-child(2),.thirdsTable td:nth-child(2){text-align:left}
-.standings th:not(:first-child),.standings td:not(:first-child),.thirdsTable th:not(:first-child),.thirdsTable td:not(:first-child){text-align:center}
 .standings tr:last-child td,.thirdsTable tr:last-child td{border-bottom:none}
-.standings th:nth-child(1),.standings td:nth-child(1){width:58%}
-.standings th:nth-child(2),.standings td:nth-child(2){width:10%}
-.standings th:nth-child(3),.standings td:nth-child(3){width:8%}
-.standings th:nth-child(4),.standings td:nth-child(4){width:12%}
-.standings th:nth-child(5),.standings td:nth-child(5){width:12%}
 .calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
 .matchesCompact{display:grid;gap:8px}
@@ -320,11 +314,11 @@ function renderGroups(){
   const tables=computeTables(), thirds=bestThirds(tables).slice(0,8);
   document.getElementById('groups').innerHTML=`
     <div class="panel">
-      <div class="panelHeader"><h2>Groupes</h2></div>
+      <div class="panelHeader"><h2>Groupes</h2><button class="btn secondary" id="refreshBtn">Actualiser</button></div>
       <div class="groupsGrid">
         ${Object.entries(GROUPS).map(([letter])=>`
           <div class="groupCard">
-            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div></div>
+            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div><div class="badge">${GROUPS[letter].length} équipes</div></div>
             <div class="tableWrap">
               <table class="standings">
                 <thead><tr><th>Équipe</th><th>Pts</th><th>J</th><th>Diff</th><th>BP</th></tr></thead>
@@ -343,7 +337,7 @@ function renderGroups(){
         </table>
       </div>
     </div>`;
-
+  document.getElementById('refreshBtn').onclick=()=>render();
 }
 
 function matchHTML(match){
@@ -392,16 +386,77 @@ function renderCalendar(){
   bindScoreInputs();
 }
 
+
+function buildPortugalWinnerScenario(){
+  return {
+    title: 'Scénario : Portugal vainqueur',
+    path: [
+      { round:'Seizièmes', match:'Portugal – Côte d’Ivoire' },
+      { round:'Huitièmes', match:'Portugal – Suisse' },
+      { round:'Quarts', match:'Portugal – Argentine' },
+      { round:'Demi-finales', match:'Portugal – Angleterre' },
+      { round:'Finale', match:'Portugal – Espagne' }
+    ],
+    winner:'Portugal',
+    thirdPlace:'France'
+  };
+}
+
+function scenarioCardHTML(scenario){
+  return `
+    <div class="probaCard">
+      <div class="probaTop">
+        <div class="probaTeam">${scenario.title}</div>
+      </div>
+      <div style="display:grid;gap:8px;margin-top:10px">
+        ${scenario.path.map(step => `
+          <div class="qualLine">
+            <span>${step.round}</span>
+            <span>${step.match}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="note" style="margin-top:12px">
+        Vainqueur : <strong>${scenario.winner}</strong><br>
+        3e place : <strong>${scenario.thirdPlace}</strong>
+      </div>
+    </div>
+  `;
+}
+
 function renderProba(){
-  const list=allTeams().map(team=>({team,pct:Math.max(1,Math.round((100/(state.odds[team]||200))*10)/10)})).sort((a,b)=>b.pct-a.pct);
+  const list=allTeams()
+    .map(team=>({team,pct:Math.max(1,Math.round((100/(state.odds[team]||200))*10)/10)}))
+    .sort((a,b)=>b.pct-a.pct);
+
+  const portugalScenario = buildPortugalWinnerScenario();
+
   document.getElementById('proba').innerHTML=`
     <div class="panel">
       <div class="panelHeader"><h2>Probabilités</h2><span class="badge">Basées sur les cotes</span></div>
       <div class="probaGrid">
-        ${list.map((item,index)=>`<div class="probaCard"><div class="probaTop"><div style="display:flex;align-items:center;gap:10px"><div class="rank">${index+1}</div><div class="probaTeam">${item.team}</div></div><div class="probaPct">${item.pct}%</div></div><div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div></div>`).join('')}
+        ${list.map((item,index)=>`
+          <div class="probaCard">
+            <div class="probaTop">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="rank">${index+1}</div>
+                <div class="probaTeam">${item.team}</div>
+              </div>
+              <div class="probaPct">${item.pct}%</div>
+            </div>
+            <div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div>
+          </div>
+        `).join('')}
       </div>
-      <div class="note">Dates et heures en heure locale du stade. À partir des seizièmes, affichage théorique officiel du tableau, pas d’équipes probables.</div>
-    </div>`;
+    </div>
+
+    <div class="panel">
+      <div class="panelHeader"><h2>Scénarios</h2><span class="badge">Simulation éditoriale</span></div>
+      <div class="probaGrid">
+        ${scenarioCardHTML(portugalScenario)}
+      </div>
+    </div>
+  `;
 }
 
 function render(){
