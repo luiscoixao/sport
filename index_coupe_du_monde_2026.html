@@ -39,13 +39,19 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)}
 .groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .groupCard,.probaCard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px}
-.groupHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.groupHeader{display:block;margin-bottom:10px}
 .groupLetter{font-size:22px;font-weight:800}
 .tableWrap{overflow:auto}
-.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px}
-.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.07);text-align:right}
+.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle}
 .standings th:first-child,.standings td:first-child,.thirdsTable th:first-child,.thirdsTable td:first-child,.thirdsTable th:nth-child(2),.thirdsTable td:nth-child(2){text-align:left}
+.standings th:not(:first-child),.standings td:not(:first-child),.thirdsTable th:not(:first-child),.thirdsTable td:not(:first-child){text-align:center}
 .standings tr:last-child td,.thirdsTable tr:last-child td{border-bottom:none}
+.standings th:nth-child(1),.standings td:nth-child(1){width:58%}
+.standings th:nth-child(2),.standings td:nth-child(2){width:10%}
+.standings th:nth-child(3),.standings td:nth-child(3){width:8%}
+.standings th:nth-child(4),.standings td:nth-child(4){width:12%}
+.standings th:nth-child(5),.standings td:nth-child(5){width:12%}
 .calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
 .matchesCompact{display:grid;gap:8px}
@@ -314,11 +320,11 @@ function renderGroups(){
   const tables=computeTables(), thirds=bestThirds(tables).slice(0,8);
   document.getElementById('groups').innerHTML=`
     <div class="panel">
-      <div class="panelHeader"><h2>Groupes</h2><button class="btn secondary" id="refreshBtn">Actualiser</button></div>
+      <div class="panelHeader"><h2>Groupes</h2></div>
       <div class="groupsGrid">
         ${Object.entries(GROUPS).map(([letter])=>`
           <div class="groupCard">
-            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div><div class="badge">${GROUPS[letter].length} équipes</div></div>
+            <div class="groupHeader"><div class="groupLetter">Groupe ${letter}</div></div>
             <div class="tableWrap">
               <table class="standings">
                 <thead><tr><th>Équipe</th><th>Pts</th><th>J</th><th>Diff</th><th>BP</th></tr></thead>
@@ -337,7 +343,7 @@ function renderGroups(){
         </table>
       </div>
     </div>`;
-  document.getElementById('refreshBtn').onclick=()=>render();
+
 }
 
 function matchHTML(match){
