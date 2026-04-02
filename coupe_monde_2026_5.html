@@ -125,286 +125,319 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 </div>
 
 <script>
-
-const STORAGE_KEY='cm2026-final-fix-v1';
+const STORAGE_KEY='cm2026-structure-base-v2';
 const TABS=[{id:'groups',label:'Groupes'},{id:'calendar',label:'Calendrier'},{id:'proba',label:'Probabilités'}];
 
-const INITIAL_ODDS={
-  'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,
-  'Belgique':24.0,'Uruguay':26.0,'Italie':30.0,'Croatie':35.0,'Colombie':36.0,'Sénégal':40.0,'Mexique':45.0,'Maroc':45.0,
-  'États-Unis':50.0,'Suisse':55.0,'Japon':60.0,'Norvège':65.0,'Turquie':70.0,'Paraguay':80.0,'Équateur':80.0,'Autriche':85.0,
-  'Canada':90.0,'Corée du Sud':90.0,'Côte d’Ivoire':95.0,'Algérie':100.0,'Suède':100.0,'Tunisie':110.0,'Bosnie-Herzégovine':120.0,
-  'Iran':120.0,'Australie':120.0,'Égypte':140.0,'Qatar':150.0,'Ghana':150.0,'Afrique du Sud':180.0,'Arabie saoudite':180.0,
-  'Cap-Vert':200.0,'Ouzbékistan':200.0,'Curaçao':220.0,'Panama':220.0,'Haïti':250.0,'Jordanie':250.0,'Irak':260.0,
-  'RD Congo':170.0,'Nouvelle-Zélande':300.0
-};
+const INITIAL_ODDS={'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,'Belgique':24.0,'Uruguay':26.0,'Croatie':35.0,'Colombie':36.0,'Sénégal':40.0,'Mexique':45.0,'Maroc':45.0,'États-Unis':50.0,'Suisse':55.0,'Japon':60.0,'Norvège':65.0,'Turquie':70.0,'Paraguay':80.0,'Canada':90.0,'Tunisie':110.0,'Bosnie-Herzégovine':120.0,'Qatar':150.0,'Haïti':250.0,'Afrique du Sud':180.0,'Corée du Sud':90.0,'Tchéquie':110.0,'Australie':120.0,'Curaçao':220.0,'Côte d’Ivoire':95.0,'Équateur':80.0,'Suède':100.0,'Égypte':140.0,'Iran':120.0,'Nouvelle-Zélande':300.0,'Cap-Vert':200.0,'Arabie saoudite':180.0,'Irak':260.0,'Algérie':100.0,'Autriche':85.0,'Jordanie':250.0,'RD Congo':170.0,'Ouzbékistan':200.0,'Panama':220.0,'Ghana':150.0,'Écosse':115.0};
 
-const GROUPS={
-  'A':['Mexique','Afrique du Sud','Corée du Sud','Turquie'],
-  'B':['Canada','Bosnie-Herzégovine','Qatar','Suisse'],
-  'C':['Brésil','Maroc','Haïti','Écosse'],
-  'D':['États-Unis','Paraguay','Australie','Suède'],
-  'E':['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],
-  'F':['Pays-Bas','Japon','Italie','Tunisie'],
-  'G':['Belgique','Égypte','Iran','Nouvelle-Zélande'],
-  'H':['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],
-  'I':['France','Sénégal','Irak','Norvège'],
-  'J':['Argentine','Algérie','Autriche','Jordanie'],
-  'K':['Portugal','RD Congo','Ouzbékistan','Colombie'],
-  'L':['Angleterre','Croatie','Ghana','Panama']
-};
+const GROUPS={'A':['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],'B':['Canada','Bosnie-Herzégovine','Qatar','Suisse'],'C':['Brésil','Maroc','Haïti','Écosse'],'D':['États-Unis','Paraguay','Australie','Turquie'],'E':['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],'F':['Pays-Bas','Japon','Suède','Tunisie'],'G':['Belgique','Égypte','Iran','Nouvelle-Zélande'],'H':['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],'I':['France','Sénégal','Irak','Norvège'],'J':['Argentine','Algérie','Autriche','Jordanie'],'K':['Portugal','RD Congo','Ouzbékistan','Colombie'],'L':['Angleterre','Croatie','Ghana','Panama']};
 
-const TEAM_STRENGTH={
-  'Espagne':94,'France':92,'Angleterre':90,'Argentine':89,'Brésil':88,'Portugal':85,'Allemagne':83,'Pays-Bas':80,'Italie':79,'Belgique':78,
-  'Uruguay':77,'Croatie':75,'Colombie':75,'Sénégal':74,'Maroc':74,'Mexique':73,'États-Unis':72,'Suisse':72,'Japon':71,'Norvège':71,
-  'Autriche':69,'Turquie':68,'Équateur':68,'Suède':67,'Paraguay':67,'Corée du Sud':66,'Canada':66,'Algérie':66,'Côte d’Ivoire':65,
-  'Écosse':64,'Iran':63,'Australie':63,'Tunisie':62,'Égypte':61,'Bosnie-Herzégovine':61,'Ghana':60,'Qatar':58,'Arabie saoudite':58,
-  'Afrique du Sud':57,'RD Congo':57,'Ouzbékistan':56,'Cap-Vert':55,'Panama':54,'Irak':52,'Haïti':50,'Curaçao':49,'Jordanie':48,'Nouvelle-Zélande':47
-};
+const TEAM_STRENGTH={'Espagne':94,'France':92,'Angleterre':90,'Argentine':89,'Brésil':88,'Portugal':85,'Allemagne':83,'Pays-Bas':80,'Belgique':78,'Uruguay':77,'Croatie':75,'Colombie':75,'Sénégal':74,'Mexique':73,'Maroc':74,'États-Unis':72,'Suisse':72,'Japon':71,'Norvège':71,'Turquie':68,'Paraguay':67,'Canada':66,'Tunisie':62,'Bosnie-Herzégovine':61,'Qatar':58,'Haïti':50,'Afrique du Sud':57,'Corée du Sud':66,'Tchéquie':64,'Australie':63,'Curaçao':49,'Côte d’Ivoire':65,'Équateur':68,'Suède':67,'Égypte':61,'Iran':63,'Nouvelle-Zélande':47,'Cap-Vert':55,'Arabie saoudite':58,'Irak':52,'Algérie':66,'Autriche':69,'Jordanie':48,'RD Congo':57,'Ouzbékistan':56,'Panama':54,'Ghana':60,'Écosse':64};
 
-const RAW_MATCHES = [
-["1","Mexique","Afrique du Sud","2026-06-11","15:00","Phase de groupes"],
-["2","Corée du Sud","Turquie","2026-06-11","22:00","Phase de groupes"],
-["3","Canada","Bosnie-Herzégovine","2026-06-12","15:00","Phase de groupes"],
-["4","États-Unis","Paraguay","2026-06-12","21:00","Phase de groupes"],
-["5","Haïti","Écosse","2026-06-13","21:00","Phase de groupes"],
-["6","Australie","Suède","2026-06-13","00:00","Phase de groupes"],
-["7","Brésil","Maroc","2026-06-13","18:00","Phase de groupes"],
-["8","Qatar","Suisse","2026-06-13","15:00","Phase de groupes"],
-["9","Côte d’Ivoire","Équateur","2026-06-14","19:00","Phase de groupes"],
-["10","Allemagne","Curaçao","2026-06-14","13:00","Phase de groupes"],
-["11","Pays-Bas","Japon","2026-06-14","16:00","Phase de groupes"],
-["12","Italie","Tunisie","2026-06-14","22:00","Phase de groupes"],
-["13","Arabie saoudite","Uruguay","2026-06-15","18:00","Phase de groupes"],
-["14","Espagne","Cap-Vert","2026-06-15","12:00","Phase de groupes"],
-["15","Iran","Nouvelle-Zélande","2026-06-15","21:00","Phase de groupes"],
-["16","Belgique","Égypte","2026-06-15","15:00","Phase de groupes"],
-["17","France","Sénégal","2026-06-16","15:00","Phase de groupes"],
-["18","Irak","Norvège","2026-06-16","18:00","Phase de groupes"],
-["19","Argentine","Algérie","2026-06-16","21:00","Phase de groupes"],
-["20","Autriche","Jordanie","2026-06-16","00:00","Phase de groupes"],
-["21","Ghana","Panama","2026-06-17","19:00","Phase de groupes"],
-["22","Angleterre","Croatie","2026-06-17","16:00","Phase de groupes"],
-["23","Portugal","RD Congo","2026-06-17","13:00","Phase de groupes"],
-["24","Ouzbékistan","Colombie","2026-06-17","22:00","Phase de groupes"],
-["25","Turquie","Afrique du Sud","2026-06-18","12:00","Phase de groupes"],
-["26","Suisse","Bosnie-Herzégovine","2026-06-18","15:00","Phase de groupes"],
-["27","Canada","Qatar","2026-06-18","18:00","Phase de groupes"],
-["28","Mexique","Corée du Sud","2026-06-18","21:00","Phase de groupes"],
-["29","Brésil","Haïti","2026-06-19","21:00","Phase de groupes"],
-["30","Écosse","Maroc","2026-06-19","18:00","Phase de groupes"],
-["31","Suède","Paraguay","2026-06-19","00:00","Phase de groupes"],
-["32","États-Unis","Australie","2026-06-19","15:00","Phase de groupes"],
-["33","Allemagne","Côte d’Ivoire","2026-06-20","16:00","Phase de groupes"],
-["34","Équateur","Curaçao","2026-06-20","20:00","Phase de groupes"],
-["35","Pays-Bas","Italie","2026-06-20","13:00","Phase de groupes"],
-["36","Tunisie","Japon","2026-06-20","00:00","Phase de groupes"],
-["37","Uruguay","Cap-Vert","2026-06-21","18:00","Phase de groupes"],
-["38","Espagne","Arabie saoudite","2026-06-21","12:00","Phase de groupes"],
-["39","Belgique","Iran","2026-06-21","15:00","Phase de groupes"],
-["40","Nouvelle-Zélande","Égypte","2026-06-21","21:00","Phase de groupes"],
-["41","Norvège","Sénégal","2026-06-22","20:00","Phase de groupes"],
-["42","France","Irak","2026-06-22","17:00","Phase de groupes"],
-["43","Argentine","Autriche","2026-06-22","13:00","Phase de groupes"],
-["44","Jordanie","Algérie","2026-06-22","23:00","Phase de groupes"],
-["45","Angleterre","Ghana","2026-06-23","16:00","Phase de groupes"],
-["46","Panama","Croatie","2026-06-23","19:00","Phase de groupes"],
-["47","Portugal","Ouzbékistan","2026-06-23","13:00","Phase de groupes"],
-["48","Colombie","RD Congo","2026-06-23","22:00","Phase de groupes"],
-["49","Écosse","Brésil","2026-06-24","18:00","Phase de groupes"],
-["50","Maroc","Haïti","2026-06-24","18:00","Phase de groupes"],
-["51","Suisse","Canada","2026-06-24","15:00","Phase de groupes"],
-["52","Bosnie-Herzégovine","Qatar","2026-06-24","15:00","Phase de groupes"],
-["53","Turquie","Mexique","2026-06-24","21:00","Phase de groupes"],
-["54","Afrique du Sud","Corée du Sud","2026-06-24","21:00","Phase de groupes"],
-["55","Curaçao","Côte d’Ivoire","2026-06-25","16:00","Phase de groupes"],
-["56","Équateur","Allemagne","2026-06-25","16:00","Phase de groupes"],
-["57","Japon","Italie","2026-06-25","19:00","Phase de groupes"],
-["58","Tunisie","Pays-Bas","2026-06-25","19:00","Phase de groupes"],
-["59","Suède","États-Unis","2026-06-25","22:00","Phase de groupes"],
-["60","Paraguay","Australie","2026-06-25","22:00","Phase de groupes"],
-["61","Norvège","France","2026-06-26","15:00","Phase de groupes"],
-["62","Sénégal","Irak","2026-06-26","15:00","Phase de groupes"],
-["63","Égypte","Iran","2026-06-26","23:00","Phase de groupes"],
-["64","Nouvelle-Zélande","Belgique","2026-06-26","23:00","Phase de groupes"],
-["65","Cap-Vert","Arabie saoudite","2026-06-26","20:00","Phase de groupes"],
-["66","Uruguay","Espagne","2026-06-26","20:00","Phase de groupes"],
-["67","Panama","Angleterre","2026-06-27","17:00","Phase de groupes"],
-["68","Croatie","Ghana","2026-06-27","17:00","Phase de groupes"],
-["69","Algérie","Autriche","2026-06-27","22:00","Phase de groupes"],
-["70","Jordanie","Argentine","2026-06-27","22:00","Phase de groupes"],
-["71","Colombie","Portugal","2026-06-27","19:30","Phase de groupes"],
-["72","RD Congo","Ouzbékistan","2026-06-27","19:30","Phase de groupes"],
-["73","1er groupe A","2e groupe B","2026-06-28","15:00","Seizièmes de finale"],
-["74","1er groupe E","Meilleur 3e","2026-06-29","16:30","Seizièmes de finale"],
-["75","1er groupe F","2e groupe C","2026-06-29","21:00","Seizièmes de finale"],
-["76","1er groupe C","2e groupe F","2026-06-29","13:00","Seizièmes de finale"],
-["77","1er groupe I","Meilleur 3e","2026-06-30","17:00","Seizièmes de finale"],
-["78","2e groupe E","2e groupe I","2026-06-30","13:00","Seizièmes de finale"],
-["79","1er groupe A","Meilleur 3e","2026-06-30","21:00","Seizièmes de finale"],
-["80","1er groupe L","Meilleur 3e","2026-07-01","12:00","Seizièmes de finale"],
-["81","1er groupe D","Meilleur 3e","2026-07-01","20:00","Seizièmes de finale"],
-["82","1er groupe G","Meilleur 3e","2026-07-01","16:00","Seizièmes de finale"],
-["83","2e groupe K","2e groupe L","2026-07-02","19:00","Seizièmes de finale"],
-["84","1er groupe H","2e groupe J","2026-07-02","15:00","Seizièmes de finale"],
-["85","1er groupe B","Meilleur 3e","2026-07-02","23:00","Seizièmes de finale"],
-["86","1er groupe J","2e groupe H","2026-07-03","18:00","Seizièmes de finale"],
-["87","1er groupe K","Meilleur 3e","2026-07-03","21:30","Seizièmes de finale"],
-["88","2e groupe D","2e groupe G","2026-07-03","14:00","Seizièmes de finale"],
-["89","Vainqueur M74","Vainqueur M77","2026-07-04","17:00","Huitièmes de finale"],
-["90","Vainqueur M73","Vainqueur M75","2026-07-04","13:00","Huitièmes de finale"],
-["91","Vainqueur M76","Vainqueur M78","2026-07-05","16:00","Huitièmes de finale"],
-["92","Vainqueur M79","Vainqueur M80","2026-07-05","20:00","Huitièmes de finale"],
-["93","Vainqueur M83","Vainqueur M84","2026-07-06","15:00","Huitièmes de finale"],
-["94","Vainqueur M81","Vainqueur M82","2026-07-06","20:00","Huitièmes de finale"],
-["95","Vainqueur M86","Vainqueur M88","2026-07-07","12:00","Huitièmes de finale"],
-["96","Vainqueur M85","Vainqueur M87","2026-07-07","16:00","Huitièmes de finale"],
-["97","Vainqueur M89","Vainqueur M90","2026-07-09","16:00","Quarts de finale"],
-["98","Vainqueur M93","Vainqueur M94","2026-07-10","15:00","Quarts de finale"],
-["99","Vainqueur M91","Vainqueur M92","2026-07-11","17:00","Quarts de finale"],
-["100","Vainqueur M95","Vainqueur M96","2026-07-11","21:00","Quarts de finale"],
-["101","Vainqueur M97","Vainqueur M98","2026-07-14","15:00","Demi-finales"],
-["102","Vainqueur M99","Vainqueur M100","2026-07-15","15:00","Demi-finales"],
-["103","Perdant M101","Perdant M102","2026-07-18","17:00","Match pour la 3e place"],
-["104","Vainqueur M101","Vainqueur M102","2026-07-19","15:00","Finale"]
-];
+function clone(obj){return JSON.parse(JSON.stringify(obj));}
+function formatDate(value){const d=new Date(value);return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
+function suggestVenue(groupLetter,pIndex,groupIndex){
+  const venues=['Mexico City','Toronto','Los Angeles','New York / New Jersey','Dallas','Houston','Atlanta','Seattle','Miami','Vancouver','Boston','Philadelphia','Kansas City','Monterrey','Guadalajara','San Francisco Bay Area'];
+  return venues[(groupIndex*2+pIndex)%venues.length];
+}
+function allTeams(){return Object.values(GROUPS).flat();}
+function teamOdds(team){return state.odds[team]?state.odds[team].toFixed(1):'—';}
+function getMatch(id){return state.matches.find(m=>m.id===id);}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY); if(s) return JSON.parse(s);}catch(e){} return initState();}
+
+function buildGroupMatches(){
+  const schedule = [
+    '2026-06-11T15:00',
+    '2026-06-11T22:00',
+    '2026-06-12T15:00',
+    '2026-06-12T21:00',
+    '2026-06-13T21:00',
+    '2026-06-13T00:00',
+    '2026-06-13T18:00',
+    '2026-06-13T15:00',
+    '2026-06-14T19:00',
+    '2026-06-14T13:00',
+    '2026-06-14T16:00',
+    '2026-06-14T22:00',
+    '2026-06-15T18:00',
+    '2026-06-15T12:00',
+    '2026-06-15T21:00',
+    '2026-06-15T15:00',
+    '2026-06-16T15:00',
+    '2026-06-16T18:00',
+    '2026-06-16T21:00',
+    '2026-06-16T00:00',
+    '2026-06-17T19:00',
+    '2026-06-17T16:00',
+    '2026-06-17T13:00',
+    '2026-06-17T22:00',
+    '2026-06-18T12:00',
+    '2026-06-18T15:00',
+    '2026-06-18T18:00',
+    '2026-06-18T21:00',
+    '2026-06-19T21:00',
+    '2026-06-19T18:00',
+    '2026-06-19T00:00',
+    '2026-06-19T15:00',
+    '2026-06-20T16:00',
+    '2026-06-20T20:00',
+    '2026-06-20T13:00',
+    '2026-06-20T00:00',
+    '2026-06-21T18:00',
+    '2026-06-21T12:00',
+    '2026-06-21T15:00',
+    '2026-06-21T21:00',
+    '2026-06-22T20:00',
+    '2026-06-22T17:00',
+    '2026-06-22T13:00',
+    '2026-06-22T23:00',
+    '2026-06-23T16:00',
+    '2026-06-23T19:00',
+    '2026-06-23T13:00',
+    '2026-06-23T22:00',
+    '2026-06-24T18:00',
+    '2026-06-24T18:00',
+    '2026-06-24T15:00',
+    '2026-06-24T15:00',
+    '2026-06-24T21:00',
+    '2026-06-24T21:00',
+    '2026-06-25T16:00',
+    '2026-06-25T16:00',
+    '2026-06-25T19:00',
+    '2026-06-25T19:00',
+    '2026-06-25T22:00',
+    '2026-06-25T22:00',
+    '2026-06-26T15:00',
+    '2026-06-26T15:00',
+    '2026-06-26T23:00',
+    '2026-06-26T23:00',
+    '2026-06-26T20:00',
+    '2026-06-26T20:00',
+    '2026-06-27T17:00',
+    '2026-06-27T17:00',
+    '2026-06-27T22:00',
+    '2026-06-27T22:00',
+    '2026-06-27T19:30',
+    '2026-06-27T19:30'
+  ];
+
+  const matches=[];
+  let idxSchedule = 0;
+
+  Object.keys(GROUPS).forEach((groupLetter, idx)=>{
+    const teams=GROUPS[groupLetter];
+    const rounds = [
+      [[teams[0],teams[1]],[teams[2],teams[3]]],
+      [[teams[0],teams[2]],[teams[1],teams[3]]],
+      [[teams[0],teams[3]],[teams[1],teams[2]]]
+    ];
+
+    rounds.forEach((pairs, roundIdx)=>{
+      pairs.forEach((pair, slotIdx)=>{
+        matches.push({
+          id:`GS-${groupLetter}-${roundIdx*2+slotIdx+1}`,
+          stage:'Phase de groupes',
+          group:groupLetter,
+          home:pair[0],
+          away:pair[1],
+          date:schedule[idxSchedule] || '2026-06-27T23:59',
+          venue:suggestVenue(groupLetter, roundIdx*2+slotIdx, idx),
+          homeScore:'',
+          awayScore:''
+        });
+        idxSchedule++;
+      });
+    });
+  });
+
+  matches.sort((a,b)=>new Date(a.date)-new Date(b.date) || a.id.localeCompare(b.id));
+  return matches;
+}
+
+function knockoutSkeleton(){
+  const rows=[
+    ['R32-1','Seizièmes de finale','2026-06-28T15:00','Dallas'],
+    ['R32-2','Seizièmes de finale','2026-06-29T16:30','Houston'],
+    ['R32-3','Seizièmes de finale','2026-06-29T21:00','Atlanta'],
+    ['R32-4','Seizièmes de finale','2026-06-29T13:00','Seattle'],
+    ['R32-5','Seizièmes de finale','2026-06-30T17:00','Miami'],
+    ['R32-6','Seizièmes de finale','2026-06-30T13:00','Vancouver'],
+    ['R32-7','Seizièmes de finale','2026-06-30T21:00','Boston'],
+    ['R32-8','Seizièmes de finale','2026-07-01T12:00','Philadelphia'],
+    ['R32-9','Seizièmes de finale','2026-07-01T20:00','Kansas City'],
+    ['R32-10','Seizièmes de finale','2026-07-01T16:00','Monterrey'],
+    ['R32-11','Seizièmes de finale','2026-07-02T19:00','Guadalajara'],
+    ['R32-12','Seizièmes de finale','2026-07-02T15:00','San Francisco Bay Area'],
+    ['R32-13','Seizièmes de finale','2026-07-02T23:00','Los Angeles'],
+    ['R32-14','Seizièmes de finale','2026-07-03T18:00','Toronto'],
+    ['R32-15','Seizièmes de finale','2026-07-03T21:30','New York / New Jersey'],
+    ['R32-16','Seizièmes de finale','2026-07-03T14:00','Mexico City'],
+    ['R16-1','Huitièmes de finale','2026-07-04T17:00','Dallas'],
+    ['R16-2','Huitièmes de finale','2026-07-04T13:00','Houston'],
+    ['R16-3','Huitièmes de finale','2026-07-05T16:00','Atlanta'],
+    ['R16-4','Huitièmes de finale','2026-07-05T20:00','Seattle'],
+    ['R16-5','Huitièmes de finale','2026-07-06T15:00','Miami'],
+    ['R16-6','Huitièmes de finale','2026-07-06T20:00','Vancouver'],
+    ['R16-7','Huitièmes de finale','2026-07-07T12:00','Boston'],
+    ['R16-8','Huitièmes de finale','2026-07-07T16:00','Philadelphia'],
+    ['QF-1','Quarts de finale','2026-07-09T16:00','New York / New Jersey'],
+    ['QF-2','Quarts de finale','2026-07-10T15:00','Dallas'],
+    ['QF-3','Quarts de finale','2026-07-11T17:00','Atlanta'],
+    ['QF-4','Quarts de finale','2026-07-11T21:00','Los Angeles'],
+    ['SF-1','Demi-finales','2026-07-14T15:00','Dallas'],
+    ['SF-2','Demi-finales','2026-07-15T15:00','Atlanta'],
+    ['TP-1','Match pour la 3e place','2026-07-18T17:00','Miami'],
+    ['F-1','Finale','2026-07-19T15:00','New York / New Jersey']
+  ];
+  return rows.map(([id,stage,date,venue])=>({id,stage,date,venue,group:'',home:'À déterminer',away:'À déterminer',homeScore:'',awayScore:''}));
+}
 
 function initState(){
-  return {
-    odds: clone(INITIAL_ODDS),
-    matches: RAW_MATCHES.map(([match,e1,e2,date,time,phase])=>({
-      id:`M${match}`,
-      num:Number(match),
-      stage:phase,
-      group: phase==='Phase de groupes' ? inferGroup(e1,e2) : '',
-      homeToken:e1,
-      awayToken:e2,
-      home:e1,
-      away:e2,
-      date:`${date}T${time}`,
-      venue:'',
-      homeScore:'',
-      awayScore:''
-    }))
-  };
+  return {odds:clone(INITIAL_ODDS),matches:[...buildGroupMatches(),...knockoutSkeleton()]};
 }
 
-let state = loadState();
+let state=loadState();
 
-function loadState(){
-  try{
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if(saved){
-      const parsed = JSON.parse(saved);
-      if(parsed && Array.isArray(parsed.matches) && parsed.odds) return parsed;
-    }
-  }catch(e){}
-  return initState();
-}
-
-function inferGroup(a,b){
-  for(const [letter, teams] of Object.entries(GROUPS)){
-    if(teams.includes(a) && teams.includes(b)) return letter;
-  }
-  return '';
-}
-
-function setScore(id, side, value){
-  const match=getMatch(id);
-  if(!match) return;
-  if(value==='') match[side]='';
-  else{
-    const n=parseInt(value,10);
-    match[side]=Number.isNaN(n)?'':Math.max(0,n);
-  }
-  saveState();
-}
-
-function tokenToTeam(token, tables, thirdPool){
-  if(!token) return token;
-  const t = token.trim();
-
-  let m=t.match(/^Vainqueur M(\d+)$/i);
-  if(m) return probableWinner(getMatch(`M${m[1]}`));
-
-  m=t.match(/^Perdant M(\d+)$/i);
-  if(m) return probableLoser(getMatch(`M${m[1]}`));
-
-  m=t.match(/^1er groupe ([A-L])$/i);
-  if(m) return tables[m[1].toUpperCase()]?.[0]?.team || t;
-
-  m=t.match(/^2e groupe ([A-L])$/i);
-  if(m) return tables[m[1].toUpperCase()]?.[1]?.team || t;
-
-  if(/^Meilleur 3e$/i.test(t)){
-    return thirdPool.shift() || 'À déterminer';
-  }
-  return t;
-}
-
-function probableWinner(match){
-  if(!match) return 'À déterminer';
-  if(match.home==='À déterminer' || match.away==='À déterminer') return 'À déterminer';
-  if(match.homeScore!=='' && match.awayScore!==''){
-    if(Number(match.homeScore) > Number(match.awayScore)) return match.home;
-    if(Number(match.homeScore) < Number(match.awayScore)) return match.away;
-  }
-  const homeRank=(TEAM_STRENGTH[match.home]||0) - (state.odds[match.home]||999)/20;
-  const awayRank=(TEAM_STRENGTH[match.away]||0) - (state.odds[match.away]||999)/20;
-  return homeRank>=awayRank ? match.home : match.away;
-}
-
-function probableLoser(match){
-  if(!match) return 'À déterminer';
-  if(match.home==='À déterminer' || match.away==='À déterminer') return 'À déterminer';
-  if(match.homeScore!=='' && match.awayScore!==''){
-    if(Number(match.homeScore) > Number(match.awayScore)) return match.away;
-    if(Number(match.homeScore) < Number(match.awayScore)) return match.home;
-  }
-  return probableWinner(match)===match.home ? match.away : match.home;
-}
-
-function resolveKnockoutFromTokens(){
-  const tables=computeTables();
-  state.matches.forEach(m=>{ m.home=m.homeToken; m.away=m.awayToken; });
-  const thirds=bestThirds(tables).slice(0,8).map(x=>x.team);
-  state.matches.filter(m=>m.stage!=='Phase de groupes').sort((a,b)=>a.num-b.num).forEach(match=>{
-    match.home = tokenToTeam(match.homeToken, tables, thirds);
-    match.away = tokenToTeam(match.awayToken, tables, thirds);
+function computePredictedTables(){
+  const tables={};
+  Object.entries(GROUPS).forEach(([letter,teams])=>{
+    tables[letter]=[...teams]
+      .sort((a,b)=>(TEAM_STRENGTH[b]||0)-(TEAM_STRENGTH[a]||0)||(state.odds[a]||999)-(state.odds[b]||999))
+      .map((team,idx)=>({
+        team,p:3,w:idx===0?2:idx===1?1:idx===2?1:0,d:0,l:idx===3?3:1,
+        gf:Math.max(1,5-idx),ga:idx+1,gd:Math.max(1,5-idx)-(idx+1),pts:idx===0?7:idx===1?5:idx===2?3:1
+      }));
   });
+  return tables;
 }
 
 function computeTables(){
+  const played=state.matches.filter(m=>m.stage==='Phase de groupes'&&m.homeScore!==''&&m.awayScore!=='');
+  if(played.length===0) return computePredictedTables();
+
   const tables={};
   Object.entries(GROUPS).forEach(([letter,teams])=>{
     tables[letter]=teams.map(team=>({team,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0}));
   });
 
-  state.matches.filter(m=>m.stage==='Phase de groupes' && m.group && m.homeScore!=='' && m.awayScore!=='').forEach(match=>{
+  played.forEach(match=>{
     const table=tables[match.group];
-    const home=table.find(r=>r.team===match.homeToken);
-    const away=table.find(r=>r.team===match.awayToken);
-    if(!home || !away) return;
+    const home=table.find(r=>r.team===match.home);
+    const away=table.find(r=>r.team===match.away);
     const hs=Number(match.homeScore), as=Number(match.awayScore);
+
     home.p++; away.p++;
     home.gf+=hs; home.ga+=as;
     away.gf+=as; away.ga+=hs;
-    if(hs>as){ home.w++; away.l++; home.pts+=3; }
-    else if(as>hs){ away.w++; home.l++; away.pts+=3; }
-    else { home.d++; away.d++; home.pts++; away.pts++; }
+
+    if(hs>as){home.w++; away.l++; home.pts+=3;}
+    else if(as>hs){away.w++; home.l++; away.pts+=3;}
+    else {home.d++; away.d++; home.pts++; away.pts++;}
+
     home.gd=home.gf-home.ga;
     away.gd=away.gf-away.ga;
   });
 
   Object.values(tables).forEach(table=>{
-    table.sort((a,b)=>b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || (TEAM_STRENGTH[b.team]||0)-(TEAM_STRENGTH[a.team]||0) || a.team.localeCompare(b.team));
+    table.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||(TEAM_STRENGTH[b.team]||0)-(TEAM_STRENGTH[a.team]||0)||a.team.localeCompare(b.team));
   });
+
   return tables;
 }
 
 function bestThirds(tables){
   return Object.entries(tables).map(([group,rows])=>({group,...rows[2]}))
-    .sort((a,b)=>b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || (TEAM_STRENGTH[b.team]||0)-(TEAM_STRENGTH[a.team]||0) || a.team.localeCompare(b.team));
+    .sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||(TEAM_STRENGTH[b.team]||0)-(TEAM_STRENGTH[a.team]||0)||a.team.localeCompare(b.team));
+}
+
+function currentQualifiers(tables){
+  const winners=[], runners=[];
+  Object.keys(GROUPS).forEach(letter=>{
+    winners.push(tables[letter][0].team);
+    runners.push(tables[letter][1].team);
+  });
+  return {winners,runners,thirds:bestThirds(tables).slice(0,8).map(x=>x.team)};
+}
+
+function pickBest(list, used){
+  const sorted=[...list].filter(Boolean).sort((a,b)=>(TEAM_STRENGTH[b]||0)-(TEAM_STRENGTH[a]||0)||(state.odds[a]||999)-(state.odds[b]||999));
+  for(const team of sorted){
+    if(!used.has(team)){ used.add(team); return team; }
+  }
+  return 'À déterminer';
+}
+
+function fillR32FromStandings(){
+  const {winners:W,runners:R,thirds:T}=currentQualifiers(computeTables());
+  const used=new Set();
+
+  const homePools=[
+    [W[0]],[W[1]],[W[2]],[W[3]],[W[4]],[W[5]],[W[6]],[W[7]],
+    [W[8]],[W[9]],[W[10]],[W[11]],[R[0],R[1]],[R[2],R[3]],[T[0],T[2],R[2]],[T[1],T[3],R[3]]
+  ];
+  const awayPools=[
+    [T[7],R[11]],[T[6],R[10]],[T[5],R[9]],[T[4],R[8]],[T[3],R[7]],[T[2],R[6]],[T[1],R[5]],[T[0],R[4]],
+    [R[3],R[11]],[R[2],R[10]],[R[1],R[9]],[R[0],R[8]],[R[7],R[6]],[R[5],R[4]],[T[4],T[6],R[5]],[T[5],T[7],R[6]]
+  ];
+
+  for(let i=0;i<16;i++){
+    const m=getMatch(`R32-${i+1}`);
+    m.home=pickBest(homePools[i],used);
+    m.away=pickBest(awayPools[i],used);
+    if(m.home===m.away) m.away='À déterminer';
+  }
+}
+
+function probableWinner(match){
+  if(!match || match.home==='À déterminer' || match.away==='À déterminer') return 'À déterminer';
+  if(match.homeScore!==''&&match.awayScore!==''){
+    return Number(match.homeScore)>Number(match.awayScore)?match.home:match.away;
+  }
+  const homeRank=(TEAM_STRENGTH[match.home]||0) - (state.odds[match.home]||999)/20;
+  const awayRank=(TEAM_STRENGTH[match.away]||0) - (state.odds[match.away]||999)/20;
+  return homeRank>=awayRank ? match.home : match.away;
+}
+function probableLoser(match){
+  if(!match || match.home==='À déterminer' || match.away==='À déterminer') return 'À déterminer';
+  if(match.homeScore!==''&&match.awayScore!==''){
+    return Number(match.homeScore)<Number(match.awayScore)?match.home:match.away;
+  }
+  return probableWinner(match)===match.home ? match.away : match.home;
+}
+
+function propagateKnockout(){
+  fillR32FromStandings();
+
+  for(let i=1;i<=8;i++){
+    const a=getMatch(`R32-${(i*2)-1}`), b=getMatch(`R32-${(i*2)}`), next=getMatch(`R16-${i}`);
+    next.home=probableWinner(a); next.away=probableWinner(b);
+  }
+
+  for(let i=1;i<=4;i++){
+    const a=getMatch(`R16-${(i*2)-1}`), b=getMatch(`R16-${(i*2)}`), next=getMatch(`QF-${i}`);
+    next.home=probableWinner(a); next.away=probableWinner(b);
+  }
+
+  const q1=getMatch('QF-1'), q2=getMatch('QF-2'), q3=getMatch('QF-3'), q4=getMatch('QF-4');
+  const sf1=getMatch('SF-1'), sf2=getMatch('SF-2');
+  sf1.home=probableWinner(q1); sf1.away=probableWinner(q2);
+  sf2.home=probableWinner(q3); sf2.away=probableWinner(q4);
+
+  const tp=getMatch('TP-1'), f=getMatch('F-1');
+  tp.home=probableLoser(sf1); tp.away=probableLoser(sf2);
+  f.home=probableWinner(sf1); f.away=probableWinner(sf2);
+}
+
+function setScore(id, side, value){
+  const match=getMatch(id);
+  if(value===''){ match[side]=''; }
+  else{
+    const n=parseInt(value,10);
+    match[side]=Number.isNaN(n)?'':Math.max(0,n);
+  }
+  propagateKnockout();
+  saveState();
 }
 
 function renderTabs(){
@@ -437,8 +470,8 @@ function renderGroups(){
           ${thirds.map((row,i)=>`<div class="qualLine"><span>${i+1}. ${row.team}</span><span class="small">${row.group} · ${row.pts} pts</span></div>`).join('')}
         </div>
         <div class="infoCard">
-          <h3 style="margin:0 0 10px">Base corrigée</h3>
-          <div class="small">Le bandeau seul venait d’une erreur JavaScript. Cette version charge bien tout le contenu sous le bandeau et garde ta structure d’origine.</div>
+          <h3 style="margin:0 0 10px">Base complète</h3>
+          <div class="small">La structure de ton fichier a été conservée puis étendue en version complète : calendrier exhaustif, groupes, cotes, saisie des scores et tableau final mis à jour automatiquement.</div>
         </div>
       </div>
       <div class="groupsGrid">
@@ -457,12 +490,13 @@ function renderGroups(){
           </div>`).join('')}
       </div>
     </div>`;
-  document.getElementById('recalcBtn').onclick=()=>render();
+
+  document.getElementById('recalcBtn').onclick=()=>{propagateKnockout(); saveState(); render();};
 }
 
 function matchHTML(match){
   return `<div class="matchCard">
-    <div class="matchTop"><span>${match.stage}${match.group ? ' · Groupe ' + match.group : ''}</span><span>${formatDate(match.date)}</span></div>
+    <div class="matchTop"><span>${match.group ? 'Groupe ' + match.group : match.stage}</span><span>${formatDate(match.date)}</span></div>
     <div class="matchMain">
       <div class="teamCol home">
         <div class="team">${match.home}</div>
@@ -478,22 +512,29 @@ function matchHTML(match){
         <div class="odds">Cote : ${teamOdds(match.away)}</div>
       </div>
     </div>
-    <div class="venue">${match.venue || ''}</div>
+    <div class="venue">${match.venue}</div>
   </div>`;
 }
 
 function bindScoreInputs(){
   document.querySelectorAll('.scoreInput').forEach(input=>{
-    input.addEventListener('input', e=>{ e.target.value=e.target.value.replace(/[^0-9]/g,''); });
-    const apply = e=>{
+    input.addEventListener('input', e=>{
+      e.target.value=e.target.value.replace(/[^0-9]/g,'');
+    });
+    input.addEventListener('change', e=>{
       const clean=e.target.value.replace(/[^0-9]/g,'');
       const y=window.scrollY;
       setScore(e.target.dataset.id, e.target.dataset.side, clean);
       render();
       requestAnimationFrame(()=>window.scrollTo(0,y));
-    };
-    input.addEventListener('change', apply);
-    input.addEventListener('blur', apply);
+    });
+    input.addEventListener('blur', e=>{
+      const clean=e.target.value.replace(/[^0-9]/g,'');
+      const y=window.scrollY;
+      setScore(e.target.dataset.id, e.target.dataset.side, clean);
+      render();
+      requestAnimationFrame(()=>window.scrollTo(0,y));
+    });
   });
 }
 
@@ -515,13 +556,13 @@ function renderProba(){
       <div class="probaGrid">
         ${list.map((item,index)=>`<div class="probaCard"><div class="probaTop"><div style="display:flex;align-items:center;gap:10px"><div class="rank">${index+1}</div><div class="probaTeam">${item.team}</div></div><div class="probaPct">${item.pct}%</div></div><div class="small">Estimation simple à partir de la cote enregistrée</div><div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div></div>`).join('')}
       </div>
-      <div class="note">Cette version conserve ta structure et affiche bien tout le contenu.</div>
+      <div class="note">Cette version complète est construite sur la structure de ton fichier source.</div>
     </div>`;
 }
 
 function render(){
   const active=document.querySelector('.tab.active')?.dataset.tab || 'groups';
-  resolveKnockoutFromTokens();
+  propagateKnockout();
   renderTabs();
   renderGroups();
   renderCalendar();
@@ -531,7 +572,6 @@ function render(){
 }
 
 render();
-
 </script>
 </body>
 </html>
