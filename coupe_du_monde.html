@@ -70,14 +70,14 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
 .matchesCompact{display:grid;gap:8px}
 .matchCard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 12px}
-.matchTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.matchTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)}
 .matchMain{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
 .teamCol{display:grid;gap:6px}
 .teamCol.home{text-align:right}.teamCol.away{text-align:left}
 .team{font-weight:800;font-size:15px;line-height:1.2}
 .odds{font-size:12px;color:var(--muted)}
 .scoreWrap{display:flex;align-items:center;gap:6px;justify-content:center}
-.scoreInput,.dateInput{
+.scoreInput,.dateInput,.timeInput{
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
   border-radius:10px;color:var(--text);padding:8px 6px;font:inherit;
 }
@@ -85,7 +85,9 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
   width:52px;text-align:center;font-weight:800;appearance:textfield;
 }
 .scoreInput::-webkit-outer-spin-button,.scoreInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.dateInput{width:190px}
+.dateTools{display:grid;grid-template-columns:1fr 92px;gap:6px;min-width:250px}
+.dateInput{width:100%}
+.timeInput{width:100%}
 .vs{display:flex;align-items:center;justify-content:center;min-width:42px;padding:6px 10px;border-radius:11px;background:linear-gradient(135deg,rgba(142,226,122,.15),rgba(57,196,106,.15));border:1px solid rgba(255,255,255,.10);font-weight:800;font-size:12px}
 .venue{margin-top:8px;color:var(--muted);font-size:12px}
 .rank{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800}
@@ -99,7 +101,7 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 @media (max-width:720px){
   body{padding:12px 10px 22px}.heroCard{padding:16px 14px}.groupsGrid,.probaGrid,.quickGrid{grid-template-columns:1fr}
   .matchMain{grid-template-columns:1fr}.teamCol.home,.teamCol.away{text-align:center}.scoreWrap{margin:2px auto}.matchTop{justify-content:flex-start}
-  .dateInput{width:100%}
+  .dateTools{grid-template-columns:1fr 96px;width:100%}
 }
 </style>
 </head>
@@ -110,13 +112,13 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
       <div class="heroTop">
         <div>
           <h1>Coupe du Monde 2026</h1>
-          <p class="heroSub">Index complet à partir de ta structure : dates modifiables, scores modifiables, classement dynamique et tableau final automatique.</p>
+          <p class="heroSub">Version corrigée : les dates sont maintenant réellement modifiables avec champs séparés date/heure, les scores mettent à jour le classement, et le tableau final se recalcule automatiquement.</p>
         </div>
         <div class="chips">
           <span class="chip">48 équipes</span>
           <span class="chip">12 groupes</span>
           <span class="chip">104 matchs</span>
-          <span class="chip">Sans bouton réinitialiser</span>
+          <span class="chip">Dates + scores modifiables</span>
         </div>
       </div>
     </div>
@@ -129,7 +131,7 @@ h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:
 </div>
 
 <script>
-const STORAGE_KEY='cm2026-index-complet-v1';
+const STORAGE_KEY='cm2026-index-complet-v2';
 const TABS=[{id:'groups',label:'Groupes'},{id:'calendar',label:'Calendrier'},{id:'proba',label:'Probabilités'}];
 
 const INITIAL_ODDS={'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,'Belgique':24.0,'Uruguay':26.0,'Croatie':35.0,'Colombie':36.0,'Sénégal':40.0,'Mexique':45.0,'Maroc':45.0,'États-Unis':50.0,'Suisse':55.0,'Japon':60.0,'Norvège':65.0,'Turquie':70.0,'Paraguay':80.0,'Canada':90.0,'Tunisie':110.0,'Bosnie-Herzégovine':120.0,'Qatar':150.0,'Haïti':250.0,'Afrique du Sud':180.0,'Corée du Sud':90.0,'Tchéquie':110.0,'Australie':120.0,'Curaçao':220.0,'Côte d’Ivoire':95.0,'Équateur':80.0,'Suède':100.0,'Égypte':140.0,'Iran':120.0,'Nouvelle-Zélande':300.0,'Cap-Vert':200.0,'Arabie saoudite':180.0,'Irak':260.0,'Algérie':100.0,'Autriche':85.0,'Jordanie':250.0,'RD Congo':170.0,'Ouzbékistan':200.0,'Panama':220.0,'Ghana':150.0,'Écosse':115.0};
@@ -139,7 +141,21 @@ const GROUPS={'A':['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],'B':[
 const TEAM_STRENGTH={'Espagne':94,'France':92,'Angleterre':90,'Argentine':89,'Brésil':88,'Portugal':85,'Allemagne':83,'Pays-Bas':80,'Belgique':78,'Uruguay':77,'Croatie':75,'Colombie':75,'Sénégal':74,'Mexique':73,'Maroc':74,'États-Unis':72,'Suisse':72,'Japon':71,'Norvège':71,'Turquie':68,'Paraguay':67,'Canada':66,'Tunisie':62,'Bosnie-Herzégovine':61,'Qatar':58,'Haïti':50,'Afrique du Sud':57,'Corée du Sud':66,'Tchéquie':64,'Australie':63,'Curaçao':49,'Côte d’Ivoire':65,'Équateur':68,'Suède':67,'Égypte':61,'Iran':63,'Nouvelle-Zélande':47,'Cap-Vert':55,'Arabie saoudite':58,'Irak':52,'Algérie':66,'Autriche':69,'Jordanie':48,'RD Congo':57,'Ouzbékistan':56,'Panama':54,'Ghana':60,'Écosse':64};
 
 function clone(obj){return JSON.parse(JSON.stringify(obj));}
-function formatDate(value){const d=new Date(value);return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
+function formatDate(value){
+  if(!value) return 'Date non définie';
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return value;
+  return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+function splitDateTime(value){
+  if(!value || !value.includes('T')) return {date:'', time:''};
+  const [date,time] = value.split('T');
+  return {date, time:(time || '').slice(0,5)};
+}
+function mergeDateTime(date, time){
+  if(!date) return '';
+  return `${date}T${time || '00:00'}`;
+}
 function suggestVenue(groupLetter,pIndex,groupIndex){
   const venues=['Mexico City','Toronto','Los Angeles','New York / New Jersey','Dallas','Houston','Atlanta','Seattle','Miami','Vancouver','Boston','Philadelphia','Kansas City','Monterrey','Guadalajara','San Francisco Bay Area'];
   return venues[(groupIndex*2+pIndex)%venues.length];
@@ -367,9 +383,12 @@ function setScore(id, side, value){
   saveState();
 }
 
-function setDate(id, value){
+function setDatePart(id, part, value){
   const match=getMatch(id);
-  if(value) match.date=value;
+  const current=splitDateTime(match.date);
+  const nextDate = part==='date' ? value : current.date;
+  const nextTime = part==='time' ? value : current.time;
+  match.date = mergeDateTime(nextDate, nextTime);
   saveState();
 }
 
@@ -404,7 +423,7 @@ function renderGroups(){
         </div>
         <div class="infoCard">
           <h3 style="margin:0 0 10px">Classement</h3>
-          <div class="small">Le classement se met à jour dès qu’un score de phase de groupes est saisi. Les dates et heures sont aussi modifiables directement dans l’onglet Calendrier.</div>
+          <div class="small">Le classement se met bien à jour quand tu saisis des scores de groupes. Les dates sont modifiables dans deux champs séparés pour éviter le bug précédent.</div>
         </div>
       </div>
       <div class="groupsGrid">
@@ -428,10 +447,14 @@ function renderGroups(){
 }
 
 function matchHTML(match){
+  const dt=splitDateTime(match.date);
   return `<div class="matchCard">
     <div class="matchTop">
-      <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
-      <input class="dateInput" type="datetime-local" value="${match.date}" data-id="${match.id}" />
+      <span>${match.group ? 'Groupe ' + match.group : match.stage} · ${formatDate(match.date)}</span>
+      <div class="dateTools">
+        <input class="dateInput" type="date" value="${dt.date}" data-id="${match.id}" data-part="date" />
+        <input class="timeInput" type="time" value="${dt.time}" data-id="${match.id}" data-part="time" />
+      </div>
     </div>
     <div class="matchMain">
       <div class="teamCol home">
@@ -473,9 +496,13 @@ function bindCalendarInputs(){
     });
   });
 
-  document.querySelectorAll('.dateInput').forEach(input=>{
+  document.querySelectorAll('.dateInput, .timeInput').forEach(input=>{
     input.addEventListener('change', e=>{
-      setDate(e.target.dataset.id, e.target.value);
+      setDatePart(e.target.dataset.id, e.target.dataset.part, e.target.value);
+      const active='calendar';
+      render();
+      const btn=document.querySelector(`.tab[data-tab="${active}"]`);
+      if(btn) btn.click();
     });
   });
 }
@@ -498,7 +525,7 @@ function renderProba(){
       <div class="probaGrid">
         ${list.map((item,index)=>`<div class="probaCard"><div class="probaTop"><div style="display:flex;align-items:center;gap:10px"><div class="rank">${index+1}</div><div class="probaTeam">${item.team}</div></div><div class="probaPct">${item.pct}%</div></div><div class="small">Estimation simple à partir de la cote enregistrée</div><div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div></div>`).join('')}
       </div>
-      <div class="note">Les cotes restent éditables dans le code si tu veux personnaliser encore la hiérarchie des favoris.</div>
+      <div class="note">Tu peux maintenant modifier séparément la date et l’heure de chaque match, ce qui contourne le problème du champ précédent.</div>
     </div>`;
 }
 
