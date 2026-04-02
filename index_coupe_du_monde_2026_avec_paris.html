@@ -673,7 +673,13 @@ function buildPortugalWinnerScenario(){
 }
 
 function renderProba(){
-  const list=allTeams().map(team=>({team,pct:Math.max(1,Math.round((100/(state.odds[team]||200))*10)/10)})).sort((a,b)=>b.pct-a.pct);
+  const teams = allTeams();
+const total = teams.reduce((sum,t)=>sum + (1 / (state.odds[t] || 200)),0);
+
+const list = teams.map(team=>({
+  team,
+  pct: Math.round(((1 / (state.odds[team] || 200)) / total) * 1000) / 10
+})).sort((a,b)=>b.pct-a.pct);
   const portugalScenario = buildPortugalWinnerScenario();
   document.getElementById('proba').innerHTML=`
     <div class="panel">
