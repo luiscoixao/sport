@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Coupe du Monde 2026 — infos vérifiées</title>
+<meta name="theme-color" content="#0d2b1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CM 2026" />
+<style>
+:root{
+  --bg:#0f3d2e; --bg2:#155a40; --bg3:#1c6b4d;
+  --card:rgba(255,255,255,.10); --text:#f2fff7; --muted:#c3e7d2;
+  --accent:#38d39f; --accent2:#2bbf8a; --gold:#ffd166;
+  --shadow:0 18px 40px rgba(0,0,0,.25); --radius:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;padding:0;
+  background:
+    radial-gradient(circle at 20% 10%, #1f7a57 0%, transparent 40%),
+    radial-gradient(circle at 80% 30%, #155a40 0%, transparent 35%),
+    linear-gradient(180deg,#0f3d2e,#0a2f23);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+}
+body{min-height:100vh;padding:14px 12px 26px}
+.app{max-width:1180px;margin:0 auto}
+.hero{
+  position:sticky;top:0;z-index:20;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(180deg,rgba(15,61,46,.96),rgba(15,61,46,.88));
+  padding:2px 0 12px;
+}
+.heroCard{
+  background:linear-gradient(135deg,rgba(56,211,159,.18),rgba(43,191,138,.12));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:28px;padding:18px 16px;box-shadow:var(--shadow);
+}
+.heroTop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:-.03em}
+.heroSub{margin:0;color:var(--muted);font-size:14px;max-width:760px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.08);
+  color:var(--text);font-size:12px;border:1px solid rgba(255,255,255,.08)
+}
+.tabs{display:flex;gap:8px;overflow:auto;padding:14px 0 4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  white-space:nowrap;background:rgba(255,255,255,.07);color:var(--muted);
+  border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 16px;
+  font:inherit;font-weight:700;cursor:pointer
+}
+.tab.active{
+  background:linear-gradient(135deg,rgba(56,211,159,.20),rgba(43,191,138,.20));
+  color:var(--text);border-color:rgba(56,211,159,.35)
+}
+.section{display:none}.section.active{display:block}
+.panel{
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.10);border-radius:var(--radius);
+  padding:16px;box-shadow:var(--shadow);margin-top:16px
+}
+.panelHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.panel h2,.panel h3{margin:0;letter-spacing:-.03em}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;
+  background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)
+}
+.small,.note{font-size:12px;color:var(--muted)}
+.groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.groupCard,.fixtureCard,.oddsCard,.infoCard{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px
+}
+.groupHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.groupLetter{font-size:22px;font-weight:800}
+.teamList{display:grid;gap:8px}
+.teamRow{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)
+}
+.teamIndex{
+  width:24px;height:24px;border-radius:999px;display:grid;place-items:center;
+  background:rgba(255,255,255,.09);font-size:12px;color:var(--muted);font-weight:800
+}
+.fixtureGrid{display:grid;gap:10px}
+.fixtureTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-bottom:8px}
+.fixtureMain{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.team{text-align:center;font-weight:800;font-size:16px}
+.vs{
+  display:flex;align-items:center;justify-content:center;min-width:46px;padding:6px 10px;border-radius:11px;
+  background:linear-gradient(135deg,rgba(56,211,159,.18),rgba(43,191,138,.12));border:1px solid rgba(255,255,255,.10);
+  font-weight:800;font-size:12px
+}
+.line{margin-top:8px;color:var(--muted);font-size:13px}
+.infoGrid,.oddsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rank{
+  width:28px;height:28px;border-radius:999px;display:grid;place-items:center;
+  background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800
+}
+.oddsTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
+.oddsTeam{font-weight:800;font-size:18px}
+.oddsVal{font-weight:800}
+.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}
+.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+@media (max-width:1080px){.groupsGrid,.infoGrid,.oddsGrid{grid-template-columns:1fr}}
+@media (max-width:720px){body{padding:12px 10px 22px}.heroCard{padding:16px 14px}.fixtureMain{grid-template-columns:1fr}.groupsGrid,.infoGrid,.oddsGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="heroCard">
+      <div class="heroTop">
+        <div>
+          <h1>Coupe du Monde 2026</h1>
+          <p class="heroSub">Infos vérifiées : groupes officiels, matchs confirmés FIFA que j’ai pu vérifier directement, heures françaises, villes et cotes actuelles des favoris.</p>
+        </div>
+        <div class="chips">
+          <span class="chip">48 équipes</span>
+          <span class="chip">12 groupes</span>
+          <span class="chip">11 juin → 19 juillet 2026</span>
+          <span class="chip">Canada · Mexique · États-Unis</span>
+        </div>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+
+  <section class="section active" id="groups"></section>
+  <section class="section" id="schedule"></section>
+  <section class="section" id="odds"></section>
+</div>
+
+<script>
+const TABS = [
+  {id:'groups', label:'Groupes'},
+  {id:'schedule', label:'Infos vérifiées'},
+  {id:'odds', label:'Cotes actuelles'}
+];
+
+const GROUPS = {
+  A:['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],
+  B:['Canada','Bosnie-Herzégovine','Qatar','Suisse'],
+  C:['Brésil','Maroc','Haïti','Écosse'],
+  D:['États-Unis','Paraguay','Australie','Turquie'],
+  E:['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],
+  F:['Pays-Bas','Japon','Suède','Tunisie'],
+  G:['Belgique','Égypte','Iran','Nouvelle-Zélande'],
+  H:['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],
+  I:['France','Sénégal','Irak','Norvège'],
+  J:['Argentine','Algérie','Autriche','Jordanie'],
+  K:['Portugal','RD Congo','Ouzbékistan','Colombie'],
+  L:['Angleterre','Croatie','Ghana','Panama']
+};
+
+const FIXTURES = [
+  {
+    phase:'Ouverture',
+    dateFrance:'jeu. 11 juin · 21:00',
+    local:'13:00 locale',
+    venue:'Mexico City Stadium · Mexico City',
+    home:'Mexique',
+    away:'Afrique du Sud',
+    note:'Match d’ouverture officiel'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'ven. 12 juin · 21:00',
+    local:'15:00 locale',
+    venue:'Toronto Stadium · Toronto',
+    home:'Canada',
+    away:'Bosnie-Herzégovine',
+    note:'Premier match du Canada'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'sam. 13 juin · 03:00',
+    local:'ven. 12 juin · 18:00 locale',
+    venue:'Los Angeles Stadium · Los Angeles',
+    home:'États-Unis',
+    away:'Paraguay',
+    note:'Premier match des États-Unis'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'dim. 14 juin · 00:00',
+    local:'sam. 13 juin · 18:00 locale',
+    venue:'New York New Jersey Stadium',
+    home:'Brésil',
+    away:'Maroc',
+    note:'Affiche mise en avant par FIFA'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'dim. 14 juin · 19:00',
+    local:'12:00 locale',
+    venue:'Houston Stadium · Houston',
+    home:'Allemagne',
+    away:'Curaçao',
+    note:'Entrée en lice de l’Allemagne'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'mer. 17 juin · 22:00',
+    local:'15:00 locale',
+    venue:'Dallas Stadium · Dallas',
+    home:'Angleterre',
+    away:'Croatie',
+    note:'Affiche mise en avant par FIFA'
+  },
+  {
+    phase:'Phase de groupes',
+    dateFrance:'dim. 21 juin · 06:00',
+    local:'sam. 20 juin · 22:00 locale',
+    venue:'Monterrey Stadium · Monterrey',
+    home:'Tunisie',
+    away:'Japon',
+    note:'1000e match de l’histoire de la Coupe du Monde'
+  },
+  {
+    phase:'Fin de groupes',
+    dateFrance:'sam. 27 juin',
+    local:'fin de phase',
+    venue:'Différents stades',
+    home:'Phase de groupes',
+    away:'terminée',
+    note:'Fin de la phase de groupes'
+  },
+  {
+    phase:'Seizièmes de finale',
+    dateFrance:'du 28 juin au 5 juillet',
+    local:'selon match',
+    venue:'16 stades',
+    home:'32 équipes qualifiées',
+    away:'tableau final',
+    note:'Début de la phase à élimination directe'
+  },
+  {
+    phase:'Huitièmes de finale',
+    dateFrance:'du 7 au 10 juillet',
+    local:'selon match',
+    venue:'villes hôtes officielles',
+    home:'16 équipes',
+    away:'8 équipes',
+    note:'Programme officiel FIFA'
+  },
+  {
+    phase:'Quarts de finale',
+    dateFrance:'12–13 juillet',
+    local:'selon match',
+    venue:'New York/New Jersey, Dallas, Atlanta, Los Angeles',
+    home:'4 affiches',
+    away:'confirmées après les 8es',
+    note:'Dates officielles'
+  },
+  {
+    phase:'Demi-finales',
+    dateFrance:'15–16 juillet',
+    local:'21:00 locale',
+    venue:'Dallas puis Atlanta',
+    home:'4 équipes',
+    away:'2 finales avant l’heure',
+    note:'Dates officielles'
+  },
+  {
+    phase:'Match pour la 3e place',
+    dateFrance:'18 juillet',
+    local:'19:00 locale',
+    venue:'Miami Stadium',
+    home:'Perdant demi-finale 1',
+    away:'Perdant demi-finale 2',
+    note:'Avant-dernier match'
+  },
+  {
+    phase:'Finale',
+    dateFrance:'dim. 19 juillet',
+    local:'19:00 locale',
+    venue:'New York New Jersey Stadium',
+    home:'Vainqueur demi-finale 1',
+    away:'Vainqueur demi-finale 2',
+    note:'Finale officielle'
+  }
+];
+
+const ODDS = [
+  {team:'Espagne', odd:'5/1', pct:16.7},
+  {team:'France', odd:'6/1', pct:14.3},
+  {team:'Angleterre', odd:'13/2', pct:13.3},
+  {team:'Argentine', odd:'17/2', pct:10.5},
+  {team:'Brésil', odd:'9/1', pct:10.0},
+  {team:'Portugal', odd:'12/1', pct:7.7},
+  {team:'Allemagne', odd:'16/1', pct:5.9},
+  {team:'Pays-Bas', odd:'25/1', pct:3.8}
+];
+
+function renderTabs(){
+  const tabs=document.getElementById('tabs');
+  tabs.innerHTML=TABS.map((t,i)=>`<button class="tab ${i===0?'active':''}" data-tab="${t.id}">${t.label}</button>`).join('');
+  tabs.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+function renderGroups(){
+  document.getElementById('groups').innerHTML=`
+    <div class="panel">
+      <div class="panelHeader">
+        <h2>Groupes officiels</h2>
+        <span class="badge">Tirage final FIFA</span>
+      </div>
+      <div class="groupsGrid">
+        ${Object.entries(GROUPS).map(([letter,teams])=>`
+          <div class="groupCard">
+            <div class="groupHeader">
+              <div class="groupLetter">Groupe ${letter}</div>
+              <div class="badge">${teams.length} équipes</div>
+            </div>
+            <div class="teamList">
+              ${teams.map((team,index)=>`<div class="teamRow"><div class="teamIndex">${index+1}</div><div>${team}</div></div>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function renderSchedule(){
+  document.getElementById('schedule').innerHTML=`
+    <div class="panel">
+      <div class="panelHeader">
+        <h2>Matchs et dates vérifiés</h2>
+        <span class="badge">Heures françaises</span>
+      </div>
+      <div class="infoGrid">
+        <div class="infoCard">
+          <h3 style="margin:0 0 10px">Ce qui est inclus</h3>
+          <div class="small">Uniquement des informations que j’ai pu vérifier directement : groupes officiels, plusieurs affiches confirmées par FIFA, dates officielles des tours finaux et cotes actuelles des favoris.</div>
+        </div>
+        <div class="infoCard">
+          <h3 style="margin:0 0 10px">Pourquoi pas 104 matchs ici</h3>
+          <div class="small">Je n’ai pas rempli les 104 rencontres une par une pour éviter d’inventer des horaires ou des lieux non vérifiés. Cette version privilégie la fiabilité.</div>
+        </div>
+      </div>
+
+      <div class="fixtureGrid" style="margin-top:12px">
+        ${FIXTURES.map(f=>`
+          <div class="fixtureCard">
+            <div class="fixtureTop">
+              <span>${f.phase}</span>
+              <span>${f.dateFrance}</span>
+            </div>
+            <div class="fixtureMain">
+              <div class="team">${f.home}</div>
+              <div class="vs">VS</div>
+              <div class="team">${f.away}</div>
+            </div>
+            <div class="line">${f.venue}</div>
+            <div class="line">${f.local}</div>
+            <div class="line">${f.note}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function renderOdds(){
+  document.getElementById('odds').innerHTML=`
+    <div class="panel">
+      <div class="panelHeader">
+        <h2>Cotes actuelles</h2>
+        <span class="badge">Vainqueur du tournoi</span>
+      </div>
+      <div class="oddsGrid">
+        ${ODDS.map((item,index)=>`
+          <div class="oddsCard">
+            <div class="oddsTop">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="rank">${index+1}</div>
+                <div class="oddsTeam">${item.team}</div>
+              </div>
+              <div class="oddsVal">${item.odd}</div>
+            </div>
+            <div class="small">Probabilité implicite : ${item.pct}%</div>
+            <div class="bar"><span style="width:${Math.min(item.pct*4,100)}%"></span></div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+renderTabs();
+renderGroups();
+renderSchedule();
+renderOdds();
+</script>
+</body>
+</html>
