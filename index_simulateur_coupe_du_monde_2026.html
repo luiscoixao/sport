@@ -10,9 +10,9 @@
 <meta name="apple-mobile-web-app-title" content="Simulateur CM" />
 <style>
 :root{
-  --bg:#07150f; --bg2:#0d2b1e; --card:rgba(255,255,255,.08);
-  --text:#eefaf2; --muted:#b7d2c1; --accent:#8ee27a; --accent2:#39c46a;
-  --line:rgba(255,255,255,.10); --radius:22px; --shadow:0 18px 40px rgba(0,0,0,.30);
+  --bg:#07150f; --bg2:#0d2b1e; --text:#eefaf2; --muted:#b7d2c1;
+  --accent:#8ee27a; --accent2:#39c46a; --line:rgba(255,255,255,.10);
+  --radius:22px; --shadow:0 18px 40px rgba(0,0,0,.30);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
@@ -79,14 +79,14 @@ select{
 .stageMatch{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:12px}
 .stageMeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-bottom:8px}
 .stageTeams{display:grid;gap:6px}
-.stageTeamLine{display:flex;justify-content:space-between;gap:10px}
-.roundCol{display:grid;gap:10px}
-.roundTitle{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.matchBox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:10px}
-.matchLine{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
-.pathBox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px}
-.pathStep{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.pathStep:last-child{border-bottom:none}
+.stageTeamLine{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:8px 10px;border-radius:10px;cursor:pointer;transition:.18s;
+}
+.stageTeamLine:hover{background:rgba(255,255,255,.06)}
+.stageTeamLine.selected{background:rgba(142,226,122,.22);font-weight:800}
+.stageTeamLine.disabled{cursor:default;opacity:.7}
+.matchWinner{color:#b6f5a4}
 .error{color:#ffb0b0;font-weight:700}
 .ok{color:#b6f5a4;font-weight:700}
 @media (max-width:1080px){.groupsGrid,.summaryGrid{grid-template-columns:1fr 1fr}}
@@ -109,8 +109,7 @@ select{
         <div class="chips">
           <span class="chip">Groupes personnalisables</span>
           <span class="chip">8 meilleurs 3es automatiques</span>
-          <span class="chip">Tableau théorique</span>
-          
+          <span class="chip">Choix manuel des vainqueurs</span>
         </div>
       </div>
     </div>
@@ -134,7 +133,7 @@ select{
   </div>
 
   <div class="panel">
-    <div class="panelHeader"><h2>Meilleurs troisièmes retenus</h2></div>
+    <div class="panelHeader"><h2>Meilleurs troisièmes</h2></div>
     <div class="tableWrap">
       <table class="tbl">
         <thead><tr><th>Rang</th><th>Équipe</th><th>Groupe</th><th>Cote</th></tr></thead>
@@ -142,14 +141,15 @@ select{
       </table>
     </div>
   </div>
-<div class="panel">
+
+  <div class="panel">
     <div class="panelHeader"><h2>Phases finales</h2></div>
     <div class="bracketGrid" id="bracketGrid"></div>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY='cm2026-simulateur-positions-v1';
+const STORAGE_KEY='cm2026-simulateur-manuel-v1';
 
 const INITIAL_ODDS={
   'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,
@@ -224,9 +224,14 @@ function defaultPositions(){
 function loadState(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return JSON.parse(raw);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(!parsed.positions) parsed.positions = defaultPositions();
+      if(!parsed.manualWinners) parsed.manualWinners = {};
+      return parsed;
+    }
   }catch(e){}
-  return {positions:defaultPositions()};
+  return {positions:defaultPositions(), manualWinners:{}};
 }
 let state = loadState();
 
@@ -259,6 +264,7 @@ function renderGroups(){
       const g = e.target.dataset.group;
       const team = e.target.dataset.team;
       state.positions[g][team] = Number(e.target.value);
+      state.manualWinners = {};
       saveState();
       validateGroups();
     });
@@ -280,7 +286,7 @@ function validateGroups(){
     if(btn) btn.disabled = true;
     return false;
   }
-  box.innerHTML = `<span class="ok">Tous les groupes sont valides. La simulation peut être lancée.</span>`;
+  box.innerHTML = `<span class="ok">Tous les groupes sont valides. Tu peux lancer la simulation puis choisir manuellement les vainqueurs.</span>`;
   if(btn) btn.disabled = false;
   return true;
 }
@@ -318,14 +324,14 @@ function resolveToken(token, tables, best3, usedThirds, results){
     const letters = token.slice(1).split('');
     const candidate = best3.find(row => letters.includes(row.group) && !usedThirds.has(row.team));
     if(candidate){ usedThirds.add(candidate.team); return candidate.team; }
-    return 'À déterminer';
+    return resolveTokenLabel(token);
   }
-  if(/^W\d+$/.test(token)) return results['M'+token.slice(1)]?.winner || 'À déterminer';
-  if(/^L\d+$/.test(token)) return results['M'+token.slice(1)]?.loser || 'À déterminer';
+  if(/^W\d+$/.test(token)) return results['M'+token.slice(1)]?.winner || resolveTokenLabel(token);
+  if(/^L\d+$/.test(token)) return results['M'+token.slice(1)]?.loser || resolveTokenLabel(token);
   return token;
 }
 
-function pickWinner(home, away){
+function autoPickWinner(home, away){
   if(home === 'À déterminer' || away === 'À déterminer') return {winner:'À déterminer', loser:'À déterminer'};
   const oh = INITIAL_ODDS[home] || 999;
   const oa = INITIAL_ODDS[away] || 999;
@@ -345,12 +351,26 @@ function simulate(){
   KNOCKOUT.forEach(m=>{
     const home = resolveToken(m.home, tables, thirds, usedThirds, results);
     const away = resolveToken(m.away, tables, thirds, usedThirds, results);
-    const wl = pickWinner(home, away);
+    const manualSide = state.manualWinners[m.id] || '';
+    let wl;
+    if(manualSide === 'home' && home !== 'À déterminer' && away !== 'À déterminer'){
+      wl = {winner:home, loser:away};
+    }else if(manualSide === 'away' && home !== 'À déterminer' && away !== 'À déterminer'){
+      wl = {winner:away, loser:home};
+    }else{
+      wl = autoPickWinner(home, away);
+    }
     const match = {...m, homeResolved:home, awayResolved:away, winner:wl.winner, loser:wl.loser};
     results[m.id] = match;
     matches.push(match);
   });
   return {tables, thirds, matches};
+}
+
+function setManualWinner(matchId, side){
+  state.manualWinners[matchId] = side;
+  saveState();
+  runSimulation(false);
 }
 
 function renderSummary(sim){
@@ -383,8 +403,14 @@ function renderBracket(sim){
               <span>${resolveTokenLabel(m.home)} · ${resolveTokenLabel(m.away)}</span>
             </div>
             <div class="stageTeams">
-              <div class="stageTeamLine"><span>${m.homeResolved}</span><strong>${m.winner===m.homeResolved?'✓':''}</strong></div>
-              <div class="stageTeamLine"><span>${m.awayResolved}</span><strong>${m.winner===m.awayResolved?'✓':''}</strong></div>
+              <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
+                <span>${m.homeResolved}</span>
+                <strong class="matchWinner">${m.winner===m.homeResolved ? '✓' : ''}</strong>
+              </div>
+              <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
+                <span>${m.awayResolved}</span>
+                <strong class="matchWinner">${m.winner===m.awayResolved ? '✓' : ''}</strong>
+              </div>
             </div>
           </div>
         `).join('')}
@@ -393,9 +419,17 @@ function renderBracket(sim){
   `).join('');
 }
 
-function runSimulation(){
+function pickSide(matchId, side){
+  const currentSim = simulate();
+  const match = currentSim?.matches.find(m=>m.id===matchId);
+  if(!match) return;
+  if(match.homeResolved==='À déterminer' || match.awayResolved==='À déterminer') return;
+  setManualWinner(matchId, side);
+}
+
+function runSimulation(showAlert=true){
   if(!validateGroups()){
-    alert("Chaque groupe doit contenir les places 1, 2, 3 et 4 une seule fois.");
+    if(showAlert) alert("Chaque groupe doit contenir les places 1, 2, 3 et 4 une seule fois.");
     return;
   }
   const sim = simulate();
@@ -405,18 +439,19 @@ function runSimulation(){
   renderBracket(sim);
 }
 
-document.getElementById('simulateBtn').addEventListener('click', runSimulation);
+document.getElementById('simulateBtn').addEventListener('click', ()=>runSimulation(true));
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   state.positions = defaultPositions();
+  state.manualWinners = {};
   saveState();
   renderGroups();
   validateGroups();
-  runSimulation();
+  runSimulation(false);
 });
 
 renderGroups();
 validateGroups();
-runSimulation();
+runSimulation(false);
 </script>
 </body>
 </html>
