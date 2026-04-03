@@ -298,7 +298,12 @@ function validateGroups(){
 function bestThirdTokenOptions(token, best3){
   if(!/^3[A-L]+$/.test(token)) return [];
   const letters = token.slice(1).split('');
-  return best3.filter(row => letters.includes(row.group));
+  const alreadyPickedElsewhere = new Set(
+    Object.entries(state.manualThirdChoices)
+      .filter(([k,v]) => k !== token && v)
+      .map(([k,v]) => v)
+  );
+  return best3.filter(row => letters.includes(row.group) && !alreadyPickedElsewhere.has(row.team));
 }
 
 function resolveTokenDisplay(token, tables, best3){
@@ -332,7 +337,7 @@ function bestThirds(tables){
 function resolveTokenLabel(token){
   if(/^1[A-L]$/.test(token)) return `1er groupe ${token[1]}`;
   if(/^2[A-L]$/.test(token)) return `2e groupe ${token[1]}`;
-  if(/^3[A-L]+$/.test(token)) return `Meilleur 3e`;
+  if(/^3[A-L]+$/.test(token)) return state.manualThirdChoices[token] || `Meilleur 3e`;
   if(/^W\d+$/.test(token)) return `Vainqueur M${token.slice(1)}`;
   if(/^L\d+$/.test(token)) return `Perdant M${token.slice(1)}`;
   return token;
@@ -446,8 +451,8 @@ function renderBracket(sim){
               ${homeOpts.length ? `
                 <div class="small">
                   <select class="thirdChoice" data-third-token="${m.home}">
-                    <option value="">Choisir le meilleur 3e</option>
-                    ${homeOpts.map(o=>`<option value="${o.team}" ${state.manualThirdChoices[m.home]===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
+                    <option value="">Choisir</option>
+                    ${(() => { const current = state.manualThirdChoices[m.home]; const base = homeOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !homeOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
                   </select>
                 </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
@@ -457,8 +462,8 @@ function renderBracket(sim){
               ${awayOpts.length ? `
                 <div class="small">
                   <select class="thirdChoice" data-third-token="${m.away}">
-                    <option value="">Choisir le meilleur 3e</option>
-                    ${awayOpts.map(o=>`<option value="${o.team}" ${state.manualThirdChoices[m.away]===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
+                    <option value="">Choisir</option>
+                    ${(() => { const current = state.manualThirdChoices[m.away]; const base = awayOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !awayOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
                   </select>
                 </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
