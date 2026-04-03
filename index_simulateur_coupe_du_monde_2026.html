@@ -87,6 +87,7 @@ select{
 .stageTeamLine.selected{background:rgba(142,226,122,.22);font-weight:800}
 .stageTeamLine.disabled{cursor:default;opacity:.7}
 .matchWinner{color:#b6f5a4}
+.thirdChoice{width:auto;min-width:180px;max-width:100%;padding:8px 10px}
 .error{color:#ffb0b0;font-weight:700}
 .ok{color:#b6f5a4;font-weight:700}
 @media (max-width:1080px){.groupsGrid,.summaryGrid{grid-template-columns:1fr 1fr}}
@@ -228,10 +229,11 @@ function loadState(){
       const parsed = JSON.parse(raw);
       if(!parsed.positions) parsed.positions = defaultPositions();
       if(!parsed.manualWinners) parsed.manualWinners = {};
+      if(!parsed.manualThirdChoices) parsed.manualThirdChoices = {};
       return parsed;
     }
   }catch(e){}
-  return {positions:defaultPositions(), manualWinners:{}};
+  return {positions:defaultPositions(), manualWinners:{}, manualThirdChoices:{}};
 }
 let state = loadState();
 
@@ -265,6 +267,7 @@ function renderGroups(){
       const team = e.target.dataset.team;
       state.positions[g][team] = Number(e.target.value);
       state.manualWinners = {};
+  state.manualThirdChoices = {};
       saveState();
       validateGroups();
     });
@@ -289,6 +292,24 @@ function validateGroups(){
   box.innerHTML = `<span class="ok">Tous les groupes sont valides. Tu peux lancer la simulation puis choisir manuellement les vainqueurs.</span>`;
   if(btn) btn.disabled = false;
   return true;
+}
+
+
+function bestThirdTokenOptions(token, best3){
+  if(!/^3[A-L]+$/.test(token)) return [];
+  const letters = token.slice(1).split('');
+  return best3.filter(row => letters.includes(row.group));
+}
+
+function resolveTokenDisplay(token, tables, best3){
+  if(/^1[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===1)?.team || resolveTokenLabel(token);
+  if(/^2[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===2)?.team || resolveTokenLabel(token);
+  if(/^3[A-L]+$/.test(token)){
+    const manual = state.manualThirdChoices[token];
+    if(manual) return manual;
+    return 'Meilleur 3e';
+  }
+  return resolveTokenLabel(token);
 }
 
 function buildTables(){
@@ -322,6 +343,10 @@ function resolveToken(token, tables, best3, usedThirds, results){
   if(/^2[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===2)?.team || resolveTokenLabel(token);
   if(/^3[A-L]+$/.test(token)){
     const letters = token.slice(1).split('');
+    const manual = state.manualThirdChoices[token];
+    if(manual && letters.includes(Object.entries(tables).find(([g,rows])=>rows.some(r=>r.team===manual))?.[0] || '')){
+      if(!usedThirds.has(manual)){ usedThirds.add(manual); return manual; }
+    }
     const candidate = best3.find(row => letters.includes(row.group) && !usedThirds.has(row.team));
     if(candidate){ usedThirds.add(candidate.team); return candidate.team; }
     return resolveTokenLabel(token);
@@ -340,10 +365,22 @@ function autoPickWinner(home, away){
   return home.localeCompare(away) <= 0 ? {winner:home, loser:away} : {winner:away, loser:home};
 }
 
+
+function setManualThirdChoice(token, value){
+  if(value) state.manualThirdChoices[token] = value;
+  else delete state.manualThirdChoices[token];
+  saveState();
+  runSimulation(false);
+}
+
 function simulate(){
   if(!validateGroups()) return null;
   const tables = buildTables();
   const thirds = bestThirds(tables);
+  Object.keys(state.manualThirdChoices).forEach(token=>{
+    const opts = bestThirdTokenOptions(token, thirds).map(r=>r.team);
+    if(!opts.includes(state.manualThirdChoices[token])) delete state.manualThirdChoices[token];
+  });
   const usedThirds = new Set();
   const results = {};
   const matches = [];
@@ -396,27 +433,50 @@ function renderBracket(sim){
     <div class="stageBlock">
       <div class="panelHeader"><h3>${round}</h3></div>
       <div class="stageMatches">
-        ${sim.matches.filter(m=>m.stage===round).map(m=>`
+        ${sim.matches.filter(m=>m.stage===round).map(m=>{
+          const homeOpts = /^3[A-L]+$/.test(m.home) ? bestThirdTokenOptions(m.home, sim.thirds) : [];
+          const awayOpts = /^3[A-L]+$/.test(m.away) ? bestThirdTokenOptions(m.away, sim.thirds) : [];
+          return `
           <div class="stageMatch">
             <div class="stageMeta">
               <span>${m.id}</span>
               <span>${resolveTokenLabel(m.home)} · ${resolveTokenLabel(m.away)}</span>
             </div>
             <div class="stageTeams">
+              ${homeOpts.length ? `
+                <div class="small">
+                  <select class="thirdChoice" data-third-token="${m.home}">
+                    <option value="">Choisir le meilleur 3e</option>
+                    ${homeOpts.map(o=>`<option value="${o.team}" ${state.manualThirdChoices[m.home]===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
+                  </select>
+                </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
                 <span>${m.homeResolved}</span>
                 <strong class="matchWinner">${m.winner===m.homeResolved ? '✓' : ''}</strong>
               </div>
+              ${awayOpts.length ? `
+                <div class="small">
+                  <select class="thirdChoice" data-third-token="${m.away}">
+                    <option value="">Choisir le meilleur 3e</option>
+                    ${awayOpts.map(o=>`<option value="${o.team}" ${state.manualThirdChoices[m.away]===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
+                  </select>
+                </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
                 <span>${m.awayResolved}</span>
                 <strong class="matchWinner">${m.winner===m.awayResolved ? '✓' : ''}</strong>
               </div>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>
   `).join('');
+
+  document.querySelectorAll('[data-third-token]').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      setManualThirdChoice(e.target.dataset.thirdToken, e.target.value);
+    });
+  });
 }
 
 function pickSide(matchId, side){
@@ -443,6 +503,7 @@ document.getElementById('simulateBtn').addEventListener('click', ()=>runSimulati
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   state.positions = defaultPositions();
   state.manualWinners = {};
+  state.manualThirdChoices = {};
   saveState();
   renderGroups();
   validateGroups();
