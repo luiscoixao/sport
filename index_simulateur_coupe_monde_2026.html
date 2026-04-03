@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Simulateur de parcours — Coupe du Monde 2026</title>
+<meta name="theme-color" content="#0d2b1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Simulateur CM" />
+<style>
+:root{
+  --bg:#07150f; --bg2:#0d2b1e; --card:rgba(255,255,255,.08);
+  --text:#eefaf2; --muted:#b7d2c1; --accent:#8ee27a; --accent2:#39c46a;
+  --line:rgba(255,255,255,.10); --radius:22px; --shadow:0 18px 40px rgba(0,0,0,.30);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;padding:0;color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+  background:radial-gradient(circle at top left,#1a4b34 0%, #0d2b1e 28%, #07150f 72%, #041008 100%);
+}
+body{min-height:100vh;padding:14px 12px 30px}
+.app{max-width:1280px;margin:0 auto}
+.hero{
+  position:sticky;top:0;z-index:10;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(180deg,rgba(7,21,15,.96),rgba(7,21,15,.86));
+  padding:2px 0 12px
+}
+.heroCard{
+  background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));
+  border:1px solid var(--line);border-radius:28px;padding:18px 16px;box-shadow:var(--shadow)
+}
+.heroTop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em}
+.sub{margin:0;color:var(--muted);font-size:14px;max-width:860px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--text);font-size:12px;border:1px solid var(--line)}
+.panel{
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.05));
+  border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:16px
+}
+.panelHeader{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.panel h2,.panel h3{margin:0;letter-spacing:-.03em}
+.small{font-size:12px;color:var(--muted)}
+.btn{
+  appearance:none;border:none;border-radius:12px;padding:11px 14px;font:inherit;font-weight:800;cursor:pointer
+}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#082114}
+.btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+.groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.groupCard{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px}
+.groupTitle{font-size:22px;font-weight:800;margin-bottom:10px}
+.teamRow{
+  display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.teamRow:last-child{border-bottom:none}
+.teamName{font-weight:700}
+select{
+  width:100%;background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;font:inherit
+}
+.summaryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.summaryCard{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px}
+.summaryLabel{font-size:12px;color:var(--muted);margin-bottom:8px}
+.summaryValue{font-size:24px;font-weight:800}
+.tableWrap{overflow:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;vertical-align:top}
+.tbl th:not(:first-child),.tbl td:not(:first-child){text-align:center}
+.tbl tr:last-child td{border-bottom:none}
+.bracketGrid{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:14px;align-items:start;overflow:auto}
+.roundCol{display:grid;gap:10px}
+.roundTitle{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.matchBox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:10px}
+.matchLine{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
+.pathBox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px}
+.pathStep{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.pathStep:last-child{border-bottom:none}
+.error{color:#ffb0b0;font-weight:700}
+.ok{color:#b6f5a4;font-weight:700}
+@media (max-width:1080px){.groupsGrid,.summaryGrid{grid-template-columns:1fr 1fr}}
+@media (max-width:720px){
+  body{padding:12px 10px 22px}
+  .groupsGrid,.summaryGrid{grid-template-columns:1fr}
+  .teamRow{grid-template-columns:1fr 72px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="heroCard">
+      <div class="heroTop">
+        <div>
+          <h1>Simulateur de parcours</h1>
+          <p class="sub">Choisis la place de chaque équipe dans chaque groupe, puis lance la simulation. Le tableau à partir des seizièmes est rempli avec les places théoriques et les 8 meilleurs troisièmes sont sélectionnés automatiquement selon les cotes les plus faibles parmi les troisièmes.</p>
+        </div>
+        <div class="chips">
+          <span class="chip">Groupes personnalisables</span>
+          <span class="chip">8 meilleurs 3es automatiques</span>
+          <span class="chip">Tableau théorique</span>
+          <span class="chip">Parcours du Portugal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader">
+      <h2>Classement des groupes</h2>
+      <div class="controls">
+        <button class="btn primary" id="simulateBtn">Lancer la simulation</button>
+        <button class="btn secondary" id="resetBtn">Réinitialiser selon les cotes</button>
+      </div>
+    </div>
+    <div id="validationMsg" class="small"></div>
+    <div class="groupsGrid" id="groupsGrid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader"><h2>Résumé</h2></div>
+    <div class="summaryGrid" id="summaryGrid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader"><h2>Meilleurs troisièmes retenus</h2></div>
+    <div class="tableWrap">
+      <table class="tbl">
+        <thead><tr><th>Rang</th><th>Équipe</th><th>Groupe</th><th>Cote</th></tr></thead>
+        <tbody id="thirdsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader"><h2>Parcours du Portugal</h2></div>
+    <div class="pathBox" id="portugalPath"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader"><h2>Tableau simulé</h2></div>
+    <div class="bracketGrid" id="bracketGrid"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY='cm2026-simulateur-positions-v1';
+
+const INITIAL_ODDS={
+  'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,
+  'Belgique':24.0,'Uruguay':26.0,'Croatie':35.0,'Colombie':36.0,'Sénégal':40.0,'Mexique':45.0,'Maroc':45.0,'États-Unis':50.0,
+  'Suisse':55.0,'Japon':60.0,'Norvège':65.0,'Turquie':70.0,'Paraguay':80.0,'Équateur':80.0,'Autriche':85.0,'Canada':90.0,
+  'Corée du Sud':90.0,'Côte d’Ivoire':95.0,'Algérie':100.0,'Suède':100.0,'Tchéquie':110.0,'Tunisie':110.0,'Écosse':115.0,
+  'Bosnie-Herzégovine':120.0,'Iran':120.0,'Australie':120.0,'Égypte':140.0,'Qatar':150.0,'Ghana':150.0,'RD Congo':170.0,
+  'Afrique du Sud':180.0,'Arabie saoudite':180.0,'Cap-Vert':200.0,'Ouzbékistan':200.0,'Curaçao':220.0,'Panama':220.0,
+  'Haïti':250.0,'Jordanie':250.0,'Irak':260.0,'Nouvelle-Zélande':300.0
+};
+
+const GROUPS={
+  'A':['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],
+  'B':['Canada','Bosnie-Herzégovine','Qatar','Suisse'],
+  'C':['Brésil','Maroc','Haïti','Écosse'],
+  'D':['États-Unis','Paraguay','Australie','Turquie'],
+  'E':['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],
+  'F':['Pays-Bas','Japon','Suède','Tunisie'],
+  'G':['Belgique','Égypte','Iran','Nouvelle-Zélande'],
+  'H':['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],
+  'I':['France','Sénégal','Irak','Norvège'],
+  'J':['Argentine','Algérie','Autriche','Jordanie'],
+  'K':['Portugal','RD Congo','Ouzbékistan','Colombie'],
+  'L':['Angleterre','Croatie','Ghana','Panama']
+};
+
+const KNOCKOUT = [
+  {id:'M73', stage:'Seizièmes', home:'1A', away:'2B'},
+  {id:'M74', stage:'Seizièmes', home:'1E', away:'3ABCDF'},
+  {id:'M75', stage:'Seizièmes', home:'1F', away:'2C'},
+  {id:'M76', stage:'Seizièmes', home:'1C', away:'2F'},
+  {id:'M77', stage:'Seizièmes', home:'1I', away:'3CDFGH'},
+  {id:'M78', stage:'Seizièmes', home:'2E', away:'2I'},
+  {id:'M79', stage:'Seizièmes', home:'1A', away:'3CEFHI'},
+  {id:'M80', stage:'Seizièmes', home:'1L', away:'3EHIJK'},
+  {id:'M81', stage:'Seizièmes', home:'1D', away:'3BEFIJ'},
+  {id:'M82', stage:'Seizièmes', home:'1G', away:'3AEHIJ'},
+  {id:'M83', stage:'Seizièmes', home:'2K', away:'2L'},
+  {id:'M84', stage:'Seizièmes', home:'1H', away:'2J'},
+  {id:'M85', stage:'Seizièmes', home:'1B', away:'3EFGIJ'},
+  {id:'M86', stage:'Seizièmes', home:'1J', away:'2H'},
+  {id:'M87', stage:'Seizièmes', home:'1K', away:'3DEIJL'},
+  {id:'M88', stage:'Seizièmes', home:'2D', away:'2G'},
+  {id:'M89', stage:'Huitièmes', home:'W74', away:'W77'},
+  {id:'M90', stage:'Huitièmes', home:'W73', away:'W75'},
+  {id:'M91', stage:'Huitièmes', home:'W76', away:'W78'},
+  {id:'M92', stage:'Huitièmes', home:'W79', away:'W80'},
+  {id:'M93', stage:'Huitièmes', home:'W83', away:'W84'},
+  {id:'M94', stage:'Huitièmes', home:'W81', away:'W82'},
+  {id:'M95', stage:'Huitièmes', home:'W86', away:'W88'},
+  {id:'M96', stage:'Huitièmes', home:'W85', away:'W87'},
+  {id:'M97', stage:'Quarts', home:'W89', away:'W90'},
+  {id:'M98', stage:'Quarts', home:'W93', away:'W94'},
+  {id:'M99', stage:'Quarts', home:'W91', away:'W92'},
+  {id:'M100', stage:'Quarts', home:'W95', away:'W96'},
+  {id:'M101', stage:'Demi-finales', home:'W97', away:'W98'},
+  {id:'M102', stage:'Demi-finales', home:'W99', away:'W100'},
+  {id:'M103', stage:'3e place', home:'L101', away:'L102'},
+  {id:'M104', stage:'Finale', home:'W101', away:'W102'}
+];
+
+function defaultPositions(){
+  const pos = {};
+  Object.entries(GROUPS).forEach(([g,teams])=>{
+    const sorted = [...teams].sort((a,b)=> (INITIAL_ODDS[a]||999) - (INITIAL_ODDS[b]||999) || a.localeCompare(b));
+    pos[g] = {};
+    sorted.forEach((team, idx)=> pos[g][team] = idx+1);
+  });
+  return pos;
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {positions:defaultPositions()};
+}
+let state = loadState();
+
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function renderGroups(){
+  const host = document.getElementById('groupsGrid');
+  host.innerHTML = Object.entries(GROUPS).map(([g,teams])=>`
+    <div class="groupCard">
+      <div class="groupTitle">Groupe ${g}</div>
+      ${teams.map(team=>`
+        <div class="teamRow">
+          <div>
+            <div class="teamName">${team}</div>
+            <div class="small">Cote : ${(INITIAL_ODDS[team]||999).toFixed(1)}</div>
+          </div>
+          <select data-group="${g}" data-team="${team}">
+            <option value="1" ${state.positions[g][team]===1?'selected':''}>1</option>
+            <option value="2" ${state.positions[g][team]===2?'selected':''}>2</option>
+            <option value="3" ${state.positions[g][team]===3?'selected':''}>3</option>
+            <option value="4" ${state.positions[g][team]===4?'selected':''}>4</option>
+          </select>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  host.querySelectorAll('select').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      const g = e.target.dataset.group;
+      const team = e.target.dataset.team;
+      state.positions[g][team] = Number(e.target.value);
+      saveState();
+      validateGroups();
+    });
+  });
+}
+
+function validateGroups(){
+  const issues = [];
+  Object.entries(state.positions).forEach(([g,obj])=>{
+    const values = Object.values(obj);
+    const unique = new Set(values);
+    const valid = [1,2,3,4].every(v=>values.includes(v)) && unique.size===4;
+    if(!valid) issues.push(g);
+  });
+  const box = document.getElementById('validationMsg');
+  if(issues.length){
+    box.innerHTML = `<span class="error">Groupes invalides : ${issues.join(', ')}. Chaque groupe doit avoir une place 1, 2, 3 et 4 une seule fois.</span>`;
+    return false;
+  }
+  box.innerHTML = `<span class="ok">Tous les groupes sont valides.</span>`;
+  return true;
+}
+
+function buildTables(){
+  const tables = {};
+  Object.entries(state.positions).forEach(([g,obj])=>{
+    const rows = Object.entries(obj).map(([team,pos])=>({team, pos, odd: INITIAL_ODDS[team]||999}));
+    rows.sort((a,b)=>a.pos-b.pos || a.team.localeCompare(b.team));
+    tables[g] = rows;
+  });
+  return tables;
+}
+
+function bestThirds(tables){
+  return Object.entries(tables)
+    .map(([g,rows])=>({group:g, ...rows.find(r=>r.pos===3)}))
+    .sort((a,b)=>(a.odd-b.odd) || a.team.localeCompare(b.team))
+    .slice(0,8);
+}
+
+function resolveToken(token, tables, best3, usedThirds, results){
+  if(/^1[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===1)?.team || 'À déterminer';
+  if(/^2[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===2)?.team || 'À déterminer';
+  if(/^3[A-L]+$/.test(token)){
+    const letters = token.slice(1).split('');
+    const candidate = best3.find(row => letters.includes(row.group) && !usedThirds.has(row.team));
+    if(candidate){ usedThirds.add(candidate.team); return candidate.team; }
+    return 'À déterminer';
+  }
+  if(/^W\d+$/.test(token)) return results['M'+token.slice(1)]?.winner || 'À déterminer';
+  if(/^L\d+$/.test(token)) return results['M'+token.slice(1)]?.loser || 'À déterminer';
+  return token;
+}
+
+function pickWinner(home, away){
+  if(home === 'À déterminer' || away === 'À déterminer') return {winner:'À déterminer', loser:'À déterminer'};
+  const oh = INITIAL_ODDS[home] || 999;
+  const oa = INITIAL_ODDS[away] || 999;
+  if(oh < oa) return {winner:home, loser:away};
+  if(oa < oh) return {winner:away, loser:home};
+  return home.localeCompare(away) <= 0 ? {winner:home, loser:away} : {winner:away, loser:home};
+}
+
+function simulate(){
+  if(!validateGroups()) return null;
+  const tables = buildTables();
+  const thirds = bestThirds(tables);
+  const usedThirds = new Set();
+  const results = {};
+  const matches = [];
+
+  KNOCKOUT.forEach(m=>{
+    const home = resolveToken(m.home, tables, thirds, usedThirds, results);
+    const away = resolveToken(m.away, tables, thirds, usedThirds, results);
+    const wl = pickWinner(home, away);
+    const match = {...m, homeResolved:home, awayResolved:away, winner:wl.winner, loser:wl.loser};
+    results[m.id] = match;
+    matches.push(match);
+  });
+  return {tables, thirds, matches};
+}
+
+function renderSummary(sim){
+  const portugalPos = sim.tables.K.find(r=>r.team==='Portugal')?.pos || '—';
+  const final = sim.matches.find(m=>m.id==='M104');
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="summaryCard"><div class="summaryLabel">Portugal en groupe</div><div class="summaryValue">${portugalPos}e</div></div>
+    <div class="summaryCard"><div class="summaryLabel">Vainqueur simulé</div><div class="summaryValue">${final?.winner || '—'}</div></div>
+    <div class="summaryCard"><div class="summaryLabel">Qualifiés groupe K</div><div class="small">${sim.tables.K.filter(r=>r.pos<=2).map(r=>r.team).join(' · ')}</div></div>
+    <div class="summaryCard"><div class="summaryLabel">Finale simulée</div><div class="small">${final?.homeResolved || '—'} · ${final?.awayResolved || '—'}</div></div>
+  `;
+}
+
+function renderThirds(sim){
+  document.getElementById('thirdsBody').innerHTML = sim.thirds.map((row,i)=>`
+    <tr><td>${i+1}</td><td>${row.team}</td><td>${row.group}</td><td>${row.odd.toFixed(1)}</td></tr>
+  `).join('');
+}
+
+function renderPortugalPath(sim){
+  const portugalMatches = sim.matches.filter(m=>[m.homeResolved,m.awayResolved].includes('Portugal'));
+  if(!portugalMatches.length){
+    document.getElementById('portugalPath').innerHTML = `<div class="small">Portugal n’apparaît pas dans la branche simulée.</div>`;
+    return;
+  }
+  document.getElementById('portugalPath').innerHTML = portugalMatches.map(m=>`
+    <div class="pathStep">
+      <span><strong>${m.stage}</strong> (${m.id})</span>
+      <span>Portugal – ${m.homeResolved==='Portugal'?m.awayResolved:m.homeResolved}</span>
+    </div>
+  `).join('');
+}
+
+function renderBracket(sim){
+  const rounds = ['Seizièmes','Huitièmes','Quarts','Demi-finales','3e place','Finale'];
+  document.getElementById('bracketGrid').innerHTML = rounds.map(round=>`
+    <div class="roundCol">
+      <div class="roundTitle">${round}</div>
+      ${sim.matches.filter(m=>m.stage===round).map(m=>`
+        <div class="matchBox">
+          <div class="small">${m.id}</div>
+          <div class="matchLine"><span>${m.homeResolved}</span><strong>${m.winner===m.homeResolved?'✓':''}</strong></div>
+          <div class="matchLine"><span>${m.awayResolved}</span><strong>${m.winner===m.awayResolved?'✓':''}</strong></div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function runSimulation(){
+  const sim = simulate();
+  if(!sim) return;
+  renderSummary(sim);
+  renderThirds(sim);
+  renderPortugalPath(sim);
+  renderBracket(sim);
+}
+
+document.getElementById('simulateBtn').addEventListener('click', runSimulation);
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  state.positions = defaultPositions();
+  saveState();
+  renderGroups();
+  validateGroups();
+  runSimulation();
+});
+
+renderGroups();
+validateGroups();
+runSimulation();
+</script>
+</body>
+</html>
