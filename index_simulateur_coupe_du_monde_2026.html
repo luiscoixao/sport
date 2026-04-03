@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Simulateur de parcours — Coupe du Monde 2026</title>
+<title>SIMULATEUR COUPE DU MONDE DE FOOTBALL 2026</title>
 <meta name="theme-color" content="#0d2b1e" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Simulateur CM" />
+<meta name="apple-mobile-web-app-title" content="SIMULATEUR CM 2026" />
 <style>
 :root{
   --bg:#07150f; --bg2:#0d2b1e; --text:#eefaf2; --muted:#b7d2c1;
@@ -32,7 +32,7 @@ body{min-height:100vh;padding:14px 12px 30px}
   background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));
   border:1px solid var(--line);border-radius:28px;padding:18px 16px;box-shadow:var(--shadow)
 }
-.heroTop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.heroTop{display:block}
 h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em}
 .sub{margin:0;color:var(--muted);font-size:14px;max-width:860px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
@@ -104,15 +104,10 @@ select{
     <div class="heroCard">
       <div class="heroTop">
         <div>
-          <h1>Simulateur de parcours</h1>
-          <p class="sub">Choisis la place de chaque équipe dans chaque groupe, puis lance la simulation.</p>
+          <h1>SIMULATEUR COUPE DU MONDE DE FOOTBALL 2026</h1>
+          
         </div>
-        <div class="chips">
-          <span class="chip">Groupes personnalisables</span>
-          <span class="chip">8 meilleurs 3es automatiques</span>
-          <span class="chip">Choix manuel des vainqueurs</span>
-        </div>
-      </div>
+</div>
     </div>
   </div>
 
@@ -120,20 +115,13 @@ select{
     <div class="panelHeader">
       <h2>Classement des groupes</h2>
       <div class="controls">
-        <button class="btn primary" id="simulateBtn">Lancer la simulation</button>
-        <button class="btn secondary" id="resetBtn">Réinitialiser selon les cotes</button>
+<button class="btn secondary" id="resetBtn">Réinitialiser selon les cotes</button>
       </div>
     </div>
     <div id="validationMsg" class="small"></div>
     <div class="groupsGrid" id="groupsGrid"></div>
   </div>
-
-  <div class="panel">
-    <div class="panelHeader"><h2>Résumé</h2></div>
-    <div class="summaryGrid" id="summaryGrid"></div>
-  </div>
-
-  <div class="panel">
+<div class="panel">
     <div class="panelHeader"><h2>Meilleurs troisièmes</h2></div>
     <div class="tableWrap">
       <table class="tbl">
@@ -270,6 +258,7 @@ function renderGroups(){
   state.manualThirdChoices = {};
       saveState();
       validateGroups();
+      runSimulation(false);
     });
   });
 }
@@ -283,14 +272,11 @@ function validateGroups(){
     if(!valid) issues.push(g);
   });
   const box = document.getElementById('validationMsg');
-  const btn = document.getElementById('simulateBtn');
   if(issues.length){
-    box.innerHTML = `<span class="error">Impossible de lancer : groupes invalides ${issues.join(', ')}. Dans chaque groupe, il faut 1, 2, 3 et 4 une seule fois.</span>`;
-    if(btn) btn.disabled = true;
+    box.innerHTML = `<span class="error">Groupes invalides : ${issues.join(', ')}. Dans chaque groupe, il faut 1, 2, 3 et 4 une seule fois.</span>`;
     return false;
   }
-  box.innerHTML = `<span class="ok">Tous les groupes sont valides. Tu peux lancer la simulation puis choisir manuellement les vainqueurs.</span>`;
-  if(btn) btn.disabled = false;
+  box.innerHTML = `<span class="ok">Tous les groupes sont valides.</span>`;
   return true;
 }
 
@@ -298,22 +284,22 @@ function validateGroups(){
 function bestThirdTokenOptions(token, best3){
   if(!/^3[A-L]+$/.test(token)) return [];
   const letters = token.slice(1).split('');
+  const current = state.manualThirdChoices[token] || '';
   const alreadyPickedElsewhere = new Set(
     Object.entries(state.manualThirdChoices)
       .filter(([k,v]) => k !== token && v)
       .map(([k,v]) => v)
   );
-  return best3.filter(row => letters.includes(row.group) && !alreadyPickedElsewhere.has(row.team));
+  return best3.filter(row =>
+    letters.includes(row.group) &&
+    (!alreadyPickedElsewhere.has(row.team) || row.team === current)
+  );
 }
 
 function resolveTokenDisplay(token, tables, best3){
   if(/^1[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===1)?.team || resolveTokenLabel(token);
   if(/^2[A-L]$/.test(token)) return tables[token[1]].find(r=>r.pos===2)?.team || resolveTokenLabel(token);
-  if(/^3[A-L]+$/.test(token)){
-    const manual = state.manualThirdChoices[token];
-    if(manual) return manual;
-    return 'Meilleur 3e';
-  }
+  if(/^3[A-L]+$/.test(token)) return state.manualThirdChoices[token] || 'Choisir 3e';
   return resolveTokenLabel(token);
 }
 
@@ -337,7 +323,7 @@ function bestThirds(tables){
 function resolveTokenLabel(token){
   if(/^1[A-L]$/.test(token)) return `1er groupe ${token[1]}`;
   if(/^2[A-L]$/.test(token)) return `2e groupe ${token[1]}`;
-  if(/^3[A-L]+$/.test(token)) return state.manualThirdChoices[token] || `Meilleur 3e`;
+  if(/^3[A-L]+$/.test(token)) return state.manualThirdChoices[token] || `Choisir 3e`;
   if(/^W\d+$/.test(token)) return `Vainqueur M${token.slice(1)}`;
   if(/^L\d+$/.test(token)) return `Perdant M${token.slice(1)}`;
   return token;
@@ -349,11 +335,11 @@ function resolveToken(token, tables, best3, usedThirds, results){
   if(/^3[A-L]+$/.test(token)){
     const letters = token.slice(1).split('');
     const manual = state.manualThirdChoices[token];
-    if(manual && letters.includes(Object.entries(tables).find(([g,rows])=>rows.some(r=>r.team===manual))?.[0] || '')){
-      if(!usedThirds.has(manual)){ usedThirds.add(manual); return manual; }
+    const manualGroup = manual ? (Object.entries(tables).find(([g,rows])=>rows.some(r=>r.team===manual))?.[0] || '') : '';
+    if(manual && letters.includes(manualGroup) && !usedThirds.has(manual)){
+      usedThirds.add(manual);
+      return manual;
     }
-    const candidate = best3.find(row => letters.includes(row.group) && !usedThirds.has(row.team));
-    if(candidate){ usedThirds.add(candidate.team); return candidate.team; }
     return resolveTokenLabel(token);
   }
   if(/^W\d+$/.test(token)) return results['M'+token.slice(1)]?.winner || resolveTokenLabel(token);
@@ -362,7 +348,7 @@ function resolveToken(token, tables, best3, usedThirds, results){
 }
 
 function autoPickWinner(home, away){
-  if(home === 'À déterminer' || away === 'À déterminer') return {winner:'À déterminer', loser:'À déterminer'};
+  if(home === 'À déterminer' || away === 'À déterminer' || home === 'Choisir 3e' || away === 'Choisir 3e') return {winner:'À déterminer', loser:'À déterminer'};
   const oh = INITIAL_ODDS[home] || 999;
   const oa = INITIAL_ODDS[away] || 999;
   if(oh < oa) return {winner:home, loser:away};
@@ -386,6 +372,7 @@ function simulate(){
     const opts = bestThirdTokenOptions(token, thirds).map(r=>r.team);
     if(!opts.includes(state.manualThirdChoices[token])) delete state.manualThirdChoices[token];
   });
+  saveState();
   const usedThirds = new Set();
   const results = {};
   const matches = [];
@@ -395,9 +382,9 @@ function simulate(){
     const away = resolveToken(m.away, tables, thirds, usedThirds, results);
     const manualSide = state.manualWinners[m.id] || '';
     let wl;
-    if(manualSide === 'home' && home !== 'À déterminer' && away !== 'À déterminer'){
+    if(manualSide === 'home' && home !== 'À déterminer' && away !== 'À déterminer' && home !== 'Choisir 3e' && away !== 'Choisir 3e'){
       wl = {winner:home, loser:away};
-    }else if(manualSide === 'away' && home !== 'À déterminer' && away !== 'À déterminer'){
+    }else if(manualSide === 'away' && home !== 'À déterminer' && away !== 'À déterminer' && home !== 'Choisir 3e' && away !== 'Choisir 3e'){
       wl = {winner:away, loser:home};
     }else{
       wl = autoPickWinner(home, away);
@@ -413,17 +400,6 @@ function setManualWinner(matchId, side){
   state.manualWinners[matchId] = side;
   saveState();
   runSimulation(false);
-}
-
-function renderSummary(sim){
-  const final = sim.matches.find(m=>m.id==='M104');
-  const thirdPlace = sim.matches.find(m=>m.id==='M103');
-  document.getElementById('summaryGrid').innerHTML = `
-    <div class="summaryCard"><div class="summaryLabel">Vainqueur simulé</div><div class="summaryValue">${final?.winner || '—'}</div></div>
-    <div class="summaryCard"><div class="summaryLabel">Finale</div><div class="small">${final?.homeResolved || '—'} · ${final?.awayResolved || '—'}</div></div>
-    <div class="summaryCard"><div class="summaryLabel">3e place</div><div class="small">${thirdPlace?.homeResolved || '—'} · ${thirdPlace?.awayResolved || '—'}</div></div>
-    <div class="summaryCard"><div class="summaryLabel">8 meilleurs 3es</div><div class="small">${sim.thirds.map(r=>r.team).join(' · ')}</div></div>
-  `;
 }
 
 function renderThirds(sim){
@@ -455,7 +431,7 @@ function renderBracket(sim){
                     ${(() => { const current = state.manualThirdChoices[m.home]; const base = homeOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !homeOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
                   </select>
                 </div>` : ``}
-              <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
+              <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${(m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer'||m.homeResolved==='Choisir 3e'||m.awayResolved==='Choisir 3e') ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
                 <span>${m.homeResolved}</span>
                 <strong class="matchWinner">${m.winner===m.homeResolved ? '✓' : ''}</strong>
               </div>
@@ -466,7 +442,7 @@ function renderBracket(sim){
                     ${(() => { const current = state.manualThirdChoices[m.away]; const base = awayOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !awayOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
                   </select>
                 </div>` : ``}
-              <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer' ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
+              <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${(m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer'||m.homeResolved==='Choisir 3e'||m.awayResolved==='Choisir 3e') ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
                 <span>${m.awayResolved}</span>
                 <strong class="matchWinner">${m.winner===m.awayResolved ? '✓' : ''}</strong>
               </div>
@@ -488,23 +464,20 @@ function pickSide(matchId, side){
   const currentSim = simulate();
   const match = currentSim?.matches.find(m=>m.id===matchId);
   if(!match) return;
-  if(match.homeResolved==='À déterminer' || match.awayResolved==='À déterminer') return;
+  if(match.homeResolved==='À déterminer' || match.awayResolved==='À déterminer' || match.homeResolved==='Choisir 3e' || match.awayResolved==='Choisir 3e') return;
   setManualWinner(matchId, side);
 }
 
 function runSimulation(showAlert=true){
   if(!validateGroups()){
-    if(showAlert) alert("Chaque groupe doit contenir les places 1, 2, 3 et 4 une seule fois.");
     return;
   }
   const sim = simulate();
   if(!sim) return;
-  renderSummary(sim);
   renderThirds(sim);
   renderBracket(sim);
 }
 
-document.getElementById('simulateBtn').addEventListener('click', ()=>runSimulation(true));
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   state.positions = defaultPositions();
   state.manualWinners = {};
