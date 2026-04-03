@@ -23,7 +23,24 @@ html,body{margin:0;padding:0;background:radial-gradient(circle at top left,#1a4b
 body{min-height:100vh;padding:14px 12px 26px}
 .app{max-width:1240px;margin:0 auto}
 .hero{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:linear-gradient(180deg,rgba(7,21,15,.96),rgba(7,21,15,.86));padding:2px 0 12px}
-.heroCard{background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));border:1px solid rgba(255,255,255,.10); border-radius:28px; padding:18px 16px; box-shadow:var(--shadow)}
+.heroCard{
+  background:
+    url('icon-coupe.png') no-repeat right 20px center,
+    linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));
+
+  background-size:140px, auto;
+
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:28px;
+
+  padding:50px 20px;
+  min-height:220px;
+
+  display:flex;
+  align-items:center;
+
+  box-shadow:var(--shadow);
+}
 .heroTop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
 h1{margin:0 0 6px;font-size:clamp(30px,6vw,54px);line-height:.95;letter-spacing:-.03em}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
