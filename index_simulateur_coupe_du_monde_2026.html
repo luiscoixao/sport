@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SIMULATEUR COUPE DU MONDE DE FOOTBALL 2026</title>
+<link rel="apple-touch-icon" sizes="180x180" href="icon-simulateur-cdm-2026.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="icon-simulateur-cdm-2026.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="icon-simulateur-cdm-2026.png" />
 <meta name="theme-color" content="#0d2b1e" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -24,13 +27,25 @@ body{min-height:100vh;padding:14px 12px 30px}
 .app{max-width:1280px;margin:0 auto}
 .hero{
   position:sticky;top:0;z-index:10;
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  background:linear-gradient(180deg,rgba(7,21,15,.96),rgba(7,21,15,.86));
-  padding:2px 0 12px
+  background:transparent;
+  padding:6px 0 16px
 }
 .heroCard{
+  position:relative;
+  overflow:hidden;
   background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));
   border:1px solid var(--line);border-radius:28px;padding:18px 16px;box-shadow:var(--shadow)
+}
+.heroCard::after{
+  content:"";
+  position:absolute;
+  right:-10px;
+  top:-10px;
+  width:160px;
+  height:160px;
+  background:url('icon-simulateur-cdm-2026.png') no-repeat center/contain;
+  opacity:.08;
+  pointer-events:none;
 }
 .heroTop{display:block}
 h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em}
@@ -290,10 +305,11 @@ function bestThirdTokenOptions(token, best3){
       .filter(([k,v]) => k !== token && v)
       .map(([k,v]) => v)
   );
-  return best3.filter(row =>
-    letters.includes(row.group) &&
-    (!alreadyPickedElsewhere.has(row.team) || row.team === current)
-  );
+  return best3.filter(row => {
+    if(!letters.includes(row.group)) return false;
+    if(row.team === current) return true;
+    return !alreadyPickedElsewhere.has(row.team);
+  });
 }
 
 function resolveTokenDisplay(token, tables, best3){
@@ -417,6 +433,8 @@ function renderBracket(sim){
         ${sim.matches.filter(m=>m.stage===round).map(m=>{
           const homeOpts = /^3[A-L]+$/.test(m.home) ? bestThirdTokenOptions(m.home, sim.thirds) : [];
           const awayOpts = /^3[A-L]+$/.test(m.away) ? bestThirdTokenOptions(m.away, sim.thirds) : [];
+          const homeCurrent = state.manualThirdChoices[m.home] || '';
+          const awayCurrent = state.manualThirdChoices[m.away] || '';
           return `
           <div class="stageMatch">
             <div class="stageMeta">
@@ -424,22 +442,22 @@ function renderBracket(sim){
               <span>${resolveTokenLabel(m.home)} · ${resolveTokenLabel(m.away)}</span>
             </div>
             <div class="stageTeams">
-              ${homeOpts.length ? `
+              ${/^3[A-L]+$/.test(m.home) ? `
                 <div class="small">
                   <select class="thirdChoice" data-third-token="${m.home}">
-                    <option value="">Choisir</option>
-                    ${(() => { const current = state.manualThirdChoices[m.home]; const base = homeOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !homeOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
+                    <option value="">Choisir 3e</option>
+                    ${homeOpts.map(o=>`<option value="${o.team}" ${homeCurrent===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
                   </select>
                 </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.homeResolved ? 'selected' : ''} ${(m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer'||m.homeResolved==='Choisir 3e'||m.awayResolved==='Choisir 3e') ? 'disabled' : ''}" onclick="pickSide('${m.id}','home')">
                 <span>${m.homeResolved}</span>
                 <strong class="matchWinner">${m.winner===m.homeResolved ? '✓' : ''}</strong>
               </div>
-              ${awayOpts.length ? `
+              ${/^3[A-L]+$/.test(m.away) ? `
                 <div class="small">
                   <select class="thirdChoice" data-third-token="${m.away}">
-                    <option value="">Choisir</option>
-                    ${(() => { const current = state.manualThirdChoices[m.away]; const base = awayOpts.map(o=>`<option value="${o.team}" ${current===o.team?'selected':''}>${o.team} (${o.group})</option>`); if(current && !awayOpts.some(o=>o.team===current)){ const found = sim.thirds.find(o=>o.team===current); if(found) base.unshift(`<option value="${found.team}" selected>${found.team} (${found.group})</option>`); } return base.join(''); })()}
+                    <option value="">Choisir 3e</option>
+                    ${awayOpts.map(o=>`<option value="${o.team}" ${awayCurrent===o.team?'selected':''}>${o.team} (${o.group})</option>`).join('')}
                   </select>
                 </div>` : ``}
               <div class="stageTeamLine ${m.winner===m.awayResolved ? 'selected' : ''} ${(m.homeResolved==='À déterminer'||m.awayResolved==='À déterminer'||m.homeResolved==='Choisir 3e'||m.awayResolved==='Choisir 3e') ? 'disabled' : ''}" onclick="pickSide('${m.id}','away')">
