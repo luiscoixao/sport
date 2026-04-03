@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SIMULATEUR COUPE DU MONDE DE FOOTBALL 2026</title>
+<link rel="preload" as="image" href="icon-simulateur-cdm-2026.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="icon-simulateur-cdm-2026.png" />
 <link rel="icon" type="image/png" sizes="32x32" href="icon-simulateur-cdm-2026.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="icon-simulateur-cdm-2026.png" />
@@ -305,11 +306,21 @@ function bestThirdTokenOptions(token, best3){
       .filter(([k,v]) => k !== token && v)
       .map(([k,v]) => v)
   );
-  return best3.filter(row => {
+
+  let eligible = best3.filter(row => {
     if(!letters.includes(row.group)) return false;
     if(row.team === current) return true;
     return !alreadyPickedElsewhere.has(row.team);
   });
+
+  if(!eligible.length){
+    eligible = best3.filter(row => {
+      if(row.team === current) return true;
+      return !alreadyPickedElsewhere.has(row.team);
+    });
+  }
+
+  return eligible;
 }
 
 function resolveTokenDisplay(token, tables, best3){
@@ -384,10 +395,28 @@ function simulate(){
   if(!validateGroups()) return null;
   const tables = buildTables();
   const thirds = bestThirds(tables);
+
   Object.keys(state.manualThirdChoices).forEach(token=>{
     const opts = bestThirdTokenOptions(token, thirds).map(r=>r.team);
     if(!opts.includes(state.manualThirdChoices[token])) delete state.manualThirdChoices[token];
   });
+
+  let changed = true;
+  while(changed){
+    changed = false;
+    KNOCKOUT.filter(m => m.stage === 'Seizièmes').forEach(m => {
+      [m.home, m.away].forEach(token => {
+        if(/^3[A-L]+$/.test(token) && !state.manualThirdChoices[token]){
+          const opts = bestThirdTokenOptions(token, thirds);
+          if(opts.length === 1){
+            state.manualThirdChoices[token] = opts[0].team;
+            changed = true;
+          }
+        }
+      });
+    });
+  }
+
   saveState();
   const usedThirds = new Set();
   const results = {};
