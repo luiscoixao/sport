@@ -106,6 +106,38 @@ select{
 .thirdChoice{width:auto;min-width:180px;max-width:100%;padding:8px 10px}
 .error{color:#ffb0b0;font-weight:700}
 .ok{color:#b6f5a4;font-weight:700}
+
+.winnerBlock{
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:30px 16px;
+}
+.winnerBlock::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url('icon-simulateur-cdm-2026.png') no-repeat center/180px;
+  opacity:0.12;
+  pointer-events:none;
+}
+.winnerContent{
+  position:relative;
+  z-index:1;
+}
+.winnerLabel{
+  font-size:14px;
+  letter-spacing:2px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+.winnerName{
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:-0.02em;
+  color:#b6f5a4;
+}
+
 @media (max-width:1080px){.groupsGrid,.summaryGrid{grid-template-columns:1fr 1fr}}
 @media (max-width:720px){
   body{padding:12px 10px 22px}
@@ -151,6 +183,14 @@ select{
     <div class="panelHeader"><h2>Phases finales</h2></div>
     <div class="bracketGrid" id="bracketGrid"></div>
   </div>
+
+  <div class="panel winnerBlock" id="winnerBlock">
+    <div class="winnerContent">
+      <div class="winnerLabel">VAINQUEUR</div>
+      <div class="winnerName" id="winnerName">À déterminer</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -523,6 +563,10 @@ function runSimulation(showAlert=true){
   if(!sim) return;
   renderThirds(sim);
   renderBracket(sim);
+  const finalMatch = sim.matches.find(m => m.id === 'M104');
+  const winner = finalMatch?.winner || 'À déterminer';
+  const winnerNode = document.getElementById('winnerName');
+  if(winnerNode) winnerNode.textContent = winner;
 }
 
 document.getElementById('resetBtn').addEventListener('click', ()=>{
