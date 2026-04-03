@@ -74,8 +74,7 @@ select{
 .tbl th:not(:first-child),.tbl td:not(:first-child){text-align:center}
 .tbl tr:last-child td{border-bottom:none}
 .bracketGrid{display:grid;gap:16px}
-.stageBlock{margin-top:18px}
-.stageBlock:first-child{margin-top:0}
+.stageBlock{margin-top:8px}
 .stageMatches{display:grid;gap:10px}
 .stageMatch{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:12px}
 .stageMeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-bottom:8px}
@@ -143,9 +142,8 @@ select{
       </table>
     </div>
   </div>
-
-  <div class="panel">
-    <div class="panelHeader"><h2>Tableau simulé</h2></div>
+<div class="panel">
+    <div class="panelHeader"><h2>Phases finales</h2></div>
     <div class="bracketGrid" id="bracketGrid"></div>
   </div>
 </div>
@@ -303,7 +301,6 @@ function bestThirds(tables){
     .sort((a,b)=>(a.odd-b.odd) || a.team.localeCompare(b.team))
     .slice(0,8);
 }
-
 
 function resolveTokenLabel(token){
   if(/^1[A-L]$/.test(token)) return `1er groupe ${token[1]}`;
