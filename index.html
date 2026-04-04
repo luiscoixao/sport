@@ -498,7 +498,7 @@
           <div class="row-2">
             <div class="field">
               <label for="km">Km parcourus</label>
-              <input type="number" id="km" min="0" step="0.01" placeholder="Ex. 5.4" required />
+              <input type="number" id="km" min="0" step="any" inputmode="decimal" placeholder="Ex. 5.4" required />
             </div>
             <div class="field">
               <label for="minutes">Temps en minutes</label>
@@ -513,7 +513,7 @@
             </div>
             <div class="field">
               <label for="weight">Poids (kg)</label>
-              <input type="number" id="weight" min="0" step="0.1" placeholder="Ex. 72.4" />
+              <input type="number" id="weight" min="0" step="any" inputmode="decimal" placeholder="Ex. 72.4" />
             </div>
           </div>
 
@@ -669,7 +669,7 @@
 
     function calculateCalories(type, weight, minutes) {
       const met = getMetValue(type);
-      const weightKg = Number(weight);
+      const weightKg = Number(String(weight).replace(",", "."));
       const durationHours = Number(minutes) / 60;
 
       if (!weightKg || !durationHours) return 0;
@@ -678,7 +678,7 @@
     }
 
     function calculateSteps(type, km, heightCm) {
-      const distanceKm = Number(km);
+      const distanceKm = Number(String(km).replace(",", "."));
       const heightM = Number(heightCm) / 100;
 
       if (!distanceKm || !heightM) return 0;
@@ -1105,11 +1105,11 @@
         date: entryDate,
         type: typeInput.value,
         location: locationInput.value.trim(),
-        km: Number(kmInput.value),
+        km: Number(String(kmInput.value).replace(",", ".")),
         minutes: Number(minutesInput.value),
         calories: Number(caloriesInput.value || 0),
         steps: calculateSteps(typeInput.value, kmInput.value, heightInput.value),
-        weight: weightInput.value ? Number(weightInput.value) : null,
+        weight: weightInput.value ? Number(String(weightInput.value).replace(",", ".")) : null,
         height: heightInput.value ? Number(heightInput.value) : null,
         createdAt: editingId
           ? (entries.find(e => e.id === editingId)?.createdAt || Date.now())
