@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mise à jour des cotes 2026</title>
+<link rel="apple-touch-icon" href="icon-simulateur-cdm-2026.png" />
+<link rel="icon" href="icon-simulateur-cdm-2026.png" />
+<meta name="theme-color" content="#0d2b1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Cotes 2026" />
+<style>
+:root{
+  --bg:#07150f;
+  --bg2:#0d2b1e;
+  --panel:rgba(255,255,255,.07);
+  --panel2:rgba(255,255,255,.05);
+  --line:rgba(255,255,255,.10);
+  --lineSoft:rgba(255,255,255,.06);
+  --text:#eefaf2;
+  --muted:#b7d2c1;
+  --accent:#8ee27a;
+  --accent2:#39c46a;
+  --rowA:rgba(255,255,255,.035);
+  --rowB:rgba(255,255,255,.065);
+  --inputBg:rgba(255,255,255,.10);
+  --shadow:0 18px 40px rgba(0,0,0,.28);
+  --radius:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;padding:0;
+  background:radial-gradient(circle at top left,#1a4b34 0%, #0d2b1e 28%, #07150f 72%, #041008 100%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+}
+body{min-height:100vh;padding:14px 12px 26px}
+.app{max-width:1120px;margin:0 auto}
+.hero{position:sticky;top:0;z-index:10;padding:4px 0 14px;background:linear-gradient(180deg,rgba(7,21,15,.97),rgba(7,21,15,.86),transparent)}
+.heroCard{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(142,226,122,.17),rgba(57,196,106,.13));
+  border:1px solid var(--line);border-radius:28px;padding:18px 16px;box-shadow:var(--shadow);
+}
+.heroCard::after{
+  content:"";position:absolute;right:-14px;top:-14px;width:150px;height:150px;
+  background:url('icon-simulateur-cdm-2026.png') no-repeat center/contain;opacity:.08;pointer-events:none;
+}
+h1{margin:0 0 6px;font-size:clamp(28px,5vw,46px);line-height:.96;letter-spacing:-.03em}
+.sub{margin:0;color:var(--muted);font-size:14px;max-width:860px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:12px;color:var(--text)}
+.panel{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:16px;
+}
+.panelHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.panelHeader h2{margin:0;letter-spacing:-.03em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  appearance:none;border:none;border-radius:12px;padding:11px 14px;font:inherit;font-weight:800;cursor:pointer
+}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#082114}
+.btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted);border:1px solid var(--line)}
+.tableShell{overflow:auto;border:1px solid var(--lineSoft);border-radius:20px;background:rgba(255,255,255,.03)}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:700px}
+thead th{
+  position:sticky;top:0;z-index:2;
+  background:rgba(6,18,13,.98);backdrop-filter:blur(12px);
+  color:#dff4e6;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  padding:14px 14px;border-bottom:1px solid var(--line);text-align:left;
+}
+thead th:nth-child(1), tbody td:nth-child(1){width:74px;text-align:center}
+thead th:nth-child(3), tbody td:nth-child(3){width:170px}
+tbody tr:nth-child(odd){background:var(--rowA)}
+tbody tr:nth-child(even){background:var(--rowB)}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--lineSoft);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.rank{font-weight:900;color:#cbeebd}
+.teamCell{font-weight:700;letter-spacing:-.01em}
+.oddInput{
+  width:100%;max-width:120px;
+  background:var(--inputBg);color:var(--text);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;font:inherit;font-weight:800;text-align:right;outline:none;
+}
+.oddInput:focus{border-color:rgba(142,226,122,.55);box-shadow:0 0 0 3px rgba(142,226,122,.12)}
+.small{font-size:12px;color:var(--muted)}
+.status{font-size:13px;color:var(--muted)}
+.status.ok{color:#b6f5a4}
+.footerNote{margin-top:12px;color:var(--muted);font-size:12px}
+@media (max-width:720px){
+  body{padding:12px 10px 22px}
+  .panel{padding:14px}
+  .oddInput{max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="heroCard">
+      <h1>Mise à jour des cotes 2026</h1>
+      <p class="sub">Présentation en lignes type tableur, tri automatique par cote, couleurs alternées et export CSV prêt à importer dans l’index principal.</p>
+      <div class="chips">
+        <span class="chip">48 équipes</span>
+        <span class="chip">Tri en direct</span>
+        <span class="chip">Export CSV</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panelHeader">
+      <h2>Classement des cotes</h2>
+      <div class="controls">
+        <span class="badge" id="countBadge">48 équipes</span>
+        <button class="btn secondary" id="resetBtn">Réinitialiser</button>
+        <button class="btn primary" id="exportBtn">Exporter CSV</button>
+      </div>
+    </div>
+
+    <div class="tableShell">
+      <table>
+        <thead>
+          <tr>
+            <th>Rang</th>
+            <th>Équipe</th>
+            <th>Cote</th>
+            <th>Lecture</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="footerNote">Modifie une cote : le tableau se reclasse immédiatement et reste enregistré en local sur cet appareil.</div>
+    <div class="status ok" id="status"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'cm2026-cotes-betclic-tableur-v1';
+const DEFAULT_ODDS = {
+  'Espagne':6.00,'France':6.50,'Angleterre':7.00,'Argentine':9.00,'Brésil':9.00,'Portugal':11,
+  'Allemagne':13,'Pays-Bas':20,'Belgique':30,'Uruguay':75,'Croatie':100,'Colombie':50,'Sénégal':100,
+  'Mexique':75,'Maroc':50,'États-Unis':40,'Suisse':50,'Japon':60,'Norvège':25,'Turquie':100,
+  'Paraguay':150,'Équateur':100,'Autriche':150,'Canada':100,'Corée du Sud':500,'Côte d’Ivoire':250,
+  'Algérie':250,'Suède':150,'Tchéquie':250,'Tunisie':500,'Écosse':250,'Bosnie-Herzégovine':250,
+  'Iran':500,'Australie':500,'Égypte':250,'Qatar':1000,'Ghana':500,'RD Congo':500,'Afrique du Sud':1000,
+  'Arabie saoudite':1000,'Cap-Vert':1000,'Ouzbékistan':1000,'Curaçao':1000,'Panama':1000,'Haïti':1000,
+  'Jordanie':1000,'Irak':1000,'Nouvelle-Zélande':1000
+};
+
+function loadOdds(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ return {...DEFAULT_ODDS, ...JSON.parse(raw)}; }
+  }catch(e){}
+  return {...DEFAULT_ODDS};
+}
+let odds = loadOdds();
+
+function saveOdds(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(odds));
+}
+
+function formatOdd(v){
+  return Number.isInteger(v) ? String(v) : v.toFixed(2);
+}
+
+function rows(){
+  return Object.entries(odds)
+    .map(([team,odd])=>({team, odd:Number(odd)}))
+    .sort((a,b)=>a.odd-b.odd || a.team.localeCompare(b.team));
+}
+
+function render(){
+  const list = rows();
+  document.getElementById('countBadge').textContent = `${list.length} équipes`;
+  document.getElementById('tbody').innerHTML = list.map((row,index)=>`
+    <tr>
+      <td class="rank">${index+1}</td>
+      <td class="teamCell">${row.team}</td>
+      <td><input class="oddInput" data-team="${row.team}" inputmode="decimal" type="text" value="${formatOdd(row.odd)}"></td>
+      <td class="small">${row.team} — ${formatOdd(row.odd)}</td>
+    </tr>
+  `).join('');
+
+  document.querySelectorAll('.oddInput').forEach(input=>{
+    input.addEventListener('input', e=>{
+      e.target.value = e.target.value.replace(/[^0-9.,]/g,'');
+    });
+    input.addEventListener('change', e=>{
+      const team = e.target.dataset.team;
+      const value = parseFloat(e.target.value.replace(',','.'));
+      if(!Number.isNaN(value) && value > 0){
+        odds[team] = value;
+        saveOdds();
+        document.getElementById('status').textContent = `Cote mise à jour : ${team} → ${formatOdd(value)}`;
+        render();
+      }else{
+        e.target.value = formatOdd(odds[team]);
+      }
+    });
+  });
+}
+
+function exportCsv(){
+  const lines = ['team,odd', ...Object.entries(odds).map(([team,odd])=>`"${team.replace(/"/g,'""')}",${odd}`)];
+  const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cotes_cdm_2026_betclic_tableur.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  document.getElementById('status').textContent = 'CSV exporté.';
+}
+
+document.getElementById('exportBtn').addEventListener('click', exportCsv);
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  odds = {...DEFAULT_ODDS};
+  saveOdds();
+  document.getElementById('status').textContent = 'Cotes réinitialisées.';
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
