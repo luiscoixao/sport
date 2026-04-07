@@ -20,150 +20,70 @@
   --shadow:0 18px 40px rgba(0,0,0,.30); --radius:22px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
-  margin:0;padding:0;
-  background:radial-gradient(circle at top left,#1a4b34 0%, #0d2b1e 28%, #07150f 72%, #041008 100%);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif
-}
+html,body{margin:0;padding:0;background:radial-gradient(circle at top left,#1a4b34 0%, #0d2b1e 28%, #07150f 72%, #041008 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif}
 body{min-height:100vh;padding:14px 12px 26px}
 .app{max-width:1240px;margin:0 auto}
-
 .hero{position:sticky;top:0;z-index:10;background:transparent;padding:6px 0 16px}
-.heroCard{
-  position:relative;overflow:hidden;
-  background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:28px;padding:18px 16px;box-shadow:var(--shadow)
-}
-.heroCard::after{
-  content:"";position:absolute;right:-10px;top:-10px;width:160px;height:160px;
-  background:url('icon-simulateur-cdm-2026.png') no-repeat center/contain;
-  opacity:.08;pointer-events:none
-}
+.heroCard{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(142,226,122,.18),rgba(57,196,106,.14));border:1px solid rgba(255,255,255,.10);border-radius:28px;padding:18px 16px;box-shadow:var(--shadow)}
+.heroCard::after{content:"";position:absolute;right:-10px;top:-10px;width:160px;height:160px;background:url('icon-simulateur-cdm-2026.png') no-repeat center/contain;opacity:.08;pointer-events:none}
 .heroTop{display:block;position:relative;z-index:1}
-h1{margin:0;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em}
-
+h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em}
+.sub{margin:0 0 12px;color:var(--muted);font-size:14px;max-width:860px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--text);font-size:12px;border:1px solid rgba(255,255,255,.08)}
 .tabs{display:flex;gap:8px;overflow:auto;padding:14px 0 4px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{
-  white-space:nowrap;background:rgba(255,255,255,.07);color:var(--muted);
-  border:1px solid rgba(255,255,255,.08);border-radius:16px;
-  padding:12px 16px;font:inherit;font-weight:700;cursor:pointer
-}
-.tab.active{
-  background:linear-gradient(135deg,rgba(142,226,122,.20),rgba(57,196,106,.20));
-  color:var(--text);border-color:rgba(142,226,122,.35)
-}
-
-.section{display:none}
-.section.active{display:block}
-
-.panel{
-  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.05));
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:16px
-}
-.panelHeader{
-  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px
-}
+.tab{white-space:nowrap;background:rgba(255,255,255,.07);color:var(--muted);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer}
+.tab.active{background:linear-gradient(135deg,rgba(142,226,122,.20),rgba(57,196,106,.20));color:var(--text);border-color:rgba(142,226,122,.35)}
+.section{display:none}.section.active{display:block}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.10);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:16px}
+.panelHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .panel h2,.panel h3{margin:0;letter-spacing:-.03em}
-.badge{
-  display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;
-  background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)
-}
-
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted)}
 .groupsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.groupCard,.probaCard{
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px
-}
+.groupCard,.probaCard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px}
 .groupHeader{display:block;margin-bottom:10px}
 .groupLetter{font-size:22px;font-weight:800}
-
 .tableWrap{overflow:auto}
-.standings,.thirdsTable,.calendarTable{
-  width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed
-}
-.standings th,.standings td,
-.thirdsTable th,.thirdsTable td{
-  padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle
-}
-
-.standings th:first-child,.standings td:first-child,
-.thirdsTable th:first-child,.thirdsTable td:first-child,
-.thirdsTable th:nth-child(2),.thirdsTable td:nth-child(2){text-align:left}
-.standings th:not(:first-child),.standings td:not(:first-child),
-.thirdsTable th:not(:first-child),.thirdsTable td:not(:first-child){text-align:center}
+.standings,.thirdsTable{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.standings th,.standings td,.thirdsTable th,.thirdsTable td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle}
+.standings th:first-child,.standings td:first-child,.thirdsTable th:first-child,.thirdsTable td:first-child,.thirdsTable th:nth-child(2),.thirdsTable td:nth-child(2){text-align:left}
+.standings th:not(:first-child),.standings td:not(:first-child),.thirdsTable th:not(:first-child),.thirdsTable td:not(:first-child){text-align:center}
 .standings tr:last-child td,.thirdsTable tr:last-child td{border-bottom:none}
-
 .standings th:nth-child(1),.standings td:nth-child(1){width:58%}
 .standings th:nth-child(2),.standings td:nth-child(2){width:10%}
 .standings th:nth-child(3),.standings td:nth-child(3){width:8%}
 .standings th:nth-child(4),.standings td:nth-child(4){width:12%}
 .standings th:nth-child(5),.standings td:nth-child(5){width:12%}
-
-.calendarStage{margin-top:18px}
-.calendarStage:first-child{margin-top:0}
+.calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
-
-.calendarTable{
-  border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04)
-}
-.calendarTable th{
-  padding:9px 8px;
-  background:rgba(0,0,0,.42);
-  color:#e9f6ec;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  white-space:nowrap
-}
-.calendarTable td{
-  padding:7px 8px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  vertical-align:middle;
-  font-size:13px
-}
+.calendarTable{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;table-layout:fixed;overflow:hidden;border-radius:18px}
+.calendarTable thead th{padding:9px 8px;background:rgba(0,0,0,.42);color:#e9f6ec;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.calendarTable tbody td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px}
 .calendarTable tbody tr:nth-child(odd){background:rgba(255,255,255,.025)}
 .calendarTable tbody tr:nth-child(even){background:rgba(255,255,255,.045)}
 .calendarTable tbody tr:hover{background:rgba(142,226,122,.08)}
-.calendarTable tr:last-child td{border-bottom:none}
-
+.calendarTable tbody tr:last-child td{border-bottom:none}
 .calGroup{font-weight:700;color:var(--text);opacity:.95}
 .calDate{white-space:nowrap;color:var(--text)}
 .calMatch{font-weight:700}
 .calVenue{color:var(--muted);font-size:12px}
-.scoreCell{width:116px}
-.scoreWrapTable{
-  display:flex;align-items:center;justify-content:center;gap:4px
-}
+.scoreCell{width:110px}
+.scoreWrapTable{display:flex;align-items:center;justify-content:center;gap:4px}
 .scoreInput{
-  width:38px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:9px;color:var(--text);padding:6px 4px;text-align:center;
-  font:inherit;font-weight:800;appearance:textfield
+  width:36px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;color:var(--text);padding:6px 4px;text-align:center;font:inherit;font-weight:800;appearance:textfield;
 }
-.scoreInput::-webkit-outer-spin-button,
-.scoreInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.scoreInput::-webkit-outer-spin-button,.scoreInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .scoreSep{font-size:12px;color:var(--muted);font-weight:800}
-
-.rank{
-  width:28px;height:28px;border-radius:999px;display:grid;place-items:center;
-  background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800
-}
+.rank{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800}
 .probaGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .probaTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
-.probaTeam{font-weight:800;font-size:18px}
-.probaPct{font-weight:800}
+.probaTeam{font-weight:800;font-size:18px}.probaPct{font-weight:800}
 .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}
 .bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent))}
 .note{font-size:12px;color:var(--muted);margin-top:12px}
-.matchCode{
-  display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);
-  font-size:12px;font-weight:800;color:var(--text)
-}
+.matchCode{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:800;color:var(--text)}
 
 .controls{display:flex;gap:10px;flex-wrap:wrap}
 .btn{appearance:none;border:none;border-radius:12px;padding:11px 14px;font:inherit;font-weight:800;cursor:pointer}
@@ -174,26 +94,19 @@ h1{margin:0;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em
 
 .footerHero{margin-top:18px}
 .winnerBlock{position:relative;overflow:hidden;text-align:center;padding:30px 16px}
-.winnerBlock::before{
-  content:"";position:absolute;inset:0;
-  background:url('icon-simulateur-cdm-2026.png') no-repeat center/180px;
-  opacity:.12;pointer-events:none
-}
+.winnerBlock::before{content:"";position:absolute;inset:0;background:url('icon-simulateur-cdm-2026.png') no-repeat center/180px;opacity:.12;pointer-events:none}
 .winnerContent{position:relative;z-index:1}
 .winnerLabel{font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:10px}
 .winnerName{font-size:32px;font-weight:900;letter-spacing:-0.02em;color:#b6f5a4}
-
-@media (max-width:1080px){
-  .groupsGrid,.probaGrid{grid-template-columns:1fr}
-}
+@media (max-width:1080px){.groupsGrid,.probaGrid{grid-template-columns:1fr}}
 @media (max-width:720px){
-  body{padding:12px 10px 22px}
-  .heroCard{padding:16px 14px}
-  .groupsGrid,.probaGrid{grid-template-columns:1fr}
-  .calendarTable th,.calendarTable td{padding:6px 6px;font-size:12px}
-  .calendarTable th:nth-child(4),.calendarTable td:nth-child(4){display:none}
+  body{padding:12px 10px 22px}.heroCard{padding:16px 14px}.groupsGrid,.probaGrid{grid-template-columns:1fr}
+  .calendarTable thead th,.calendarTable tbody td{padding:6px 6px;font-size:12px}
+  .calendarTable th:nth-child(5),.calendarTable td:nth-child(5){display:none}
+  .calendarTable th:nth-child(1),.calendarTable td:nth-child(1){width:84px}
+  .calendarTable th:nth-child(2),.calendarTable td:nth-child(2){width:148px}
   .scoreCell{width:96px}
-  .scoreInput{width:34px}
+  .scoreInput{width:32px}
 }
 </style>
 </head>
@@ -202,7 +115,9 @@ h1{margin:0;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em
   <div class="hero">
     <div class="heroCard">
       <div class="heroTop">
-        <div><h1>COUPE DU MONDE 2026</h1></div>
+        <div>
+          <h1>COUPE DU MONDE 2026</h1>
+        </div>
       </div>
     </div>
     <div class="tabs" id="tabs"></div>
@@ -223,21 +138,16 @@ h1{margin:0;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:-.03em
 <script>
 const STORAGE_KEY='cm2026-officiel-local-v2';
 const SHARED_ODDS_KEY='cm2026-shared-odds-v1';
-const TABS=[
-  {id:'groups',label:'Groupes'},
-  {id:'calendar',label:'Calendrier'},
-  {id:'proba',label:'Cotes'}
-];
+const TABS=[{id:'groups',label:'Groupes'},{id:'calendar',label:'Calendrier'},{id:'proba',label:'Cotes'}];
 
 const INITIAL_ODDS={'Espagne':6.5,'France':7.0,'Angleterre':8.0,'Argentine':9.0,'Brésil':9.5,'Portugal':12.0,'Allemagne':14.0,'Pays-Bas':20.0,'Belgique':24.0,'Uruguay':26.0,'Croatie':35.0,'Colombie':36.0,'Sénégal':40.0,'Mexique':45.0,'Maroc':45.0,'États-Unis':50.0,'Suisse':55.0,'Japon':60.0,'Norvège':65.0,'Turquie':70.0,'Paraguay':80.0,'Équateur':80.0,'Autriche':85.0,'Canada':90.0,'Corée du Sud':90.0,'Côte d’Ivoire':95.0,'Algérie':100.0,'Suède':100.0,'Tchéquie':110.0,'Tunisie':110.0,'Écosse':115.0,'Bosnie-Herzégovine':120.0,'Iran':120.0,'Australie':120.0,'Égypte':140.0,'Qatar':150.0,'Ghana':150.0,'RD Congo':170.0,'Afrique du Sud':180.0,'Arabie saoudite':180.0,'Cap-Vert':200.0,'Ouzbékistan':200.0,'Curaçao':220.0,'Panama':220.0,'Haïti':250.0,'Jordanie':250.0,'Irak':260.0,'Nouvelle-Zélande':300.0};
 
 const GROUPS={'A':['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],'B':['Canada','Bosnie-Herzégovine','Qatar','Suisse'],'C':['Brésil','Maroc','Haïti','Écosse'],'D':['États-Unis','Paraguay','Australie','Turquie'],'E':['Allemagne','Curaçao','Côte d’Ivoire','Équateur'],'F':['Pays-Bas','Japon','Suède','Tunisie'],'G':['Belgique','Égypte','Iran','Nouvelle-Zélande'],'H':['Espagne','Cap-Vert','Arabie saoudite','Uruguay'],'I':['France','Sénégal','Irak','Norvège'],'J':['Argentine','Algérie','Autriche','Jordanie'],'K':['Portugal','RD Congo','Ouzbékistan','Colombie'],'L':['Angleterre','Croatie','Ghana','Panama']};
 
+const TEAM_STRENGTH={'Espagne':94,'France':92,'Angleterre':90,'Argentine':89,'Brésil':88,'Portugal':85,'Allemagne':83,'Pays-Bas':80,'Belgique':78,'Uruguay':77,'Croatie':75,'Colombie':75,'Sénégal':74,'Maroc':74,'Mexique':73,'États-Unis':72,'Suisse':72,'Japon':71,'Norvège':71,'Turquie':68,'Équateur':68,'Autriche':69,'Paraguay':67,'Suède':67,'Canada':66,'Corée du Sud':66,'Algérie':66,'Côte d’Ivoire':65,'Tchéquie':64,'Écosse':64,'Iran':63,'Australie':63,'Tunisie':62,'Bosnie-Herzégovine':61,'Égypte':61,'Ghana':60,'Qatar':58,'Arabie saoudite':58,'Afrique du Sud':57,'RD Congo':57,'Ouzbékistan':56,'Cap-Vert':55,'Panama':54,'Irak':52,'Haïti':50,'Curaçao':49,'Jordanie':48,'Nouvelle-Zélande':47};
+
 function clone(obj){return JSON.parse(JSON.stringify(obj));}
-function formatDate(value){
-  const d=new Date(value);
-  return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-}
+function formatDate(value){const d=new Date(value);return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
 function suggestVenue(groupLetter,pIndex,groupIndex){
   const venues=['Mexico City','Toronto','Los Angeles','New York / New Jersey','Dallas','Houston','Atlanta','Seattle','Miami','Vancouver','Boston','Philadelphia','Kansas City','Monterrey','Guadalajara','San Francisco Bay Area'];
   return venues[(groupIndex*2+pIndex)%venues.length];
@@ -245,7 +155,6 @@ function suggestVenue(groupLetter,pIndex,groupIndex){
 function allTeams(){return Object.values(GROUPS).flat();}
 function teamOdds(team){return state.odds[team]?state.odds[team].toFixed(1):'—';}
 function getMatch(id){return state.matches.find(m=>m.id===id);}
-
 function loadSharedOdds(){
   try{
     const raw=localStorage.getItem(SHARED_ODDS_KEY);
@@ -391,9 +300,7 @@ function knockoutSkeleton(){
   return rows.map(([id,stage,date,venue,home,away])=>({id,stage,date,venue,group:'',home,away,homeScore:'',awayScore:''}));
 }
 
-function initState(){
-  return {odds:clone(INITIAL_ODDS),matches:[...buildGroupMatches(),...knockoutSkeleton()]};
-}
+function initState(){ return {odds:clone(INITIAL_ODDS),matches:[...buildGroupMatches(),...knockoutSkeleton()]}; }
 let state=loadState();
 
 function computePredictedTables(){
@@ -406,37 +313,27 @@ function computePredictedTables(){
 
 function computeTables(){
   const tables = computePredictedTables();
-  state.matches
-    .filter(m => m.stage === 'Phase de groupes' && m.group && m.homeScore !== '' && m.awayScore !== '')
-    .forEach(match => {
-      const table = tables[match.group];
-      if(!table) return;
-      const home = table.find(r => r.team === match.home);
-      const away = table.find(r => r.team === match.away);
-      if(!home || !away) return;
-
-      const hs = Number(match.homeScore), as = Number(match.awayScore);
-      home.p++; away.p++;
-      home.gf += hs; home.ga += as;
-      away.gf += as; away.ga += hs;
-
-      if(hs > as){home.w++; away.l++; home.pts += 3;}
-      else if(as > hs){away.w++; home.l++; away.pts += 3;}
-      else{home.d++; away.d++; home.pts++; away.pts++;}
-
-      home.gd = home.gf - home.ga;
-      away.gd = away.gf - away.ga;
-    });
-
-  Object.values(tables).forEach(table =>
-    table.sort((a,b)=>b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team))
-  );
+  state.matches.filter(m => m.stage === 'Phase de groupes' && m.group && m.homeScore !== '' && m.awayScore !== '').forEach(match => {
+    const table = tables[match.group];
+    if(!table) return;
+    const home = table.find(r => r.team === match.home);
+    const away = table.find(r => r.team === match.away);
+    if(!home || !away) return;
+    const hs = Number(match.homeScore), as = Number(match.awayScore);
+    home.p++; away.p++;
+    home.gf += hs; home.ga += as;
+    away.gf += as; away.ga += hs;
+    if(hs > as){home.w++; away.l++; home.pts += 3;}
+    else if(as > hs){away.w++; home.l++; away.pts += 3;}
+    else{home.d++; away.d++; home.pts++; away.pts++;}
+    home.gd = home.gf - home.ga; away.gd = away.gf - away.ga;
+  });
+  Object.values(tables).forEach(table => table.sort((a,b)=>b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team)));
   return tables;
 }
 
 function bestThirds(tables){
-  return Object.entries(tables)
-    .map(([group,rows])=>({group,...rows[2]}))
+  return Object.entries(tables).map(([group,rows])=>({group,...rows[2]}))
     .sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
 }
 
@@ -464,15 +361,8 @@ function renderTabs(){
 }
 
 function getDisplayMatchCode(match){
-  if(match.stage==='Phase de groupes') return 'Groupe ' + match.group;
-  const stageMap = {
-    'Seizièmes de finale':['R32',72],
-    'Huitièmes de finale':['R16',88],
-    'Quarts de finale':['QF',96],
-    'Demi-finales':['SF',100],
-    'Match pour la 3e place':['TP',102],
-    'Finale':['F',103]
-  };
+  if(match.stage==='Phase de groupes') return '';
+  const stageMap = {'Seizièmes de finale':['R32',72],'Huitièmes de finale':['R16',88],'Quarts de finale':['QF',96],'Demi-finales':['SF',100],'Match pour la 3e place':['TP',102],'Finale':['F',103]};
   const conf = stageMap[match.stage];
   if(!conf) return '';
   const [prefix, base] = conf;
@@ -493,16 +383,7 @@ function renderGroups(){
             <div class="tableWrap">
               <table class="standings">
                 <thead><tr><th>Équipe</th><th>Pts</th><th>J</th><th>Diff</th><th>BP</th></tr></thead>
-                <tbody>
-                  ${tables[letter].map((row,idx)=>`
-                    <tr>
-                      <td>${idx+1}. ${row.team}</td>
-                      <td>${row.pts}</td>
-                      <td>${row.p}</td>
-                      <td>${row.gd}</td>
-                      <td>${row.gf}</td>
-                    </tr>`).join('')}
-                </tbody>
+                <tbody>${tables[letter].map((row,idx)=>`<tr><td>${idx+1}. ${row.team}</td><td>${row.pts}</td><td>${row.p}</td><td>${row.gd}</td><td>${row.gf}</td></tr>`).join('')}</tbody>
               </table>
             </div>
           </div>`).join('')}
@@ -513,46 +394,33 @@ function renderGroups(){
       <div class="tableWrap">
         <table class="thirdsTable">
           <thead><tr><th>Rang</th><th>Équipe</th><th>Groupe</th><th>Pts</th><th>Diff</th><th>BP</th></tr></thead>
-          <tbody>
-            ${thirds.map((row,i)=>`
-              <tr>
-                <td>${i+1}</td>
-                <td>${row.team}</td>
-                <td>${row.group}</td>
-                <td>${row.pts}</td>
-                <td>${row.gd}</td>
-                <td>${row.gf}</td>
-              </tr>`).join('')}
-          </tbody>
+          <tbody>${thirds.map((row,i)=>`<tr><td>${i+1}</td><td>${row.team}</td><td>${row.group}</td><td>${row.pts}</td><td>${row.gd}</td><td>${row.gf}</td></tr>`).join('')}</tbody>
         </table>
       </div>
     </div>`;
+
 }
 
 function calendarRowHTML(match){
-  const label = getDisplayMatchCode(match);
-  const matchName = `${match.home} – ${match.away}`;
-  return `
-    <tr>
-      <td class="calGroup">${label}</td>
-      <td class="calDate">${formatDate(match.date)}</td>
-      <td class="calMatch">${matchName}</td>
-      <td class="scoreCell">
-        <div class="scoreWrapTable">
-          <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.homeScore}" data-id="${match.id}" data-side="homeScore" />
-          <span class="scoreSep">-</span>
-          <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.awayScore}" data-id="${match.id}" data-side="awayScore" />
-        </div>
-      </td>
-      <td class="calVenue">${match.venue}</td>
-    </tr>`;
+  const label = match.stage==='Phase de groupes' ? 'Groupe ' + match.group : getDisplayMatchCode(match);
+  return `<tr>
+    <td class="calGroup">${label}</td>
+    <td class="calDate">${formatDate(match.date)}</td>
+    <td class="calMatch">${match.home} – ${match.away}</td>
+    <td class="scoreCell">
+      <div class="scoreWrapTable">
+        <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.homeScore}" data-id="${match.id}" data-side="homeScore" />
+        <span class="scoreSep">-</span>
+        <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.awayScore}" data-id="${match.id}" data-side="awayScore" />
+      </div>
+    </td>
+    <td class="calVenue">${match.venue}</td>
+  </tr>`;
 }
 
 function bindScoreInputs(){
   document.querySelectorAll('.scoreInput').forEach(input=>{
-    input.addEventListener('input', e=>{
-      e.target.value = e.target.value.replace(/[^0-9]/g,'');
-    });
+    input.addEventListener('input', e=>{ e.target.value = e.target.value.replace(/[^0-9]/g,''); });
     input.addEventListener('change', e=>{
       const clean = e.target.value.replace(/[^0-9]/g,'');
       const y = window.scrollY;
@@ -564,39 +432,11 @@ function bindScoreInputs(){
 }
 
 function renderCalendar(){
-  const stages=[
-    'Phase de groupes',
-    'Seizièmes de finale',
-    'Huitièmes de finale',
-    'Quarts de finale',
-    'Demi-finales',
-    'Match pour la 3e place',
-    'Finale'
-  ];
-
+  const stages=['Phase de groupes','Seizièmes de finale','Huitièmes de finale','Quarts de finale','Demi-finales','Match pour la 3e place','Finale'];
   document.getElementById('calendar').innerHTML=`
     <div class="panel">
       <div class="panelHeader"><h2>Calendrier</h2><span class="badge">${state.matches.length} matchs</span></div>
-      ${stages.map(stage=>`
-        <div class="calendarStage">
-          <h3 class="stageTitle">${stage}</h3>
-          <div class="tableWrap">
-            <table class="calendarTable">
-              <thead>
-                <tr>
-                  <th style="width:92px">Groupe</th>
-                  <th style="width:160px">Date</th>
-                  <th>Match</th>
-                  <th style="width:116px">Score</th>
-                  <th style="width:170px">Stade</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>`).join('')}
+      ${stages.map(stage=>`<div class="calendarStage"><h3 class="stageTitle">${stage}</h3><div class="tableWrap"><table class="calendarTable"><thead><tr><th style="width:92px">Groupe</th><th style="width:160px">Date</th><th>Match</th><th style="width:110px">Score</th><th style="width:170px">Stade</th></tr></thead><tbody>${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}</tbody></table></div></div>`).join('')}
     </div>`;
   bindScoreInputs();
 }
@@ -607,7 +447,7 @@ function oddsToCsv(){
     .map(team=>({team,odd:Number(state.odds[team]||999)}))
     .sort((a,b)=>a.odd-b.odd || a.team.localeCompare(b.team))
     .forEach(row=>lines.push('"' + row.team.replace(/"/g,'""') + '",' + String(row.odd).replace('.',',')));
-  return lines.join('\\n');
+  return lines.join('\n');
 }
 
 function downloadOddsCsv(){
@@ -623,12 +463,12 @@ function downloadOddsCsv(){
 }
 
 function parseOddsCsv(text){
-  const lines = text.split(/\\r?\\n/).map(line=>line.trim()).filter(Boolean);
+  const lines = text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
   const map = {};
   for(let i=0;i<lines.length;i++){
     const line = lines[i];
     if(i===0 && /equipe/i.test(line) && /cote/i.test(line)) continue;
-    const match = line.match(/^"?(.*?)"?\\s*[,;]\\s*("?)([0-9]+(?:[\\.,][0-9]+)?)\\2$/);
+    const match = line.match(/^"?(.*?)"?\s*[,;]\s*("?)([0-9]+(?:[\.,][0-9]+)?)\2$/);
     if(!match) continue;
     const team = match[1].replace(/""/g,'"').trim();
     const odd = parseFloat(match[3].replace(',','.'));
@@ -709,17 +549,20 @@ function renderProba(){
           <input type="file" id="oddsCsvInput" class="fileInput" accept=".csv,text/csv" />
         </div>
       </div>
-      <div class="note">Les cotes sont classées de la plus favorite à la moins favorite. Tu peux modifier directement une cote, exporter la base actuelle, ou importer un CSV.</div>
+      <div class="note">Les cotes sont classées de la plus favorite à la moins favorite. Tu peux modifier directement une cote, exporter la base actuelle, ou importer un CSV depuis l’index séparé.</div>
       <div class="tableWrap">
         <table class="thirdsTable">
-          <thead><tr><th>Rang</th><th>Équipe</th><th>Cote</th></tr></thead>
+          <thead>
+            <tr><th>Rang</th><th>Équipe</th><th>Cote</th></tr>
+          </thead>
           <tbody>
             ${list.map((item,index)=>`
               <tr>
                 <td>${index+1}</td>
                 <td>${item.team}</td>
                 <td><input class="scoreInput oddInput" inputmode="decimal" type="text" value="${String(item.odd).replace('.',',')}" data-team="${item.team}" /></td>
-              </tr>`).join('')}
+              </tr>
+            `).join('')}
           </tbody>
         </table>
       </div>
@@ -729,14 +572,9 @@ function renderProba(){
 
 function render(){
   const active=document.querySelector('.tab.active')?.dataset.tab || 'groups';
-  renderTabs();
-  renderGroups();
-  renderCalendar();
-  renderProba();
-  const btn=document.querySelector(\`.tab[data-tab="\${active}"]\`);
-  if(btn) btn.click();
+  renderTabs(); renderGroups(); renderCalendar(); renderProba();
+  const btn=document.querySelector(`.tab[data-tab="${active}"]`); if(btn) btn.click();
 }
-
 render();
 </script>
 </body>
