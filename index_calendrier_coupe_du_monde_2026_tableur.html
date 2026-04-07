@@ -91,6 +91,7 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 .btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.10)}
 .oddInput{width:92px}
 .fileInput{display:none}
+.oddsControlsBottom{margin-top:16px;justify-content:center}
 
 .footerHero{margin-top:18px}
 .winnerBlock{position:relative;overflow:hidden;text-align:center;padding:30px 16px}
@@ -397,6 +398,12 @@ function renderGroups(){
           <tbody>${thirds.map((row,i)=>`<tr><td>${i+1}</td><td>${row.team}</td><td>${row.group}</td><td>${row.pts}</td><td>${row.gd}</td><td>${row.gf}</td></tr>`).join('')}</tbody>
         </table>
       </div>
+      <div class="note">Gestion des fichiers CSV</div>
+      <div class="controls oddsControlsBottom">
+        <button class="btn secondary" id="importOddsBtn">Importer un CSV</button>
+        <button class="btn primary" id="exportOddsBtn">Exporter le CSV</button>
+        <input type="file" id="oddsCsvInput" class="fileInput" accept=".csv,text/csv" />
+      </div>
     </div>`;
 
 }
@@ -404,7 +411,7 @@ function renderGroups(){
 function calendarRowHTML(match){
   const label = match.stage==='Phase de groupes' ? 'Groupe ' + match.group : getDisplayMatchCode(match);
   return `<tr>
-    <td class="calGroup">${label}</td>
+    <td class="calGroup">${match.group || ''}</td>
     <td class="calDate">${formatDate(match.date)}</td>
     <td class="calMatch">${match.home} – ${match.away}</td>
     <td class="scoreCell">
@@ -436,7 +443,7 @@ function renderCalendar(){
   document.getElementById('calendar').innerHTML=`
     <div class="panel">
       <div class="panelHeader"><h2>Calendrier</h2><span class="badge">${state.matches.length} matchs</span></div>
-      ${stages.map(stage=>`<div class="calendarStage"><h3 class="stageTitle">${stage}</h3><div class="tableWrap"><table class="calendarTable"><thead><tr><th style="width:92px">Groupe</th><th style="width:160px">Date</th><th>Match</th><th style="width:110px">Score</th><th style="width:170px">Stade</th></tr></thead><tbody>${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}</tbody></table></div></div>`).join('')}
+      ${stages.map(stage=>`<div class="calendarStage"><h3 class="stageTitle">${stage}</h3><div class="tableWrap"><table class="calendarTable"><thead><tr><th style="width:40px">G</th><th style="width:160px">Date</th><th>Match</th><th style="width:110px">Score</th><th style="width:170px">Stade</th></tr></thead><tbody>${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}</tbody></table></div></div>`).join('')}
     </div>`;
   bindScoreInputs();
 }
