@@ -57,25 +57,35 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 .standings th:nth-child(5),.standings td:nth-child(5){width:12%}
 .calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
-.calendarTable{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;table-layout:fixed;overflow:hidden;border-radius:18px}
-.calendarTable thead th{padding:9px 8px;background:rgba(0,0,0,.42);color:#e9f6ec;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
-.calendarTable tbody td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px}
+.calendarTable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden}
+.calendarTable th{padding:8px 6px;background:rgba(0,0,0,.42);color:#e9f6ec;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.calendarTable td{padding:6px 6px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px}
 .calendarTable tbody tr:nth-child(odd){background:rgba(255,255,255,.025)}
 .calendarTable tbody tr:nth-child(even){background:rgba(255,255,255,.045)}
 .calendarTable tbody tr:hover{background:rgba(142,226,122,.08)}
-.calendarTable tbody tr:last-child td{border-bottom:none}
-.calGroup{font-weight:700;color:var(--text);opacity:.95}
-.calDate{white-space:nowrap;color:var(--text)}
+.calendarTable tr:last-child td{border-bottom:none}
+.colGroupHeader{width:42px;text-align:center}
+.colDate{width:90px}
+.colScore{width:88px;text-align:center}
+.calGroup{text-align:center;font-weight:800;color:var(--accent)}
+.calDate{white-space:nowrap;font-size:12px;opacity:.88}
 .calMatch{font-weight:700}
 .calVenue{color:var(--muted);font-size:12px}
-.scoreCell{width:110px}
+.scoreCell{width:88px}
 .scoreWrapTable{display:flex;align-items:center;justify-content:center;gap:4px}
+.matchMain{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.teamCol{display:grid;gap:6px}
+.teamCol.home{text-align:right}.teamCol.away{text-align:left}
+.team{font-weight:800;font-size:15px;line-height:1.2}
+.odds{font-size:12px;color:var(--muted)}
+.scoreWrap{display:flex;align-items:center;gap:6px;justify-content:center}
 .scoreInput{
-  width:36px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:9px;color:var(--text);padding:6px 4px;text-align:center;font:inherit;font-weight:800;appearance:textfield;
+  width:52px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;color:var(--text);padding:8px 6px;text-align:center;font:inherit;font-weight:800;appearance:textfield;
 }
 .scoreInput::-webkit-outer-spin-button,.scoreInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.scoreSep{font-size:12px;color:var(--muted);font-weight:800}
+.vs{display:flex;align-items:center;justify-content:center;min-width:42px;padding:6px 10px;border-radius:11px;background:linear-gradient(135deg,rgba(142,226,122,.15),rgba(57,196,106,.15));border:1px solid rgba(255,255,255,.10);font-weight:800;font-size:12px}
+.venue{margin-top:8px;color:var(--muted);font-size:12px}
 .rank{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800}
 .probaGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .probaTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
@@ -102,13 +112,11 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 @media (max-width:1080px){.groupsGrid,.probaGrid{grid-template-columns:1fr}}
 @media (max-width:720px){
   body{padding:12px 10px 22px}.heroCard{padding:16px 14px}.groupsGrid,.probaGrid{grid-template-columns:1fr}
-  .calendarTable thead th,.calendarTable tbody td{padding:6px 6px;font-size:12px}
-  .calendarTable th:nth-child(5),.calendarTable td:nth-child(5){display:none}
-  .calendarTable th:nth-child(1),.calendarTable td:nth-child(1){width:84px}
-  .calendarTable th:nth-child(2),.calendarTable td:nth-child(2){width:148px}
-  .scoreCell{width:96px}
-  .scoreInput{width:32px}
+  .calendarTable th,.calendarTable td{padding:6px 4px;font-size:12px}
+  .colGroupHeader{width:34px}.colDate{width:82px}.colScore{width:74px}.scoreCell{width:74px}.scoreInput{width:28px;padding:5px 2px}
+  .matchMain{grid-template-columns:1fr}.teamCol.home,.teamCol.away{text-align:center}.scoreWrap{margin:2px auto}.matchTop{justify-content:flex-start}
 }
+
 </style>
 </head>
 <body>
@@ -148,7 +156,7 @@ const GROUPS={'A':['Mexique','Afrique du Sud','Corée du Sud','Tchéquie'],'B':[
 const TEAM_STRENGTH={'Espagne':94,'France':92,'Angleterre':90,'Argentine':89,'Brésil':88,'Portugal':85,'Allemagne':83,'Pays-Bas':80,'Belgique':78,'Uruguay':77,'Croatie':75,'Colombie':75,'Sénégal':74,'Maroc':74,'Mexique':73,'États-Unis':72,'Suisse':72,'Japon':71,'Norvège':71,'Turquie':68,'Équateur':68,'Autriche':69,'Paraguay':67,'Suède':67,'Canada':66,'Corée du Sud':66,'Algérie':66,'Côte d’Ivoire':65,'Tchéquie':64,'Écosse':64,'Iran':63,'Australie':63,'Tunisie':62,'Bosnie-Herzégovine':61,'Égypte':61,'Ghana':60,'Qatar':58,'Arabie saoudite':58,'Afrique du Sud':57,'RD Congo':57,'Ouzbékistan':56,'Cap-Vert':55,'Panama':54,'Irak':52,'Haïti':50,'Curaçao':49,'Jordanie':48,'Nouvelle-Zélande':47};
 
 function clone(obj){return JSON.parse(JSON.stringify(obj));}
-function formatDate(value){const d=new Date(value);return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
+function formatDate(value){const d=new Date(value);return d.toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
 function suggestVenue(groupLetter,pIndex,groupIndex){
   const venues=['Mexico City','Toronto','Los Angeles','New York / New Jersey','Dallas','Houston','Atlanta','Seattle','Miami','Vancouver','Boston','Philadelphia','Kansas City','Monterrey','Guadalajara','San Francisco Bay Area'];
   return venues[(groupIndex*2+pIndex)%venues.length];
@@ -398,7 +406,6 @@ function renderGroups(){
           <tbody>${thirds.map((row,i)=>`<tr><td>${i+1}</td><td>${row.team}</td><td>${row.group}</td><td>${row.pts}</td><td>${row.gd}</td><td>${row.gf}</td></tr>`).join('')}</tbody>
         </table>
       </div>
-      <div class="note">Gestion des fichiers CSV</div>
       <div class="controls oddsControlsBottom">
         <button class="btn secondary" id="importOddsBtn">Importer un CSV</button>
         <button class="btn primary" id="exportOddsBtn">Exporter le CSV</button>
@@ -408,21 +415,27 @@ function renderGroups(){
 
 }
 
-function calendarRowHTML(match){
-  const label = match.stage==='Phase de groupes' ? 'Groupe ' + match.group : getDisplayMatchCode(match);
-  return `<tr>
-    <td class="calGroup">${match.group || ''}</td>
-    <td class="calDate">${formatDate(match.date)}</td>
-    <td class="calMatch">${match.home} – ${match.away}</td>
-    <td class="scoreCell">
-      <div class="scoreWrapTable">
+function matchHTML(match){
+  const code = getDisplayMatchCode(match);
+  return `<div class="matchCard">
+    <div class="matchTop">
+      <span>${match.group ? 'Groupe ' + match.group : match.stage}</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        ${code ? `<span class="matchCode">${code}</span>` : ``}
+        <span>${formatDate(match.date)}</span>
+      </div>
+    </div>
+    <div class="matchMain">
+      <div class="teamCol home"><div class="team">${match.home}</div><div class="odds">Cote : ${teamOdds(match.home)}</div></div>
+      <div class="scoreWrap">
         <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.homeScore}" data-id="${match.id}" data-side="homeScore" />
-        <span class="scoreSep">-</span>
+        <div class="vs">VS</div>
         <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.awayScore}" data-id="${match.id}" data-side="awayScore" />
       </div>
-    </td>
-    <td class="calVenue">${match.venue}</td>
-  </tr>`;
+      <div class="teamCol away"><div class="team">${match.away}</div><div class="odds">Cote : ${teamOdds(match.away)}</div></div>
+    </div>
+    <div class="venue">${match.venue}</div>
+  </div>`;
 }
 
 function bindScoreInputs(){
@@ -438,15 +451,34 @@ function bindScoreInputs(){
   });
 }
 
+function calendarRowHTML(match){
+  const label = match.group ? match.group : getDisplayMatchCode(match);
+  const matchName = `${match.home} – ${match.away}`;
+  return `<tr>
+    <td class="calGroup">${label}</td>
+    <td class="calDate">${formatDate(match.date)}</td>
+    <td class="calMatch">${matchName}</td>
+    <td class="scoreCell">
+      <div class="scoreWrapTable">
+        <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.homeScore}" data-id="${match.id}" data-side="homeScore" />
+        <span class="scoreSep">-</span>
+        <input class="scoreInput" inputmode="numeric" pattern="[0-9]*" type="text" value="${match.awayScore}" data-id="${match.id}" data-side="awayScore" />
+      </div>
+    </td>
+    <td class="calVenue">${match.venue}</td>
+  </tr>`;
+}
+
 function renderCalendar(){
   const stages=['Phase de groupes','Seizièmes de finale','Huitièmes de finale','Quarts de finale','Demi-finales','Match pour la 3e place','Finale'];
   document.getElementById('calendar').innerHTML=`
     <div class="panel">
       <div class="panelHeader"><h2>Calendrier</h2><span class="badge">${state.matches.length} matchs</span></div>
-      ${stages.map(stage=>`<div class="calendarStage"><h3 class="stageTitle">${stage}</h3><div class="tableWrap"><table class="calendarTable"><thead><tr><th style="width:40px">G</th><th style="width:160px">Date</th><th>Match</th><th style="width:110px">Score</th><th style="width:170px">Stade</th></tr></thead><tbody>${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}</tbody></table></div></div>`).join('')}
+      ${stages.map(stage=>`<div class="calendarStage"><h3 class="stageTitle">${stage}</h3><div class="tableWrap"><table class="calendarTable"><thead><tr><th class="colGroupHeader">Grp</th><th class="colDate">Date</th><th>Match</th><th class="colScore">Score</th><th style="width:150px">Stade</th></tr></thead><tbody>${state.matches.filter(m=>m.stage===stage).map(calendarRowHTML).join('')}</tbody></table></div></div>`).join('')}
     </div>`;
   bindScoreInputs();
 }
+
 
 function oddsToCsv(){
   const lines=['equipe,cote'];
@@ -550,11 +582,6 @@ function renderProba(){
     <div class="panel">
       <div class="panelHeader">
         <h2>Classement des équipes par cote</h2>
-        <div class="controls">
-          <button class="btn secondary" id="importOddsBtn">Importer un CSV</button>
-          <button class="btn primary" id="exportOddsBtn">Exporter le CSV</button>
-          <input type="file" id="oddsCsvInput" class="fileInput" accept=".csv,text/csv" />
-        </div>
       </div>
       <div class="note">Les cotes sont classées de la plus favorite à la moins favorite. Tu peux modifier directement une cote, exporter la base actuelle, ou importer un CSV depuis l’index séparé.</div>
       <div class="tableWrap">
