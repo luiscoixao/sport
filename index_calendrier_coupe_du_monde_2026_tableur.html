@@ -57,12 +57,12 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 .standings th:nth-child(5),.standings td:nth-child(5){width:12%}
 .calendarStage{margin-top:18px}.calendarStage:first-child{margin-top:0}
 .stageTitle{font-size:18px;font-weight:800;margin:0 0 10px;letter-spacing:-.03em}
-.calendarTable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden}
-.calendarTable th{padding:9px 8px;background:rgba(0,0,0,.42);color:#e9f6ec;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
-.calendarTable td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px}
-.calendarTable tbody tr:nth-child(odd){background:rgba(255,255,255,.025)}
-.calendarTable tbody tr:nth-child(even){background:rgba(255,255,255,.045)}
-.calendarTable tbody tr:hover{background:rgba(142,226,122,.08)}
+.calendarTable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;background:transparent;border-radius:0;overflow:visible}
+.calendarTable th{padding:8px 8px;background:transparent;color:#e9f6ec;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.10);white-space:nowrap}
+.calendarTable td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle;font-size:13px}
+.calendarTable tbody tr:nth-child(odd){background:transparent}
+.calendarTable tbody tr:nth-child(even){background:transparent}
+.calendarTable tbody tr:hover{background:rgba(255,255,255,.02)}
 .calendarTable tr:last-child td{border-bottom:none}
 .colGroupHeader{width:52px;text-align:center}
 .colScore{width:106px;text-align:center}
@@ -80,11 +80,11 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 .odds{font-size:12px;color:var(--muted)}
 .scoreWrap{display:flex;align-items:center;gap:6px;justify-content:center}
 .scoreInput{
-  width:42px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:12px;color:var(--text);padding:8px 4px;text-align:center;font:inherit;font-weight:800;appearance:textfield;
+  width:28px;background:transparent;border:none;
+  border-radius:0;color:var(--text);padding:0;text-align:center;font:inherit;font-weight:800;appearance:textfield;
 }
 .scoreInput::-webkit-outer-spin-button,.scoreInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.scoreSep{font-size:16px;color:var(--muted);font-weight:800}
+.scoreSep{font-size:16px;color:var(--muted);font-weight:800;opacity:.9}
 .vs{display:flex;align-items:center;justify-content:center;min-width:42px;padding:6px 10px;border-radius:11px;background:linear-gradient(135deg,rgba(142,226,122,.15),rgba(57,196,106,.15));border:1px solid rgba(255,255,255,.10);font-weight:800;font-size:12px}
 .venue{margin-top:8px;color:var(--muted);font-size:12px}
 .rank{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,209,102,.18);color:#ffe7a6;font-size:12px;font-weight:800}
@@ -113,7 +113,7 @@ h1{margin:0 0 8px;font-size:clamp(28px,5vw,50px);line-height:.95;letter-spacing:
 @media (max-width:720px){
   body{padding:12px 10px 22px}.heroCard{padding:16px 14px}.groupsGrid,.probaGrid{grid-template-columns:1fr}
   .calendarTable th,.calendarTable td{padding:8px 6px;font-size:12px}
-  .colGroupHeader{width:42px}.colScore{width:92px}.scoreCell{width:92px}.scoreInput{width:34px;padding:7px 2px;border-radius:11px}
+  .colGroupHeader{width:42px}.colScore{width:84px}.scoreCell{width:84px}.scoreInput{width:24px;padding:0;border-radius:0}
   .calGroup{font-size:18px}.calTeams{font-size:13px}.calMeta,.calOdds{font-size:11px}
   .matchMain{grid-template-columns:1fr}.teamCol.home,.teamCol.away{text-align:center}.scoreWrap{margin:2px auto}.matchTop{justify-content:flex-start}
 }
