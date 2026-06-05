@@ -166,6 +166,25 @@ main{padding:10px 12px 80px}
 
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
+
+/* AJUST MODAL */
+.ajust-team-block{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.ajust-team-block:last-child{border-bottom:none;margin-bottom:0}
+.ajust-team-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ajust-team-name{font-family:"Barlow Condensed",sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.ajust-score{font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;margin-left:auto}
+.ajust-score.pos{background:rgba(46,204,113,0.15);color:#86efac}
+.ajust-score.neg{background:rgba(231,76,60,0.15);color:#f87171}
+.ajust-score.neu{background:rgba(255,255,255,0.06);color:var(--muted)}
+.criterion-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.crit-label{font-size:9px;color:var(--muted);width:68px;flex-shrink:0;line-height:1.3}
+.crit-label b{display:block;color:var(--text);font-size:10px}
+.crit-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer}
+.crit-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer}
+.crit-val{font-size:10px;font-weight:700;min-width:36px;text-align:right;font-family:"Barlow Condensed",sans-serif}
+.crit-val.pos{color:#86efac}.crit-val.neg{color:#f87171}.crit-val.neu{color:var(--muted)}
+.ajust-reset-btn{font-size:9px;color:var(--muted);background:none;border:1px solid var(--border);padding:3px 8px;border-radius:12px;cursor:pointer;margin-top:4px}
+.ajust-search{width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;margin-bottom:12px;font-family:"Barlow",sans-serif}
 </style>
 </head>
 <body>
@@ -218,7 +237,14 @@ input[type=number]{-moz-appearance:textfield}
 <div class="bottom-nav">
   <button class="bnav-btn active" id="btnGrille" onclick="showView('grille')"><div class="bnav-icon">&#9783;</div>GRILLE</button>
   <button class="bnav-btn" id="btnResume" onclick="showView('resume')"><div class="bnav-icon">&#128202;</div>RÉSUMÉ</button>
+  <button class="bnav-btn" id="btnAjust" onclick="openAjust()"><div class="bnav-icon">&#9881;</div>AJUST.</button>
   <button class="bnav-btn" id="btnReset" onclick="confirmReset()"><div class="bnav-icon">&#8635;</div>RESET</button>
+</div>
+
+<!-- MODAL AJUSTEMENTS QUALITATIFS -->
+<div class="modal-overlay" id="ajustModal" onclick="closeAjust()">
+  <div class="modal" onclick="event.stopPropagation()" id="ajustContent">
+  </div>
 </div>
 
 <div class="modal-overlay" id="resumeModal" onclick="closeModal()">
@@ -251,8 +277,41 @@ const COTES = {
   NZL:1000,UZB:1000,PAN:1000,QAT:1000
 };
 
-// Bonus équipe hôte
+// Bonus équipe hôte (fixe)
 const HOST_BONUS = {MEX:0.05, USA:0.05, CAN:0.05};
+
+// ── BONUS/MALUS QUALITATIFS ───────────────────────────────────────────────────
+// 4 critères par équipe, valeurs entre -0.20 et +0.20
+// star=effet star individuel, deuil=choc émotionnel, effectif=qualité réelle, psycho=mentalité grands matchs
+const DEFAULT_QUALIT = {
+  POR:{ star:0.08,  deuil:-0.04, effectif:0.10,  psycho:0.05  },
+  FRA:{ star:0.05,  deuil:0,     effectif:0.08,  psycho:0.03  },
+  ESP:{ star:0,     deuil:0,     effectif:0.08,  psycho:0.05  },
+  ARG:{ star:0.05,  deuil:0,     effectif:0.05,  psycho:0.08  },
+  ENG:{ star:0.03,  deuil:0,     effectif:0.05,  psycho:-0.03 },
+  BRA:{ star:0,     deuil:0,     effectif:0.03,  psycho:0     },
+  GER:{ star:0,     deuil:0,     effectif:0.05,  psycho:0.03  },
+  NED:{ star:0,     deuil:0,     effectif:0.03,  psycho:0     },
+  MAR:{ star:0,     deuil:0,     effectif:0.05,  psycho:0.05  },
+  COL:{ star:0,     deuil:0,     effectif:0.03,  psycho:0.03  },
+  NOR:{ star:0.08,  deuil:0,     effectif:0.03,  psycho:0     },
+  SEN:{ star:0.03,  deuil:0,     effectif:0.03,  psycho:0.03  },
+  TUR:{ star:0,     deuil:0,     effectif:0.03,  psycho:0     },
+  JPN:{ star:0,     deuil:0,     effectif:0.03,  psycho:0.05  },
+  USA:{ star:0,     deuil:0,     effectif:0.02,  psycho:0.03  },
+  MEX:{ star:0,     deuil:0,     effectif:0,     psycho:0     },
+  CAN:{ star:0,     deuil:0,     effectif:0.02,  psycho:0     },
+  URU:{ star:0,     deuil:0,     effectif:0.02,  psycho:0.03  },
+  SUI:{ star:0,     deuil:0,     effectif:0.02,  psycho:0     },
+  CRO:{ star:0,     deuil:0,     effectif:0,     psycho:0.03  },
+};
+
+let qualit = JSON.parse(localStorage.getItem('cdm2026qualit')||'null') || JSON.parse(JSON.stringify(DEFAULT_QUALIT));
+function saveQualit(){ localStorage.setItem('cdm2026qualit', JSON.stringify(qualit)); }
+function getQualitBonus(code){
+  const q = qualit[code]; if(!q) return 0;
+  return (q.star||0)+(q.deuil||0)+(q.effectif||0)+(q.psycho||0);
+}
 
 const NOM = {
   MEX:"Mexique",RSA:"Afrique du Sud",KOR:"Cor\u00e9e du Sud",CZE:"Tch\u00e9quie",
@@ -372,7 +431,8 @@ function forceScore(code) {
   const coteScore = 1-Math.min(1,Math.log(cote)/Math.log(1000));
   const formeScore = formePts/15;
   const host = HOST_BONUS[code]||0;
-  return 0.60*rankScore + 0.25*coteScore + 0.15*formeScore + host;
+  const qb = getQualitBonus(code);
+  return 0.55*rankScore + 0.22*coteScore + 0.13*formeScore + host + qb;
 }
 
 // 3 scénarios : 1=favori domine, 2=serré, 3=surprise
@@ -705,6 +765,121 @@ function closeModal(){
   currentView='grille';
 }
 
+// ── AJUSTEMENTS QUALITATIFS ──────────────────────────────────────────────────
+
+const CRIT_META = {
+  star:  { label:'Effet star',   desc:'Joueur(s) décisif(s)',   color:'#fbbf24', min:-0.10, max:0.15 },
+  deuil: { label:'Choc émot.',   desc:'Blessure/deuil clé',     color:'#f87171', min:-0.15, max:0.05 },
+  effectif:{ label:'Effectif',   desc:'Qualité réelle vs FIFA',  color:'#60a5fa', min:-0.10, max:0.15 },
+  psycho:{ label:'Mentalité',    desc:'Grands tournois',         color:'#a78bfa', min:-0.10, max:0.12 },
+};
+
+// Équipes éditables (celles avec qualit défini + possibilité d'en ajouter)
+const ALL_TEAMS = ["POR","FRA","ESP","ARG","ENG","BRA","GER","NED","MAR","COL",
+  "NOR","SEN","TUR","JPN","USA","MEX","CAN","URU","SUI","CRO",
+  "BEL","ECU","AUT","ALG","KOR","SWE","CZE","SCO","EGY","IRN",
+  "AUS","TUN","GHA","RSA","HAI","QAT","CPV","KSA","IRQ","JOR","CUW","BIH","COD","UZB","PAN","NZL","PAR","CIV"];
+
+function getTotalQualit(code){
+  const q=qualit[code]||{star:0,deuil:0,effectif:0,psycho:0};
+  return (q.star||0)+(q.deuil||0)+(q.effectif||0)+(q.psycho||0);
+}
+
+let ajustFilter = '';
+
+function renderAjustContent(){
+  const teams = ALL_TEAMS.filter(t=>
+    !ajustFilter || NOM[t].toLowerCase().includes(ajustFilter.toLowerCase())
+  );
+  let html = `<div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="modal-title" style="margin-bottom:0">AJUSTEMENTS</div>
+      <button onclick="resetAllQualit()" class="ajust-reset-btn">Reset tout</button>
+    </div>
+    <div style="font-size:9px;color:var(--muted);margin-bottom:10px;line-height:1.6">
+      Modifie le score de force de chaque équipe. Les pr&#233;dictions se recalculent en temps r&#233;el.
+    </div>
+    <input class="ajust-search" placeholder="Rechercher une &#233;quipe..." 
+      value="${ajustFilter}" oninput="ajustFilter=this.value;renderAjustContent()">`;
+
+  teams.forEach(code=>{
+    const q = qualit[code]||{star:0,deuil:0,effectif:0,psycho:0};
+    const total = getTotalQualit(code);
+    const totStr = (total>0?'+':'')+total.toFixed(2);
+    const totClass = total>0.01?'pos':total<-0.01?'neg':'neu';
+    const iso = ISO[code];
+    const flagHtml = iso?`<img style="width:20px;height:14px;border-radius:2px;object-fit:cover" src="https://flagcdn.com/24x18/${iso}.png" alt="">`:'';
+
+    html += `<div class="ajust-team-block">
+      <div class="ajust-team-header">
+        ${flagHtml}
+        <div class="ajust-team-name">${NOM[code]||code}</div>
+        <div class="ajust-score ${totClass}">Force ${totStr}</div>
+      </div>`;
+
+    Object.entries(CRIT_META).forEach(([key,meta])=>{
+      const val = q[key]||0;
+      const valStr = (val>0?'+':'')+val.toFixed(2);
+      const valClass = val>0.005?'pos':val<-0.005?'neg':'neu';
+      const pct = ((val-meta.min)/(meta.max-meta.min)*100).toFixed(0);
+      html += `<div class="criterion-row">
+        <div class="crit-label"><b>${meta.label}</b>${meta.desc}</div>
+        <input type="range" class="crit-slider" 
+          min="${meta.min}" max="${meta.max}" step="0.01" value="${val}"
+          style="background:linear-gradient(to right,${meta.color} ${pct}%,rgba(255,255,255,0.1) ${pct}%)"
+          oninput="updateQualit('${code}','${key}',+this.value,this)"
+          >
+        <div class="crit-val ${valClass}" id="qv-${code}-${key}">${valStr}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  document.getElementById('ajustContent').innerHTML = html;
+}
+
+function updateQualit(code, key, val, slider){
+  if(!qualit[code]) qualit[code]={star:0,deuil:0,effectif:0,psycho:0};
+  qualit[code][key] = val;
+  saveQualit();
+  // Mettre à jour valeur affichée
+  const el = document.getElementById('qv-'+code+'-'+key);
+  if(el){ el.textContent=(val>0?'+':'')+val.toFixed(2); el.className='crit-val '+(val>0.005?'pos':val<-0.005?'neg':'neu'); }
+  // Mettre à jour total
+  const total=getTotalQualit(code);
+  const totStr=(total>0?'+':'')+total.toFixed(2);
+  // Recalculer prédictions et classements
+  predictions={1:buildPredictions(1),2:buildPredictions(2),3:buildPredictions(3)};
+  updateClassements();
+  updateCounter();
+  // Update slider gradient
+  const meta=CRIT_META[key];
+  const pct=((val-meta.min)/(meta.max-meta.min)*100).toFixed(0);
+  slider.style.background=`linear-gradient(to right,${meta.color} ${pct}%,rgba(255,255,255,0.1) ${pct}%)`;
+}
+
+function resetAllQualit(){
+  if(confirm('Remettre tous les ajustements aux valeurs par d\u00e9faut ?')){
+    qualit=JSON.parse(JSON.stringify(DEFAULT_QUALIT));
+    saveQualit();
+    predictions={1:buildPredictions(1),2:buildPredictions(2),3:buildPredictions(3)};
+    updateClassements();updateCounter();
+    renderAjustContent();
+  }
+}
+
+function openAjust(){
+  ajustFilter='';
+  renderAjustContent();
+  document.getElementById('ajustModal').classList.add('open');
+  document.getElementById('btnAjust').classList.add('active');
+}
+function closeAjust(){
+  document.getElementById('ajustModal').classList.remove('open');
+  document.getElementById('btnAjust').classList.remove('active');
+  renderAll();
+}
+
 function confirmReset(){
   if(confirm('Effacer vos scores saisis et les scénarios par match ?')){
     userScores={};matchScen={};saveScores();saveMatchScen();renderAll();
@@ -712,6 +887,16 @@ function confirmReset(){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+// Bannière iOS "Ajouter à l'écran d'accueil"
+(function(){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  const dismissed = localStorage.getItem('cdm_banner_dismissed');
+  if(isIOS && !isStandalone && !dismissed){
+    const b = document.getElementById('installBanner');
+    if(b) b.style.display = 'flex';
+  }
+})();
 const saved=JSON.parse(localStorage.getItem('cdm2026scen')||'{}');
 if(saved.g) globalScen=saved.g;
 if(saved.m) matchScen=saved.m;
