@@ -4,8 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CDM 2026">
 <meta name="theme-color" content="#060d1a">
 <title>CDM 2026 · Grille</title>
+<link id="apple-touch-icon" rel="apple-touch-icon" sizes="180x180">
+<script>
+// Génère l'icône en canvas et l'injecte comme apple-touch-icon
+(function(){
+  var c=document.createElement('canvas');
+  c.width=180;c.height=180;
+  var ctx=c.getContext('2d');
+  // Fond dégradé sombre
+  var bg=ctx.createLinearGradient(0,0,180,180);
+  bg.addColorStop(0,'#0c1a30');bg.addColorStop(1,'#060d1a');
+  ctx.fillStyle=bg;
+  ctx.beginPath();ctx.roundRect(0,0,180,180,36);ctx.fill();
+  // Cercle or
+  var grd=ctx.createRadialGradient(90,78,10,90,78,60);
+  grd.addColorStop(0,'#ffd166');grd.addColorStop(1,'#f0a500');
+  ctx.fillStyle=grd;
+  ctx.beginPath();ctx.arc(90,72,52,0,Math.PI*2);ctx.fill();
+  // Trophée (dessin simplifié)
+  ctx.fillStyle='#060d1a';
+  // Coupe
+  ctx.beginPath();ctx.moveTo(62,46);ctx.lineTo(118,46);ctx.lineTo(108,84);
+  ctx.quadraticCurveTo(90,100,72,84);ctx.closePath();ctx.fill();
+  // Pied trophée
+  ctx.fillRect(82,98,16,14);ctx.fillRect(74,110,32,7);
+  // Anses
+  ctx.strokeStyle='#060d1a';ctx.lineWidth=5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(64,52);ctx.quadraticCurveTo(46,52,48,70);ctx.quadraticCurveTo(50,84,64,80);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(116,52);ctx.quadraticCurveTo(134,52,132,70);ctx.quadraticCurveTo(130,84,116,80);ctx.stroke();
+  // Texte "2026"
+  ctx.fillStyle='#f0a500';
+  ctx.font='bold 22px Barlow Condensed,sans-serif';
+  ctx.textAlign='center';ctx.letterSpacing='2px';
+  ctx.fillText('2026',90,148);
+  // Étoiles
+  ctx.fillStyle='#ffd166';ctx.font='11px sans-serif';
+  ctx.fillText('★ ★ ★',90,166);
+  document.getElementById('apple-touch-icon').href=c.toDataURL('image/png');
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -159,6 +200,16 @@ input[type=number]{-moz-appearance:textfield}
     <div class="slabel">SURPRISE</div>
     <div class="sprob">~15%</div>
   </button>
+</div>
+
+<!-- Bannière installation iOS -->
+<div id="installBanner" style="display:none;align-items:center;gap:10px;padding:9px 14px;background:linear-gradient(135deg,rgba(240,165,0,0.12),rgba(240,165,0,0.04));border-bottom:1px solid rgba(240,165,0,0.2);font-size:10px;color:var(--text)">
+  <div style="font-size:22px;flex-shrink:0">&#11014;</div>
+  <div style="flex:1;line-height:1.6">
+    <b style="color:var(--gold)">Installer sur l'écran d'accueil</b><br>
+    <span style="color:var(--muted)">Appuyez sur <b style="color:var(--text)">Partager</b> &#10064; puis <b style="color:var(--text)">Sur l'écran d'accueil</b></span>
+  </div>
+  <button onclick="document.getElementById('installBanner').style.display='none';localStorage.setItem('cdm_banner_dismissed','1')" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;line-height:1">&#215;</button>
 </div>
 
 <div class="group-tabs" id="groupTabs"></div>
